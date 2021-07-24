@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release
     - name: Publish Win 64 bits
       run: dotnet publish -c Release -r win-x64 -o Release-64 Hparg/Hparg.csproj
     - uses: actions/upload-artifact@v2
