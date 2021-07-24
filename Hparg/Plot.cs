@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace Hparg
 {
@@ -12,5 +13,10 @@ namespace Hparg
 
         public void Clear()
         { }
+
+        internal int[][] GetRenderData(int width, int height)
+        {
+            return Array.Empty<int[]>();
+        }
     }
 }
