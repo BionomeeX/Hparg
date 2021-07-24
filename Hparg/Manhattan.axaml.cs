@@ -18,5 +18,7 @@ namespace Hparg
         {
             AvaloniaXamlLoader.Load(this);
         }
+
+        public Plot Plot { get; } = new();
     }
 }
