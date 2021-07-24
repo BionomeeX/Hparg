@@ -26,10 +26,6 @@ namespace Hparg
             int width = (int)Bounds.Width;
             int height = (int)Bounds.Height;
 
-            var format = PixelFormat.Bgra8888; // Blue freen red alpha
-            using var bmp = new WriteableBitmap(new PixelSize(width, height), new Vector(96, 96), format, AlphaFormat.Unpremul);
-            using var bmpLock = bmp.Lock();
-
             var data = Plot.GetRenderData(width, height);
 
             // 2D to 1D array
@@ -38,6 +34,10 @@ namespace Hparg
             {
                 newArray.AddRange(line);
             }
+
+            var format = PixelFormat.Bgra8888; // Blue green red alpha
+            using var bmp = new WriteableBitmap(new PixelSize(width, height), new Vector(96, 96), format, AlphaFormat.Unpremul);
+            using var bmpLock = bmp.Lock();
 
             Marshal.Copy(newArray.ToArray(), 0, bmpLock.Address, newArray.Count);
             context?.DrawImage(bmp, new Rect(0, 0, width, height));
