@@ -9,14 +9,11 @@ using System.Runtime.InteropServices;
 
 namespace Hparg
 {
-    public partial class Manhattan : Window
+    public partial class Manhattan : UserControl
     {
         public Manhattan()
         {
             InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         private void InitializeComponent()
