@@ -1,0 +1,26 @@
+name: Windows
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: 0 0 * * *
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Publish Win 64 bits
+      run: dotnet publish -c Release -r win-x64 -o Release-64 Hparg/Hparg.csproj
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Hparg.dll
+        path: ./Release-64/Hparg.dll
+        retention-days: 1

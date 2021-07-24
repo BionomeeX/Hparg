@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Hparg
 {
-    public partial class MainWindow : Window
+    public partial class Manhattan : Window
     {
-        public MainWindow()
+        public Manhattan()
         {
             InitializeComponent();
 #if DEBUG
