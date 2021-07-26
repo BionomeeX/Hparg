@@ -20,7 +20,7 @@ namespace Hparg
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
         public Plot(float[] x, float[] y, System.Drawing.Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
-            float offset = 5, Shape shape = Shape.Circle, int size = 5)
+            float offset = 50, Shape shape = Shape.Circle, int size = 5)
         {
             if (x.Length != y.Length)
             {
@@ -89,9 +89,10 @@ namespace Hparg
 
             foreach (var point in _points)
             {
-                int x = (int)((point.X * xRatio) - _xMin.Value);
-                int y = (int)((point.Y * yRatio) - _yMin.Value);
-                data[y][x] = point.Color.ToArgb();
+
+                int x = (int)( (width  - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value) );
+                int y = (int)( (height - 2 * _offset - 1) * (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value) );
+                data[(int)(y + _offset)][(int)(x + _offset)] = point.Color.ToArgb();
             }
 
             return data;
