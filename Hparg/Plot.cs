@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Avalonia.VisualTree;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,13 +43,16 @@ namespace Hparg
 
             // Calculate the bounds if dynamic, else use the ones given in parameter
             _xMin = new(xMin ?? _points.Min(p => p.X), xMin == null);
-            _xMax = new(xMin ?? _points.Max(p => p.X), xMin == null);
-            _yMin = new(xMin ?? _points.Min(p => p.Y), xMin == null);
-            _yMax = new(xMin ?? _points.Max(p => p.Y), xMin == null);
-            _offset = offset;
-            _shapeSize = size;
+            _xMax = new(xMax ?? _points.Max(p => p.X), xMax == null);
+            _yMin = new(yMin ?? _points.Min(p => p.Y), yMin == null);
+            _yMax = new(yMax ?? _points.Max(p => p.Y), yMax == null);
 
-            Manhattan.S.InvalidateVisual();
+            if (float.IsNaN(_xMin.Value) || float.IsNaN(_yMin.Value))
+            {
+                throw new ArgumentException("x and y can't contains NaN values");
+            }
+
+            _offset = offset;
         }
         public void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
         {
@@ -72,8 +76,6 @@ namespace Hparg
             {
                 _yMax.Value = Math.Max(_yMax.Value, y);
             }
-
-            Manhattan.S.InvalidateVisual();
         }
 
         internal int[][] GetRenderData(int width, int height)
@@ -82,9 +84,6 @@ namespace Hparg
             {
                 return Array.Empty<int[]>();
             }
-
-            float xRatio = width / _xMax.Value;
-            float yRatio = height / _yMax.Value;
 
             int[][] data = new int[height][];
             for (int y = 0; y < height; y++)
@@ -108,6 +107,7 @@ namespace Hparg
                                     if (x + col >= 0 && y + line >= 0 && x + col < width && y + line < height)
                                     {
                                         data[(int)(y + line + _offset)][(int)(x + col + _offset)] = point.Color.ToArgb();
+                                        ;
                                     }
                                 }
                             }
@@ -139,6 +139,5 @@ namespace Hparg
         private readonly List<Point> _points = new();
         private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
         private readonly float _offset;
-        private readonly int _shapeSize;
     }
 }

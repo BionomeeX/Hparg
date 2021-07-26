@@ -11,12 +11,9 @@ namespace Hparg
 {
     public partial class Manhattan : UserControl
     {
-        public static Manhattan S { private set; get; }
-
         public Manhattan()
         {
             InitializeComponent();
-            S = this;
         }
 
         private void InitializeComponent()
@@ -51,6 +48,18 @@ namespace Hparg
             context?.DrawImage(bmp, new Rect(0, 0, width, height));
         }
 
-        public Plot Plot { set; get; }
+        private Plot _plot;
+        public Plot Plot
+        {
+            set
+            {
+                _plot = value;
+                InvalidateVisual(); // TODO: Need to do that when calling AddPoint too
+            }
+            get
+            {
+                return _plot;
+            }
+        }
     }
 }
