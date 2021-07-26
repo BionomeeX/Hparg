@@ -23,6 +23,11 @@ namespace Hparg
 
         public override void Render(DrawingContext context)
         {
+            if (Plot == null)
+            {
+                return;
+            }
+
             int width = (int)Bounds.Width;
             int height = (int)Bounds.Height;
 
@@ -43,6 +48,6 @@ namespace Hparg
             context?.DrawImage(bmp, new Rect(0, 0, width, height));
         }
 
-        public Plot Plot { get; } = new();
+        public Plot Plot { set; get; }
     }
 }
