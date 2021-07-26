@@ -20,7 +20,7 @@ namespace Hparg
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
         public Plot(float[] x, float[] y, System.Drawing.Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
-            float offset = 50, Shape shape = Shape.Circle, int size = 5)
+            float offset = 50, Shape shape = Shape.Circle, int size = 2)
         {
             if (x.Length != y.Length)
             {
@@ -46,6 +46,7 @@ namespace Hparg
             _yMin = new(xMin ?? _points.Min(p => p.Y), xMin == null);
             _yMax = new(xMin ?? _points.Max(p => p.Y), xMin == null);
             _offset = offset;
+            _shapeSize = size;
         }
         public void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
         {
@@ -89,17 +90,51 @@ namespace Hparg
 
             foreach (var point in _points)
             {
-
-                int x = (int)( (width  - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value) );
-                int y = (int)( (height - 2 * _offset - 1) * (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value) );
-                data[(int)(y + _offset)][(int)(x + _offset)] = point.Color.ToArgb();
+                int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value));
+                int y = (int)((height - 2 * _offset - 1) * (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value));
+                switch (point.Shape)
+                {
+                    case Shape.Circle:
+                        for (int line = -point.Size; line <= point.Size; ++line)
+                        {
+                            for (int col = -point.Size; col <= point.Size; ++col)
+                            {
+                                if (col * col + line * line <= point.Size * point.Size)
+                                {
+                                    if (x + col >= 0 && y + line >= 0 && x + col < width && y + line < height)
+                                    {
+                                        data[(int)(y + line + _offset)][(int)(x + col + _offset)] = point.Color.ToArgb();
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case Shape.Diamond:
+                        for (int line = -point.Size; line <= point.Size; ++line)
+                        {
+                            for (int col = -point.Size; col <= point.Size; ++col)
+                            {
+                                if (Math.Abs(col) + Math.Abs(line) <= point.Size)
+                                {
+                                    if (x + col >= 0 && y + line >= 0 && x + col < width && y + line < height)
+                                    {
+                                        data[(int)(y + line + _offset)][(int)(x + col + _offset)] = point.Color.ToArgb();
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
             }
 
             return data;
         }
 
         private readonly List<Point> _points = new();
-        private readonly DynamicLimit _xMin, _xMax, _yMin, _yMax;
+        private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
         private readonly float _offset;
+        private readonly int _shapeSize;
     }
 }
