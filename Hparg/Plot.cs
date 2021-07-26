@@ -47,6 +47,8 @@ namespace Hparg
             _yMax = new(xMin ?? _points.Max(p => p.Y), xMin == null);
             _offset = offset;
             _shapeSize = size;
+
+            Manhattan.S.InvalidateVisual();
         }
         public void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
         {
@@ -70,6 +72,8 @@ namespace Hparg
             {
                 _yMax.Value = Math.Max(_yMax.Value, y);
             }
+
+            Manhattan.S.InvalidateVisual();
         }
 
         internal int[][] GetRenderData(int width, int height)

@@ -11,9 +11,12 @@ namespace Hparg
 {
     public partial class Manhattan : UserControl
     {
+        public static Manhattan S { private set; get; }
+
         public Manhattan()
         {
             InitializeComponent();
+            S = this;
         }
 
         private void InitializeComponent()
