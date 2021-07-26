@@ -49,26 +49,26 @@ namespace Hparg
         }
         public void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
         {
+            // Add the point to the graph
+            _points.Add(new Point() { X = x, Y = y, Color = color, Shape = shape, Size = size });
+
             // Recalculate all bounds if set they are set to dynamic
             if (_xMin.IsDynamic)
             {
-                _xMin.Value = _points.Min(p => p.X);
+                _xMin.Value = Math.Min(_xMin.Value, x);
             }
             if (_xMax.IsDynamic)
             {
-                _xMax.Value = _points.Max(p => p.X);
+                _xMax.Value = Math.Max(_xMax.Value, x);
             }
             if (_yMin.IsDynamic)
             {
-                _yMin.Value = _points.Min(p => p.Y);
+                _yMin.Value = Math.Min(_yMin.Value, y);
             }
             if (_yMax.IsDynamic)
             {
-                _xMax.Value = _points.Max(p => p.Y);
+                _yMax.Value = Math.Max(_yMax.Value, y);
             }
-
-            // Add the point to the graph
-            _points.Add(new Point() { X = x, Y = y, Color = color, Shape = shape, Size = size });
         }
 
         internal int[][] GetRenderData(int width, int height)
