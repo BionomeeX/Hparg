@@ -27,13 +27,6 @@ namespace Hparg
                 throw new ArgumentException("x must be of the same length of y", nameof(x));
             }
 
-            // Calculate the bounds if dynamic, else use the ones given in parameter
-            _xMin = new(xMin ?? _points.Min(p => p.X), xMin == null);
-            _xMax = new(xMin ?? _points.Max(p => p.X), xMin == null);
-            _yMin = new(xMin ?? _points.Min(p => p.Y), xMin == null);
-            _yMax = new(xMin ?? _points.Max(p => p.Y), xMin == null);
-            _offset = offset;
-
             // Add all the points
             _points.AddRange(Enumerable.Range(0, x.Length).Select(i =>
             {
@@ -46,6 +39,13 @@ namespace Hparg
                     Size = size
                 };
             }));
+
+            // Calculate the bounds if dynamic, else use the ones given in parameter
+            _xMin = new(xMin ?? _points.Min(p => p.X), xMin == null);
+            _xMax = new(xMin ?? _points.Max(p => p.X), xMin == null);
+            _yMin = new(xMin ?? _points.Min(p => p.Y), xMin == null);
+            _yMax = new(xMin ?? _points.Max(p => p.Y), xMin == null);
+            _offset = offset;
         }
         public void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
         {
