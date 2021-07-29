@@ -21,8 +21,8 @@ namespace Hparg
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
-        public Plot(float[] x, float[] y, System.Drawing.Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
-            float offset = 50, Shape shape = Shape.Circle, int size = 2)
+        public Plot(float[] x, float[] y, Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
+            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2)
         {
             if (x.Length != y.Length)
             {
@@ -53,6 +53,7 @@ namespace Hparg
                 throw new ArgumentException("x and y can't contains NaN values");
             }
 
+            _lineSize = lineSize;
             _offset = offset;
         }
         public void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
@@ -81,7 +82,6 @@ namespace Hparg
 
         internal Bitmap GetRenderData(int width, int height)
         {
-
             var bmp = new Bitmap(width, height);
 
             if (_points.Count == 0)
@@ -94,6 +94,7 @@ namespace Hparg
             grf.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
             Dictionary<Color, Brush> brushes = new();
+            (int x, int y)? lastPos = null;
 
             foreach (var point in _points)
             {
@@ -108,28 +109,43 @@ namespace Hparg
                     brush = brushes[point.Color];
                 }
 
-                int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value));
-                int y = (int)((height - 2 * _offset - 1) * (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value));
+                var pos = CalculateCoordinate(point, width, height);
                 switch (point.Shape)
                 {
                     case Shape.Circle:
-                        grf.FillEllipse(brush, x + _offset, y + _offset, point.Size * 2, point.Size * 2);
+                        grf.FillEllipse(brush, pos.x - point.Size / 2, pos.y - point.Size / 2, point.Size, point.Size);
                         break;
 
                     case Shape.Diamond:
-                        grf.FillRectangle(brush, x + _offset, y + _offset, point.Size, point.Size);
+                        grf.FillRectangle(brush, pos.x - point.Size / 2, pos.y - point.Size / 2, point.Size, point.Size);
                         break;
 
                     default:
                         throw new NotImplementedException();
                 }
+
+                if (_lineSize > 0 && lastPos.HasValue)
+                {
+                    grf.DrawLine(new Pen(brush, _lineSize),
+                        new System.Drawing.Point(pos.x, pos.y),
+                        new System.Drawing.Point(lastPos.Value.x, lastPos.Value.y));
+                }
+                lastPos = pos;
             }
 
             return bmp;
         }
 
+        private (int x, int y) CalculateCoordinate(Point point, int width, int height)
+        {
+            int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value) + _offset);
+            int y = (int)((height - 2 * _offset - 1) * (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value) + _offset);
+            return (x, y);
+        }
+
         private readonly List<Point> _points = new();
         private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
         private readonly float _offset;
+        private readonly int _lineSize;
     }
 }
