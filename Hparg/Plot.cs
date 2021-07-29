@@ -1,6 +1,7 @@
-﻿using Avalonia.VisualTree;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace Hparg
@@ -78,62 +79,53 @@ namespace Hparg
             }
         }
 
-        internal int[][] GetRenderData(int width, int height)
+        internal Bitmap GetRenderData(int width, int height)
         {
+
+            var bmp = new Bitmap(width, height);
+
             if (_points.Count == 0)
             {
-                return Array.Empty<int[]>();
+                return bmp;
             }
 
-            int[][] data = new int[height][];
-            for (int y = 0; y < height; y++)
-            {
-                data[y] = new int[width];
-            }
+            using Graphics grf = Graphics.FromImage(bmp);
+            grf.SmoothingMode = SmoothingMode.HighQuality;
+            grf.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+            Dictionary<Color, Brush> brushes = new();
 
             foreach (var point in _points)
             {
+                Brush brush;
+                if (!brushes.ContainsKey(point.Color))
+                {
+                    brush = new SolidBrush(point.Color);
+                    brushes.Add(point.Color, brush);
+                }
+                else
+                {
+                    brush = brushes[point.Color];
+                }
+
                 int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value));
                 int y = (int)((height - 2 * _offset - 1) * (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value));
                 switch (point.Shape)
                 {
                     case Shape.Circle:
-                        for (int line = -point.Size; line <= point.Size; ++line)
-                        {
-                            for (int col = -point.Size; col <= point.Size; ++col)
-                            {
-                                if (col * col + line * line <= point.Size * point.Size)
-                                {
-                                    if (x + col >= 0 && y + line >= 0 && x + col < width && y + line < height)
-                                    {
-                                        data[(int)(y + line + _offset)][(int)(x + col + _offset)] = point.Color.ToArgb();
-                                        ;
-                                    }
-                                }
-                            }
-                        }
+                        grf.FillEllipse(brush, x + _offset, y + _offset, point.Size * 2, point.Size * 2);
                         break;
+
                     case Shape.Diamond:
-                        for (int line = -point.Size; line <= point.Size; ++line)
-                        {
-                            for (int col = -point.Size; col <= point.Size; ++col)
-                            {
-                                if (Math.Abs(col) + Math.Abs(line) <= point.Size)
-                                {
-                                    if (x + col >= 0 && y + line >= 0 && x + col < width && y + line < height)
-                                    {
-                                        data[(int)(y + line + _offset)][(int)(x + col + _offset)] = point.Color.ToArgb();
-                                    }
-                                }
-                            }
-                        }
+                        grf.FillRectangle(brush, x + _offset, y + _offset, point.Size, point.Size);
                         break;
+
                     default:
                         throw new NotImplementedException();
                 }
             }
 
-            return data;
+            return bmp;
         }
 
         private readonly List<Point> _points = new();
