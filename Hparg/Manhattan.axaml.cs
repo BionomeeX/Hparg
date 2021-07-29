@@ -40,6 +40,7 @@ namespace Hparg
             stream.Position = 0;
             Bitmap bmp = new(stream);
             context?.DrawImage(bmp, new Rect(0, 0, width, height));
+            data.Dispose();
         }
 
         private Plot _plot;
