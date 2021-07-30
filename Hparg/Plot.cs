@@ -139,7 +139,7 @@ namespace Hparg
         private (int x, int y) CalculateCoordinate(Point point, int width, int height)
         {
             int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value) + _offset);
-            int y = (int)((height - 2 * _offset - 1) * (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value) + _offset);
+            int y = (int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value)) + _offset );
             return (x, y);
         }
 
