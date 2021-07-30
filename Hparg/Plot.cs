@@ -136,13 +136,14 @@ namespace Hparg
                 Point point = line.Orientation == Orientation.Horizontal
                     ? new() { Color = line.Color, X = 0, Y = line.Position }
                     : new() { Color = line.Color, Y = 0, X = line.Position };
+                Point otherPoint = line.Orientation == Orientation.Horizontal
+                    ? new() { Color = line.Color, X = width, Y = line.Position }
+                    : new() { Color = line.Color, Y = height, X = line.Position };
 
                 var brush = GetBrush(point);
                 var pos = CalculateCoordinate(point, width, height);
+                var otherPos = CalculateCoordinate(otherPoint, width, height);
 
-                (int x, int y) otherPos = line.Orientation == Orientation.Horizontal
-                    ? (width, pos.y)
-                    : (pos.x, height);
                 grf.DrawLine(new Pen(brush, line.Size), new System.Drawing.Point(pos.x, pos.y), new System.Drawing.Point(otherPos.x, otherPos.y));
             }
 
@@ -163,7 +164,7 @@ namespace Hparg
         private (int x, int y) CalculateCoordinate(Point point, int width, int height)
         {
             int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value) + _offset);
-            int y = (int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value)) + _offset );
+            int y = (int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value)) + _offset);
             return (x, y);
         }
 
