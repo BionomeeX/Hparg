@@ -56,7 +56,7 @@ namespace Hparg
             _lineSize = lineSize;
             _offset = offset;
         }
-        public void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
+        public void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
         {
             // Add the point to the graph
             _points.Add(new Point() { X = x, Y = y, Color = color, Shape = shape, Size = size });
@@ -80,6 +80,16 @@ namespace Hparg
             }
         }
 
+        public void AddVerticalLine(int x, Color color, int size = 2)
+        {
+            _lines.Add(new() { Position = x, Color = color, Size = size, Orientation = Orientation.Vertical });
+        }
+
+        public void AddHorizontalLine(int y, Color color, int size = 2)
+        {
+            _lines.Add(new() { Position = y, Color = color, Size = size, Orientation = Orientation.Horizontal });
+        }
+
         internal Bitmap GetRenderData(int width, int height)
         {
             var bmp = new Bitmap(width, height);
@@ -92,23 +102,11 @@ namespace Hparg
             using Graphics grf = Graphics.FromImage(bmp);
             grf.SmoothingMode = SmoothingMode.HighQuality;
             grf.InterpolationMode = InterpolationMode.HighQualityBicubic;
-
-            Dictionary<Color, Brush> brushes = new();
             (int x, int y)? lastPos = null;
 
             foreach (var point in _points)
             {
-                Brush brush;
-                if (!brushes.ContainsKey(point.Color))
-                {
-                    brush = new SolidBrush(point.Color);
-                    brushes.Add(point.Color, brush);
-                }
-                else
-                {
-                    brush = brushes[point.Color];
-                }
-
+                var brush = GetBrush(point);
                 var pos = CalculateCoordinate(point, width, height);
                 switch (point.Shape)
                 {
@@ -133,7 +131,33 @@ namespace Hparg
                 lastPos = pos;
             }
 
+            foreach (var line in _lines)
+            {
+                Point point = line.Orientation == Orientation.Horizontal
+                    ? new() { Color = line.Color, X = 0, Y = line.Position }
+                    : new() { Color = line.Color, Y = 0, X = line.Position };
+
+                var brush = GetBrush(point);
+                var pos = CalculateCoordinate(point, width, height);
+
+                (int x, int y) otherPos = line.Orientation == Orientation.Horizontal
+                    ? (width, pos.y)
+                    : (pos.x, height);
+                grf.DrawLine(new Pen(brush, line.Size), new System.Drawing.Point(pos.x, pos.y), new System.Drawing.Point(otherPos.x, otherPos.y));
+            }
+
             return bmp;
+        }
+
+        private Brush GetBrush(Point point)
+        {
+            if (!brushes.ContainsKey(point.Color))
+            {
+                var brush = new SolidBrush(point.Color);
+                brushes.Add(point.Color, brush);
+                return brush;
+            }
+            return brushes[point.Color];
         }
 
         private (int x, int y) CalculateCoordinate(Point point, int width, int height)
@@ -144,8 +168,11 @@ namespace Hparg
         }
 
         private readonly List<Point> _points = new();
+        private readonly List<Line> _lines = new();
         private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
         private readonly float _offset;
         private readonly int _lineSize;
+
+        private readonly Dictionary<Color, Brush> brushes = new();
     }
 }
