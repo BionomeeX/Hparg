@@ -1,6 +1,7 @@
-﻿using Avalonia.VisualTree;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace Hparg
@@ -20,8 +21,8 @@ namespace Hparg
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
-        public Plot(float[] x, float[] y, System.Drawing.Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
-            float offset = 50, Shape shape = Shape.Circle, int size = 2)
+        public Plot(float[] x, float[] y, Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
+            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2)
         {
             if (x.Length != y.Length)
             {
@@ -52,6 +53,7 @@ namespace Hparg
                 throw new ArgumentException("x and y can't contains NaN values");
             }
 
+            _lineSize = lineSize;
             _offset = offset;
         }
         public void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
@@ -78,66 +80,72 @@ namespace Hparg
             }
         }
 
-        internal int[][] GetRenderData(int width, int height)
+        internal Bitmap GetRenderData(int width, int height)
         {
+            var bmp = new Bitmap(width, height);
+
             if (_points.Count == 0)
             {
-                return Array.Empty<int[]>();
+                return bmp;
             }
 
-            int[][] data = new int[height][];
-            for (int y = 0; y < height; y++)
-            {
-                data[y] = new int[width];
-            }
+            using Graphics grf = Graphics.FromImage(bmp);
+            grf.SmoothingMode = SmoothingMode.HighQuality;
+            grf.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+            Dictionary<Color, Brush> brushes = new();
+            (int x, int y)? lastPos = null;
 
             foreach (var point in _points)
             {
-                int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value));
-                int y = (int)((height - 2 * _offset - 1) * (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value));
+                Brush brush;
+                if (!brushes.ContainsKey(point.Color))
+                {
+                    brush = new SolidBrush(point.Color);
+                    brushes.Add(point.Color, brush);
+                }
+                else
+                {
+                    brush = brushes[point.Color];
+                }
+
+                var pos = CalculateCoordinate(point, width, height);
                 switch (point.Shape)
                 {
                     case Shape.Circle:
-                        for (int line = -point.Size; line <= point.Size; ++line)
-                        {
-                            for (int col = -point.Size; col <= point.Size; ++col)
-                            {
-                                if (col * col + line * line <= point.Size * point.Size)
-                                {
-                                    if (x + col >= 0 && y + line >= 0 && x + col < width && y + line < height)
-                                    {
-                                        data[(int)(y + line + _offset)][(int)(x + col + _offset)] = point.Color.ToArgb();
-                                        ;
-                                    }
-                                }
-                            }
-                        }
+                        grf.FillEllipse(brush, pos.x - point.Size / 2, pos.y - point.Size / 2, point.Size, point.Size);
                         break;
+
                     case Shape.Diamond:
-                        for (int line = -point.Size; line <= point.Size; ++line)
-                        {
-                            for (int col = -point.Size; col <= point.Size; ++col)
-                            {
-                                if (Math.Abs(col) + Math.Abs(line) <= point.Size)
-                                {
-                                    if (x + col >= 0 && y + line >= 0 && x + col < width && y + line < height)
-                                    {
-                                        data[(int)(y + line + _offset)][(int)(x + col + _offset)] = point.Color.ToArgb();
-                                    }
-                                }
-                            }
-                        }
+                        grf.FillRectangle(brush, pos.x - point.Size / 2, pos.y - point.Size / 2, point.Size, point.Size);
                         break;
+
                     default:
                         throw new NotImplementedException();
                 }
+
+                if (_lineSize > 0 && lastPos.HasValue)
+                {
+                    grf.DrawLine(new Pen(brush, _lineSize),
+                        new System.Drawing.Point(pos.x, pos.y),
+                        new System.Drawing.Point(lastPos.Value.x, lastPos.Value.y));
+                }
+                lastPos = pos;
             }
 
-            return data;
+            return bmp;
+        }
+
+        private (int x, int y) CalculateCoordinate(Point point, int width, int height)
+        {
+            int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value) + _offset);
+            int y = (int)((height - 2 * _offset - 1) * (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value) + _offset);
+            return (x, y);
         }
 
         private readonly List<Point> _points = new();
         private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
         private readonly float _offset;
+        private readonly int _lineSize;
     }
 }

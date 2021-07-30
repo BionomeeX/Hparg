@@ -5,6 +5,8 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Hparg
@@ -33,19 +35,12 @@ namespace Hparg
 
             var data = Plot.GetRenderData(width, height);
 
-            // 2D to 1D array
-            var newArray = new List<int>();
-            foreach (var line in data)
-            {
-                newArray.AddRange(line);
-            }
-
-            var format = PixelFormat.Bgra8888; // Blue green red alpha
-            using var bmp = new WriteableBitmap(new PixelSize(width, height), new Vector(96, 96), format, AlphaFormat.Unpremul);
-            using var bmpLock = bmp.Lock();
-
-            Marshal.Copy(newArray.ToArray(), 0, bmpLock.Address, newArray.Count);
+            using MemoryStream stream = new();
+            data.Save(stream, ImageFormat.Png);
+            stream.Position = 0;
+            Bitmap bmp = new(stream);
             context?.DrawImage(bmp, new Rect(0, 0, width, height));
+            data.Dispose();
         }
 
         private Plot _plot;
