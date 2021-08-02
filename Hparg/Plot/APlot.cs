@@ -14,10 +14,6 @@ namespace Hparg.Plot
         /// <param name="x">Values for the X coordinate</param>
         /// <param name="y">Values for the Y coordinate</param>
         /// <param name="color">Color to render the points in</param>
-        /// <param name="xMin">Start point of the graph for the width, null if dynamic</param>
-        /// <param name="xMax">End point of the graph for the width, null if dynamic</param>
-        /// <param name="yMin">Start point of the graph for the height, null if dynamic</param>
-        /// <param name="yMax">End point of the graph for the height, null if dynamic</param>
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
@@ -61,7 +57,20 @@ namespace Hparg.Plot
             _lines.Add(new() { Position = y, Color = color, Size = size, Orientation = Orientation.Horizontal });
         }
 
+        /// <summary>
+        /// Calculate the local coordinate of a point
+        /// </summary>
+        /// <param name="point">Point in global coordinate</param>
+        /// <param name="width">Width of the window</param>
+        /// <param name="height">Height of the window</param>
+        /// <returns>Tuple containing the X and Y position of the point in local coordinate</returns>
         internal abstract (int x, int y) CalculateCoordinate(Point point, int width, int height);
+        /// <summary>
+        /// Get all the data to render on screen
+        /// </summary>
+        /// <param name="width">Width of the window</param>
+        /// <param name="height">Height of the window</param>
+        /// <returns>Bitmap containing the points to render</returns>
         internal Bitmap GetRenderData(int width, int height)
         {
             var bmp = new Bitmap(width, height);
@@ -122,6 +131,10 @@ namespace Hparg.Plot
             return bmp;
         }
 
+        /// <summary>
+        /// Get the current brush given a point
+        /// Allow to store brushes so we don't recreate them everytimes
+        /// </summary>
         private Brush GetBrush(Point point)
         {
             if (!brushes.ContainsKey(point.Color))
@@ -133,7 +146,13 @@ namespace Hparg.Plot
             return brushes[point.Color];
         }
 
+        /// <summary>
+        /// List of all points to display
+        /// </summary>
         private protected readonly List<Point> _points = new();
+        /// <summary>
+        /// List of all points to display
+        /// </summary>
         private readonly List<Line> _lines = new();
         protected readonly float _offset;
         private readonly int _lineSize;
