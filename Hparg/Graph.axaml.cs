@@ -3,17 +3,15 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform;
-using System.Collections.Generic;
+using Hparg.Plot;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace Hparg
 {
-    public partial class Manhattan : UserControl
+    public partial class Graph : UserControl
     {
-        public Manhattan()
+        public Graph()
         {
             InitializeComponent();
         }
@@ -43,8 +41,8 @@ namespace Hparg
             data.Dispose();
         }
 
-        private Plot _plot;
-        public Plot Plot
+        private APlot _plot;
+        public APlot Plot
         {
             set
             {

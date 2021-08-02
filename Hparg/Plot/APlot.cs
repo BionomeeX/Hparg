@@ -4,9 +4,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 
-namespace Hparg
+namespace Hparg.Plot
 {
-    public class Plot
+    public abstract class APlot
     {
         /// <summary>
         /// Create a new plot
@@ -21,7 +21,7 @@ namespace Hparg
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
-        public Plot(float[] x, float[] y, Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
+        public APlot(float[] x, float[] y, Color color,
             float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2)
         {
             if (x.Length != y.Length)
@@ -42,42 +42,13 @@ namespace Hparg
                 };
             }));
 
-            // Calculate the bounds if dynamic, else use the ones given in parameter
-            _xMin = new(xMin ?? _points.Min(p => p.X), xMin == null);
-            _xMax = new(xMax ?? _points.Max(p => p.X), xMax == null);
-            _yMin = new(yMin ?? _points.Min(p => p.Y), yMin == null);
-            _yMax = new(yMax ?? _points.Max(p => p.Y), yMax == null);
-
-            if (float.IsNaN(_xMin.Value) || float.IsNaN(_yMin.Value))
-            {
-                throw new ArgumentException("x and y can't contains NaN values");
-            }
-
             _lineSize = lineSize;
             _offset = offset;
         }
-        public void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
+        public virtual void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
         {
             // Add the point to the graph
             _points.Add(new Point() { X = x, Y = y, Color = color, Shape = shape, Size = size });
-
-            // Recalculate all bounds if set they are set to dynamic
-            if (_xMin.IsDynamic)
-            {
-                _xMin.Value = Math.Min(_xMin.Value, x);
-            }
-            if (_xMax.IsDynamic)
-            {
-                _xMax.Value = Math.Max(_xMax.Value, x);
-            }
-            if (_yMin.IsDynamic)
-            {
-                _yMin.Value = Math.Min(_yMin.Value, y);
-            }
-            if (_yMax.IsDynamic)
-            {
-                _yMax.Value = Math.Max(_yMax.Value, y);
-            }
         }
 
         public void AddVerticalLine(int x, Color color, int size = 2)
@@ -90,6 +61,7 @@ namespace Hparg
             _lines.Add(new() { Position = y, Color = color, Size = size, Orientation = Orientation.Horizontal });
         }
 
+        internal abstract (int x, int y) CalculateCoordinate(Point point, int width, int height);
         internal Bitmap GetRenderData(int width, int height)
         {
             var bmp = new Bitmap(width, height);
@@ -161,17 +133,9 @@ namespace Hparg
             return brushes[point.Color];
         }
 
-        private (int x, int y) CalculateCoordinate(Point point, int width, int height)
-        {
-            int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value) + _offset);
-            int y = (int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value)) + _offset);
-            return (x, y);
-        }
-
-        private readonly List<Point> _points = new();
+        private protected readonly List<Point> _points = new();
         private readonly List<Line> _lines = new();
-        private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
-        private readonly float _offset;
+        protected readonly float _offset;
         private readonly int _lineSize;
 
         private readonly Dictionary<Color, Brush> brushes = new();

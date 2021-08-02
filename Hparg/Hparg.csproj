@@ -10,8 +10,8 @@
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.3" />
    </ItemGroup>
   <ItemGroup>
-    <Compile Update="Manhattan.axaml.cs">
-      <DependentUpon>Manhattan.axaml</DependentUpon>
+    <Compile Update="Graph.axaml.cs">
+      <DependentUpon>Graph.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>
