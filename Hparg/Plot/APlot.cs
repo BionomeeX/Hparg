@@ -17,26 +17,9 @@ namespace Hparg.Plot
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
-        public APlot(float[] x, float[] y, Color color,
-            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2)
+        private protected APlot(IEnumerable<Point> points, float offset = 50, int lineSize = 2)
         {
-            if (x.Length != y.Length)
-            {
-                throw new ArgumentException("x must be of the same length of y", nameof(x));
-            }
-
-            // Add all the points
-            _points.AddRange(Enumerable.Range(0, x.Length).Select(i =>
-            {
-                return new Point
-                {
-                    X = x[i],
-                    Y = y[i],
-                    Color = color,
-                    Shape = shape,
-                    Size = size
-                };
-            }));
+            _points.AddRange(points);
 
             _lineSize = lineSize;
             _offset = offset;

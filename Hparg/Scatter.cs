@@ -8,7 +8,18 @@ namespace Hparg
     public class Scatter : APlot
     {
         public Scatter(float[] x, float[] y, Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
-            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2) : base(x, y, color, offset, shape, size, lineSize)
+            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2)
+            : base(Enumerable.Range(0, x.Length).Select(i =>
+            {
+                return new Plot.Point
+                {
+                    X = x[i],
+                    Y = y[i],
+                    Color = color,
+                    Shape = shape,
+                    Size = size
+                };
+            }), offset, lineSize)
         {
             // Calculate the bounds if dynamic, else use the ones given in parameter
             _xMin = new(xMin ?? _points.Min(p => p.X), xMin == null);
