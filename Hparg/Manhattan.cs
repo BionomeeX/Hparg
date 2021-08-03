@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Hparg.Plot;
-using System;
 
 
 namespace Hparg
@@ -71,8 +70,6 @@ namespace Hparg
                         pi += pjumps / (double)(_chInfo.Count() - 1d) + _chPercent[ch];
                     }
                 }
-
-                Console.WriteLine(chromosome + " " + position + " " + rho + " " + pi);
 
                 result.Add(
                     new Plot.Point{
