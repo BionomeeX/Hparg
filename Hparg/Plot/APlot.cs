@@ -4,9 +4,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 
-namespace Hparg
+namespace Hparg.Plot
 {
-    public class Plot
+    public abstract class APlot
     {
         /// <summary>
         /// Create a new plot
@@ -14,70 +14,20 @@ namespace Hparg
         /// <param name="x">Values for the X coordinate</param>
         /// <param name="y">Values for the Y coordinate</param>
         /// <param name="color">Color to render the points in</param>
-        /// <param name="xMin">Start point of the graph for the width, null if dynamic</param>
-        /// <param name="xMax">End point of the graph for the width, null if dynamic</param>
-        /// <param name="yMin">Start point of the graph for the height, null if dynamic</param>
-        /// <param name="yMax">End point of the graph for the height, null if dynamic</param>
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
-        public Plot(float[] x, float[] y, Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
-            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2)
+        private protected APlot(IEnumerable<Point> points, float offset = 50, int lineSize = 2)
         {
-            if (x.Length != y.Length)
-            {
-                throw new ArgumentException("x must be of the same length of y", nameof(x));
-            }
-
-            // Add all the points
-            _points.AddRange(Enumerable.Range(0, x.Length).Select(i =>
-            {
-                return new Point
-                {
-                    X = x[i],
-                    Y = y[i],
-                    Color = color,
-                    Shape = shape,
-                    Size = size
-                };
-            }));
-
-            // Calculate the bounds if dynamic, else use the ones given in parameter
-            _xMin = new(xMin ?? _points.Min(p => p.X), xMin == null);
-            _xMax = new(xMax ?? _points.Max(p => p.X), xMax == null);
-            _yMin = new(yMin ?? _points.Min(p => p.Y), yMin == null);
-            _yMax = new(yMax ?? _points.Max(p => p.Y), yMax == null);
-
-            if (float.IsNaN(_xMin.Value) || float.IsNaN(_yMin.Value))
-            {
-                throw new ArgumentException("x and y can't contains NaN values");
-            }
+            _points.AddRange(points);
 
             _lineSize = lineSize;
             _offset = offset;
         }
-        public void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
+        public virtual void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
         {
             // Add the point to the graph
             _points.Add(new Point() { X = x, Y = y, Color = color, Shape = shape, Size = size });
-
-            // Recalculate all bounds if set they are set to dynamic
-            if (_xMin.IsDynamic)
-            {
-                _xMin.Value = Math.Min(_xMin.Value, x);
-            }
-            if (_xMax.IsDynamic)
-            {
-                _xMax.Value = Math.Max(_xMax.Value, x);
-            }
-            if (_yMin.IsDynamic)
-            {
-                _yMin.Value = Math.Min(_yMin.Value, y);
-            }
-            if (_yMax.IsDynamic)
-            {
-                _yMax.Value = Math.Max(_yMax.Value, y);
-            }
         }
 
         public void AddVerticalLine(int x, Color color, int size = 2)
@@ -90,6 +40,20 @@ namespace Hparg
             _lines.Add(new() { Position = y, Color = color, Size = size, Orientation = Orientation.Horizontal });
         }
 
+        /// <summary>
+        /// Calculate the local coordinate of a point
+        /// </summary>
+        /// <param name="point">Point in global coordinate</param>
+        /// <param name="width">Width of the window</param>
+        /// <param name="height">Height of the window</param>
+        /// <returns>Tuple containing the X and Y position of the point in local coordinate</returns>
+        internal abstract (int x, int y) CalculateCoordinate(Point point, int width, int height);
+        /// <summary>
+        /// Get all the data to render on screen
+        /// </summary>
+        /// <param name="width">Width of the window</param>
+        /// <param name="height">Height of the window</param>
+        /// <returns>Bitmap containing the points to render</returns>
         internal Bitmap GetRenderData(int width, int height)
         {
             var bmp = new Bitmap(width, height);
@@ -150,6 +114,10 @@ namespace Hparg
             return bmp;
         }
 
+        /// <summary>
+        /// Get the current brush given a point
+        /// Allow to store brushes so we don't recreate them everytimes
+        /// </summary>
         private Brush GetBrush(Point point)
         {
             if (!brushes.ContainsKey(point.Color))
@@ -161,17 +129,15 @@ namespace Hparg
             return brushes[point.Color];
         }
 
-        private (int x, int y) CalculateCoordinate(Point point, int width, int height)
-        {
-            int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value) + _offset);
-            int y = (int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value)) + _offset);
-            return (x, y);
-        }
-
-        private readonly List<Point> _points = new();
+        /// <summary>
+        /// List of all points to display
+        /// </summary>
+        private protected readonly List<Point> _points = new();
+        /// <summary>
+        /// List of all points to display
+        /// </summary>
         private readonly List<Line> _lines = new();
-        private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
-        private readonly float _offset;
+        protected readonly float _offset;
         private readonly int _lineSize;
 
         private readonly Dictionary<Color, Brush> brushes = new();

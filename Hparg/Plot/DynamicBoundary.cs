@@ -1,4 +1,4 @@
-﻿namespace Hparg
+﻿namespace Hparg.Plot
 {
     internal class DynamicBoundary
     {

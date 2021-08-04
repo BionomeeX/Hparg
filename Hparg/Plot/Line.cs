@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace Hparg
+namespace Hparg.Plot
 {
     internal class Line
     {
