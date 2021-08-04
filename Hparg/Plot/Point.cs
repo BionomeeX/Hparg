@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace Hparg
+namespace Hparg.Plot
 {
     internal class Point
     {
@@ -9,5 +9,10 @@ namespace Hparg
         public Color Color { init; get; }
         public Shape Shape { init; get; }
         public int Size { init; get; }
+
+        public override string ToString()
+        {
+            return $"Point ({X};{Y})";
+        }
     }
 }

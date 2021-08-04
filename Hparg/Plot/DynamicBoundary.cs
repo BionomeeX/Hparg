@@ -1,8 +1,8 @@
-﻿namespace Hparg
+﻿namespace Hparg.Plot
 {
-    internal class DynamicLimit
+    internal class DynamicBoundary
     {
-        public DynamicLimit(float value, bool isDynamic)
+        public DynamicBoundary(float value, bool isDynamic)
              => (Value, IsDynamic) = (value, isDynamic);
 
         public float Value { set; get; }
