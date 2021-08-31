@@ -143,9 +143,12 @@ namespace Hparg.Plot
             return brushes[point.Color];
         }
 
-        private IEnumerable<Vector2> GetPointsInRectangle(Vector2 topLeft, Vector2 bottomRight)
+        private IEnumerable<Vector2> GetPointsInRectangle(Vector2 topLeft, Vector2 bottomRight, int width, int height)
             => _points
-                .Where(p => p.X >= topLeft.X && p.X <= bottomRight.X && p.Y >= topLeft.Y && p.Y <= bottomRight.Y)
+                .Where(p => {
+                    var rP = new Vector2(p.X / width, p.Y / height);
+                    return rP.X >= topLeft.X && rP.X <= bottomRight.X && rP.Y >= topLeft.Y && rP.Y <= bottomRight.Y;
+                })
                 .Select(p => new Vector2(p.X, p.Y));
 
         public void BeginDragAndDrop(Avalonia.Point p)
@@ -160,15 +163,17 @@ namespace Hparg.Plot
 
         public void EndDragAndDrop(double width, double height)
         {
-            _dragAndDropSelection = null;
-
             var xMin = Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
             var yMin = Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
             var xMax = Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
             var yMax = Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-            _callback?.Invoke(GetPointsInRectangle(
+            var points = GetPointsInRectangle(
                 new Vector2((float)(xMin / width), (float)(yMin / height)),
-                new Vector2((float)(xMax / width), (float)(yMax / height))));
+                new Vector2((float)(xMax / width), (float)(yMax / height)),
+                (int)width, (int)height);
+            _callback?.Invoke(points);
+
+            _dragAndDropSelection = null;
         }
 
         /// <summary>

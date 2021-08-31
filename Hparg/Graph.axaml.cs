@@ -30,9 +30,12 @@ namespace Hparg
             };
             PointerReleased += (sender, e) =>
             {
-                _isDragAndDrop = false;
-                Plot?.EndDragAndDrop(Bounds.Width, Bounds.Height);
-                InvalidateVisual();
+                if (_isDragAndDrop)
+                {
+                    _isDragAndDrop = false;
+                    Plot?.EndDragAndDrop(Bounds.Width, Bounds.Height);
+                    InvalidateVisual();
+                }
             };
         }
 
