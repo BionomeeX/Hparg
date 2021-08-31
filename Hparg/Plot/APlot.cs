@@ -166,8 +166,6 @@ namespace Hparg.Plot
 
         public void EndDragAndDrop(double width, double height)
         {
-            _dragAndDropSelection = null;
-
             var xMin = Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
             var yMin = Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
             var xMax = Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
@@ -175,6 +173,8 @@ namespace Hparg.Plot
             _callback?.Invoke(GetPointsInRectangle(
                 new Vector2((float)(xMin / width), (float)(yMin / height)),
                 new Vector2((float)(xMax / width), (float)(yMax / height))));
+
+            _dragAndDropSelection = null;
         }
 
         /// <summary>
