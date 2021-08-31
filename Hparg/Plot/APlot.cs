@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Numerics;
 
 namespace Hparg.Plot
 {
@@ -128,6 +130,19 @@ namespace Hparg.Plot
             }
             return brushes[point.Color];
         }
+
+        public ReadOnlyCollection<Vector2> GetPointsInRectangle(Vector2 topLeft, Vector2 bottomRight) {
+            List<Vector2> result = new List<Vector2>();
+
+            foreach(Point p in _points){
+                if(p.X >= topLeft.X && p.X <= bottomRight.X && p.Y>= topLeft.Y && p.Y <= bottomRight.Y){
+                    result.Add(new Vector2(p.X, p.Y));
+                }
+            }
+
+            return result.AsReadOnly();
+        }
+
 
         /// <summary>
         /// List of all points to display
