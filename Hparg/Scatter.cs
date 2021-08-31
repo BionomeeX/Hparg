@@ -1,14 +1,16 @@
 ﻿using Hparg.Plot;
 using System;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 
 namespace Hparg
 {
     public class Scatter : APlot
     {
         public Scatter(float[] x, float[] y, Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
-            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2)
+            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<ReadOnlyCollection<Vector2>> callback = null)
             : base(Enumerable.Range(0, x.Length).Select(i =>
             {
                 return new Plot.Point
@@ -19,7 +21,7 @@ namespace Hparg
                     Shape = shape,
                     Size = size
                 };
-            }), offset, lineSize)
+            }), offset, lineSize, callback)
         {
             // Calculate the bounds if dynamic, else use the ones given in parameter
             _xMin = new(xMin ?? _points.Min(p => p.X), xMin == null);

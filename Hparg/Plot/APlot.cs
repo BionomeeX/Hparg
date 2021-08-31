@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Numerics;
 
 namespace Hparg.Plot
@@ -19,12 +18,14 @@ namespace Hparg.Plot
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
-        private protected APlot(IEnumerable<Point> points, float offset = 50, int lineSize = 2)
+        private protected APlot(IEnumerable<Point> points, float offset, int lineSize, Action<ReadOnlyCollection<Vector2>> callback)
         {
             _points.AddRange(points);
 
             _lineSize = lineSize;
             _offset = offset;
+
+            _callback = callback;
         }
         public virtual void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
         {
@@ -113,6 +114,16 @@ namespace Hparg.Plot
                 grf.DrawLine(new Pen(brush, line.Size), new System.Drawing.Point(pos.x, pos.y), new System.Drawing.Point(otherPos.x, otherPos.y));
             }
 
+            if (_dragAndDropSelection.HasValue)
+            {
+                var xMin = (int)Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
+                var yMin = (int)Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
+                var xMax = (int)Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
+                var yMax = (int)Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
+                grf.DrawRectangle(new Pen(new SolidBrush(Color.Black)),
+                    new Rectangle(xMin, yMin, xMax - xMin, yMax - yMin));
+            }
+
             return bmp;
         }
 
@@ -131,7 +142,7 @@ namespace Hparg.Plot
             return brushes[point.Color];
         }
 
-        public ReadOnlyCollection<Vector2> GetPointsInRectangle(Vector2 topLeft, Vector2 bottomRight) {
+        private ReadOnlyCollection<Vector2> GetPointsInRectangle(Vector2 topLeft, Vector2 bottomRight) {
             List<Vector2> result = new List<Vector2>();
 
             foreach(Point p in _points){
@@ -143,6 +154,28 @@ namespace Hparg.Plot
             return result.AsReadOnly();
         }
 
+        public void BeginDragAndDrop(Avalonia.Point p)
+        {
+            _dragAndDropSelection = (p, p);
+        }
+
+        public void DragAndDrop(Avalonia.Point p)
+        {
+            _dragAndDropSelection = (_dragAndDropSelection.Value.start, p);
+        }
+
+        public void EndDragAndDrop(double width, double height)
+        {
+            _dragAndDropSelection = null;
+
+            var xMin = Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
+            var yMin = Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
+            var xMax = Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
+            var yMax = Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
+            _callback?.Invoke(GetPointsInRectangle(
+                new Vector2((float)(xMin / width), (float)(yMin / height)),
+                new Vector2((float)(xMax / width), (float)(yMax / height))));
+        }
 
         /// <summary>
         /// List of all points to display
@@ -156,5 +189,9 @@ namespace Hparg.Plot
         private readonly int _lineSize;
 
         private readonly Dictionary<Color, Brush> brushes = new();
+
+        private (Avalonia.Point start, Avalonia.Point end)? _dragAndDropSelection;
+
+        private Action<ReadOnlyCollection<Vector2>> _callback;
     }
 }
