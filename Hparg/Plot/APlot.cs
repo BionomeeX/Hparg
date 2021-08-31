@@ -120,7 +120,7 @@ namespace Hparg.Plot
                 var yMin = (int)Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
                 var xMax = (int)Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
                 var yMax = (int)Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-                grf.DrawRectangle(new Pen(new SolidBrush(Color.Black)),
+                grf.DrawRectangle(new Pen(new SolidBrush(Color.Red)),
                     new Rectangle(xMin, yMin, xMax - xMin, yMax - yMin));
             }
 
