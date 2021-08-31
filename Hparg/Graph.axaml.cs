@@ -22,7 +22,10 @@ namespace Hparg
             };
             PointerMoved += (sender, e) =>
             {
-                Plot?.DragAndDrop(e.GetPosition(this));
+                if (_isDragAndDrop)
+                {
+                    Plot?.DragAndDrop(e.GetPosition(this));
+                }
             };
             PointerReleased += (sender, e) =>
             {
