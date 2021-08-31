@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Numerics;
 
 namespace Hparg.Plot
@@ -18,7 +19,7 @@ namespace Hparg.Plot
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
-        private protected APlot(IEnumerable<Point> points, float offset, int lineSize, Action<ReadOnlyCollection<Vector2>> callback)
+        private protected APlot(IEnumerable<Point> points, float offset, int lineSize, Action<IEnumerable<Vector2>> callback)
         {
             _points.AddRange(points);
 
@@ -120,7 +121,7 @@ namespace Hparg.Plot
                 var yMin = (int)Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
                 var xMax = (int)Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
                 var yMax = (int)Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-                grf.DrawRectangle(new Pen(new SolidBrush(Color.Red)),
+                grf.DrawRectangle(new Pen(new SolidBrush(Color.Black)),
                     new Rectangle(xMin, yMin, xMax - xMin, yMax - yMin));
             }
 
@@ -142,17 +143,10 @@ namespace Hparg.Plot
             return brushes[point.Color];
         }
 
-        private ReadOnlyCollection<Vector2> GetPointsInRectangle(Vector2 topLeft, Vector2 bottomRight) {
-            List<Vector2> result = new List<Vector2>();
-
-            foreach(Point p in _points){
-                if(p.X >= topLeft.X && p.X <= bottomRight.X && p.Y>= topLeft.Y && p.Y <= bottomRight.Y){
-                    result.Add(new Vector2(p.X, p.Y));
-                }
-            }
-
-            return result.AsReadOnly();
-        }
+        private IEnumerable<Vector2> GetPointsInRectangle(Vector2 topLeft, Vector2 bottomRight)
+            => _points
+                .Where(p => p.X >= topLeft.X && p.X <= bottomRight.X && p.Y >= topLeft.Y && p.Y <= bottomRight.Y)
+                .Select(p => new Vector2(p.X, p.Y));
 
         public void BeginDragAndDrop(Avalonia.Point p)
         {
@@ -166,6 +160,8 @@ namespace Hparg.Plot
 
         public void EndDragAndDrop(double width, double height)
         {
+            _dragAndDropSelection = null;
+
             var xMin = Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
             var yMin = Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
             var xMax = Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
@@ -173,8 +169,6 @@ namespace Hparg.Plot
             _callback?.Invoke(GetPointsInRectangle(
                 new Vector2((float)(xMin / width), (float)(yMin / height)),
                 new Vector2((float)(xMax / width), (float)(yMax / height))));
-
-            _dragAndDropSelection = null;
         }
 
         /// <summary>
@@ -192,6 +186,6 @@ namespace Hparg.Plot
 
         private (Avalonia.Point start, Avalonia.Point end)? _dragAndDropSelection;
 
-        private Action<ReadOnlyCollection<Vector2>> _callback;
+        private Action<IEnumerable<Vector2>> _callback;
     }
 }

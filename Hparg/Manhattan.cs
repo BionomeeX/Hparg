@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -12,7 +11,7 @@ namespace Hparg
     public class Manhattan : APlot
     {
 
-        public Manhattan(int[] chpos, float[] y, Color[] chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<ReadOnlyCollection<Vector2>> callback = null) :
+        public Manhattan(int[] chpos, float[] y, Color[] chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<IEnumerable<Vector2>> callback = null) :
         base(ComputePointsNormalization(chpos, y, chcolors, shape, size), offset, lineSize, callback)
         {
             _yMin = new(_points.Min(p => p.Y), false);

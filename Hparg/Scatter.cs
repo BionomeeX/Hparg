@@ -1,6 +1,6 @@
 ﻿using Hparg.Plot;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -10,7 +10,7 @@ namespace Hparg
     public class Scatter : APlot
     {
         public Scatter(float[] x, float[] y, Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
-            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<ReadOnlyCollection<Vector2>> callback = null)
+            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<IEnumerable<Vector2>> callback = null)
             : base(Enumerable.Range(0, x.Length).Select(i =>
             {
                 return new Plot.Point
