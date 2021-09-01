@@ -143,10 +143,11 @@ namespace Hparg.Plot
             return brushes[point.Color];
         }
 
-        private IEnumerable<Vector2> GetPointsInRectangle(Vector2 topLeft, Vector2 bottomRight, int width, int height)
+        private IEnumerable<Vector2> GetPointsInRectangle(Vector2 topLeft, Vector2 bottomRight, float width, float height)
             => _points
                 .Where(p => {
-                    var rP = new Vector2(p.X / width, p.Y / height);
+                    var nP = CalculateCoordinate(p, (int)width, (int)height);
+                    var rP = new Vector2(nP.x / width, nP.y / height);
                     return rP.X >= topLeft.X && rP.X <= bottomRight.X && rP.Y >= topLeft.Y && rP.Y <= bottomRight.Y;
                 })
                 .Select(p => new Vector2(p.X, p.Y));
