@@ -60,8 +60,10 @@ namespace Hparg
 
         internal override (int x, int y) CalculateCoordinate(Plot.Point point, int width, int height)
         {
-            int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value) + _offset);
-            int y = (int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value)) + _offset);
+            var dX = _xMax.Value - _xMin.Value;
+            var dY = _yMax.Value - _yMin.Value;
+            int x = dX == 0 ? 0 : (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / dX + _offset);
+            int y = dY == 0 ? 0 : (int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / dY) + _offset);
             return (x, y);
         }
 
