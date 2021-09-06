@@ -1,14 +1,16 @@
 ﻿using Hparg.Plot;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 
 namespace Hparg
 {
     public class Scatter : APlot
     {
         public Scatter(float[] x, float[] y, Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
-            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2)
+            float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<IEnumerable<Vector2>> callback = null)
             : base(Enumerable.Range(0, x.Length).Select(i =>
             {
                 return new Plot.Point
@@ -19,7 +21,7 @@ namespace Hparg
                     Shape = shape,
                     Size = size
                 };
-            }), offset, lineSize)
+            }), offset, lineSize, callback)
         {
             // Calculate the bounds if dynamic, else use the ones given in parameter
             _xMin = new(xMin ?? _points.Min(p => p.X), xMin == null);
@@ -58,8 +60,10 @@ namespace Hparg
 
         internal override (int x, int y) CalculateCoordinate(Plot.Point point, int width, int height)
         {
-            int x = (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / (_xMax.Value - _xMin.Value) + _offset);
-            int y = (int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value)) + _offset);
+            var dX = _xMax.Value - _xMin.Value;
+            var dY = _yMax.Value - _yMin.Value;
+            int x = dX == 0 ? 0 : (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / dX + _offset);
+            int y = dY == 0 ? 0 : (int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / dY) + _offset);
             return (x, y);
         }
 

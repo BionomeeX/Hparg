@@ -14,7 +14,32 @@ namespace Hparg
         public Graph()
         {
             InitializeComponent();
+
+            PointerPressed += (sender, e) =>
+            {
+                _isDragAndDrop = true;
+                Plot?.BeginDragAndDrop(e.GetPosition(this));
+            };
+            PointerMoved += (sender, e) =>
+            {
+                if (_isDragAndDrop)
+                {
+                    Plot?.DragAndDrop(e.GetPosition(this));
+                    InvalidateVisual();
+                }
+            };
+            PointerReleased += (sender, e) =>
+            {
+                if (_isDragAndDrop)
+                {
+                    _isDragAndDrop = false;
+                    Plot?.EndDragAndDrop(Bounds.Width, Bounds.Height);
+                    InvalidateVisual();
+                }
+            };
         }
+
+        private bool _isDragAndDrop;
 
         private void InitializeComponent()
         {
