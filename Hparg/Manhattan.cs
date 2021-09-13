@@ -20,7 +20,7 @@ namespace Hparg
 
         internal static List<Plot.Point> ComputePointsNormalization(int[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size)
         {
-            Dictionary<int, (int min, int max)> _chInfo = new Dictionary<int, (int min, int max)>();
+            Dictionary<int, (int min, int max)> _chInfo = new();
             double pjumps = 0.05; // <- à modifier via les paramètres
 
             foreach (var pos in chpos)
@@ -92,7 +92,7 @@ namespace Hparg
         internal override (int x, int y) CalculateCoordinate(Plot.Point point, int width, int height)
         {
             int x = (int)((width - 2 * _offset - 1) * point.X + _offset);
-            int y = (int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value)) + _offset);
+            int y = (_yMax.Value - _yMin.Value == 0) ? 0 :(int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value)) + _offset);
             return (x, y);
         }
 
