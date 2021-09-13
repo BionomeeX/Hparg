@@ -159,12 +159,12 @@ namespace Hparg.Plot
 
         public void DragAndDrop(Avalonia.Point p)
         {
-            _dragAndDropSelection = (_dragAndDropSelection.Value.start, p);
+            _dragAndDropSelection = (_dragAndDropSelection!.Value.start, p);
         }
 
         public void EndDragAndDrop(double width, double height)
         {
-            var xMin = Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
+            var xMin = Math.Min(_dragAndDropSelection!.Value.start.X, _dragAndDropSelection.Value.end.X);
             var yMin = Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
             var xMax = Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
             var yMax = Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);

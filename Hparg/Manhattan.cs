@@ -11,14 +11,14 @@ namespace Hparg
     public class Manhattan : APlot
     {
 
-        public Manhattan(int[] chpos, float[] y, Color[] chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null) :
+        public Manhattan(int[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null) :
         base(ComputePointsNormalization(chpos, y, chcolors, shape, size), offset, 0, callback)
         {
             _yMin = new(_points.Min(p => p.Y), false);
             _yMax = new(_points.Max(p => p.Y), false);
         }
 
-        internal static List<Plot.Point> ComputePointsNormalization(int[] chpos, float[] y, Color[] chcolors, Shape shape, int size)
+        internal static List<Plot.Point> ComputePointsNormalization(int[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size)
         {
             Dictionary<int, (int min, int max)> _chInfo = new Dictionary<int, (int min, int max)>();
             double pjumps = 0.05; // <- à modifier via les paramètres
@@ -78,7 +78,7 @@ namespace Hparg
                     new Plot.Point{
                         X = (float)pi,
                         Y = y[i],
-                        Color = chcolors[chromosome % chcolors.Length],
+                        Color = chcolors.ElementAt(chromosome % chcolors.Count()),
                         Shape = shape,
                         Size = size
                     }
