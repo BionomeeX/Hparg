@@ -109,7 +109,7 @@ namespace Hparg
                     new Plot.Point
                     {
                         X = (float)pi,
-                        Y = y[(int)p.X],
+                        Y = p.X,
                         Color = p.Color,
                         Shape = p.Shape,
                         Size = p.Size
