@@ -26,7 +26,7 @@ namespace Hparg
             foreach (var pos in chpos)
             {
                 int chromosome = pos % 100;
-                int position = (int)(pos / 100);
+                int position = pos / 100;
 
                 // if ch exists:
                 if (!_chInfo.ContainsKey(chromosome))
@@ -48,20 +48,21 @@ namespace Hparg
             }
 
             int totalSize = _chInfo.Aggregate(0, (acc, val) => acc += val.Value.max - val.Value.min);
-            Dictionary<int, double> _chPercent = new Dictionary<int, double>();
-            foreach(var el in _chInfo){
+            Dictionary<int, double> _chPercent = new();
+            foreach(var el in _chInfo)
+            {
                 _chPercent[el.Key] = (1d - pjumps) * (el.Value.max - el.Value.min) / totalSize;
             }
 
 
-            List<Plot.Point> result = new List<Plot.Point>();
+            List<Plot.Point> result = new();
 
             // for each snp, compute x position
 
             for (int i = 0; i < chpos.Length; ++i)
             {
                 int chromosome = chpos[i] % 100;
-                int position = (int)(chpos[i] / 100);
+                int position = chpos[i] / 100;
 
                 double rho = (double)(position - _chInfo[chromosome].min) / (_chInfo[chromosome].max - _chInfo[chromosome].min);
                 double pi = rho * _chPercent[chromosome];
@@ -77,7 +78,7 @@ namespace Hparg
                     new Plot.Point{
                         X = (float)pi,
                         Y = y[i],
-                        Color = chcolors[chromosome],
+                        Color = chcolors[chcolors.Length % chromosome],
                         Shape = shape,
                         Size = size
                     }
@@ -88,12 +89,6 @@ namespace Hparg
             return result;
         }
 
-        internal void UpdateChInfo(int chPos)
-        {
-
-        }
-
-
         internal override (int x, int y) CalculateCoordinate(Plot.Point point, int width, int height)
         {
             int x = (int)((width - 2 * _offset - 1) * point.X + _offset);
@@ -102,6 +97,5 @@ namespace Hparg
         }
 
         private readonly DynamicBoundary _yMin, _yMax;
-
     }
 }
