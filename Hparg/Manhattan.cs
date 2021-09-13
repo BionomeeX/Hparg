@@ -11,14 +11,19 @@ namespace Hparg
     public class Manhattan : APlot
     {
 
-        public Manhattan(int[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null) :
-        base(ComputePointsNormalization(chpos, y, chcolors, shape, size), offset, 0, callback)
+        public Manhattan(int[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null, Plot.Point[] additionalPoints = null) :
+        base(ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints ?? Array.Empty<Plot.Point>()), offset, 0, callback)
         {
             _yMin = new(_points.Min(p => p.Y), false);
             _yMax = new(_points.Max(p => p.Y), false);
         }
 
-        internal static List<Plot.Point> ComputePointsNormalization(int[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size)
+        public override void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
+        {
+            throw new NotSupportedException("AddPoint can't be called for Manhattan plots");
+        }
+
+        internal static List<Plot.Point> ComputePointsNormalization(int[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size, Plot.Point[] additionalPoints)
         {
             Dictionary<int, (int min, int max)> _chInfo = new();
             double pjumps = 0.05; // <- à modifier via les paramètres
@@ -83,7 +88,33 @@ namespace Hparg
                         Size = size
                     }
                 );
+            }
 
+            foreach (var p in additionalPoints)
+            {
+                int chromosome = (int)p.Y % 100;
+                int position = (int)p.Y / 100;
+
+                double rho = (double)(position - _chInfo[chromosome].min) / (_chInfo[chromosome].max - _chInfo[chromosome].min);
+                double pi = rho * _chPercent[chromosome];
+                foreach (var ch in _chInfo.Keys)
+                {
+                    if (ch < chromosome)
+                    {
+                        pi += pjumps / (double)(_chInfo.Count() - 1d) + _chPercent[ch];
+                    }
+                }
+
+                result.Add(
+                    new Plot.Point
+                    {
+                        X = (float)pi,
+                        Y = y[(int)p.X],
+                        Color = p.Color,
+                        Shape = p.Shape,
+                        Size = p.Size
+                    }
+                );
             }
 
             return result;

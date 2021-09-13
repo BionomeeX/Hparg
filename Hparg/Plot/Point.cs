@@ -2,7 +2,7 @@
 
 namespace Hparg.Plot
 {
-    internal class Point
+    public class Point
     {
         public float X { init; get; }
         public float Y { init; get; }
