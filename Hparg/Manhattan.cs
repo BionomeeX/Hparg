@@ -11,7 +11,7 @@ namespace Hparg
     public class Manhattan : APlot
     {
 
-        public Manhattan(int[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null, Plot.Point[] additionalPoints = null) :
+        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null, Plot.Point[] additionalPoints = null) :
         base(ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints ?? Array.Empty<Plot.Point>()), offset, 0, callback)
         {
             _yMin = new(_points.Min(p => p.Y), false);
@@ -23,15 +23,15 @@ namespace Hparg
             throw new NotSupportedException("AddPoint can't be called for Manhattan plots");
         }
 
-        internal static List<Plot.Point> ComputePointsNormalization(int[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size, Plot.Point[] additionalPoints)
+        internal static List<Plot.Point> ComputePointsNormalization(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size, Plot.Point[] additionalPoints)
         {
             Dictionary<int, (int min, int max)> _chInfo = new();
             double pjumps = 0.05; // <- à modifier via les paramètres
 
             foreach (var pos in chpos)
             {
-                int chromosome = pos % 100;
-                int position = pos / 100;
+                int chromosome = (int)(pos % 100);
+                int position = (int)(pos / 100);
 
                 // if ch exists:
                 if (!_chInfo.ContainsKey(chromosome))
@@ -66,8 +66,8 @@ namespace Hparg
 
             for (int i = 0; i < chpos.Length; ++i)
             {
-                int chromosome = chpos[i] % 100;
-                int position = chpos[i] / 100;
+                int chromosome = (int)(chpos[i] % 100);
+                int position = (int)(chpos[i] / 100);
 
                 double rho = (double)(position - _chInfo[chromosome].min) / (_chInfo[chromosome].max - _chInfo[chromosome].min);
                 double pi = rho * _chPercent[chromosome];
