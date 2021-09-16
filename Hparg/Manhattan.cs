@@ -83,7 +83,7 @@ namespace Hparg
                     new Plot.Point{
                         X = (float)pi,
                         Y = y[i],
-                        Color = chcolors.ElementAt(chromosome % chcolors.Count()),
+                        Color = chcolors.ElementAt((chromosome - 1) % chcolors.Count()),
                         Shape = shape,
                         Size = size
                     }
