@@ -19,7 +19,7 @@ namespace Hparg.Plot
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
-        private protected APlot(IEnumerable<Point> points, float offset, int lineSize, Action<IEnumerable<Vector2>> callback)
+        private protected APlot(IEnumerable<Point<float>> points, float offset, int lineSize, Action<IEnumerable<Vector2>> callback)
         {
             _points.AddRange(points);
 
@@ -31,7 +31,7 @@ namespace Hparg.Plot
         public virtual void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
         {
             // Add the point to the graph
-            _points.Add(new Point() { X = x, Y = y, Color = color, Shape = shape, Size = size });
+            _points.Add(new Point<float>() { X = x, Y = y, Color = color, Shape = shape, Size = size });
         }
 
         public void AddVerticalLine(int x, Color color, int size = 2)
@@ -51,7 +51,7 @@ namespace Hparg.Plot
         /// <param name="width">Width of the window</param>
         /// <param name="height">Height of the window</param>
         /// <returns>Tuple containing the X and Y position of the point in local coordinate</returns>
-        internal abstract (int x, int y) CalculateCoordinate(Point point, int width, int height);
+        internal abstract (int x, int y) CalculateCoordinate(Point<float> point, int width, int height);
         /// <summary>
         /// Get all the data to render on screen
         /// </summary>
@@ -101,10 +101,10 @@ namespace Hparg.Plot
 
             foreach (var line in _lines)
             {
-                Point point = line.Orientation == Orientation.Horizontal
+                Point<float> point = line.Orientation == Orientation.Horizontal
                     ? new() { Color = line.Color, X = 0, Y = line.Position }
                     : new() { Color = line.Color, Y = 0, X = line.Position };
-                Point otherPoint = line.Orientation == Orientation.Horizontal
+                Point<float> otherPoint = line.Orientation == Orientation.Horizontal
                     ? new() { Color = line.Color, X = width, Y = line.Position }
                     : new() { Color = line.Color, Y = height, X = line.Position };
 
@@ -132,7 +132,7 @@ namespace Hparg.Plot
         /// Get the current brush given a point
         /// Allow to store brushes so we don't recreate them everytimes
         /// </summary>
-        private Brush GetBrush(Point point)
+        private Brush GetBrush(Point<float> point)
         {
             if (!brushes.ContainsKey(point.Color))
             {
@@ -180,7 +180,7 @@ namespace Hparg.Plot
         /// <summary>
         /// List of all points to display
         /// </summary>
-        private protected readonly List<Point> _points = new();
+        private protected readonly List<Point<float>> _points = new();
         /// <summary>
         /// List of all points to display
         /// </summary>
