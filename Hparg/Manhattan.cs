@@ -10,7 +10,6 @@ namespace Hparg
 {
     public class Manhattan : APlot
     {
-
         public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null, Plot.Point<uint>[] additionalPoints = null) :
         base(ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints ?? Array.Empty<Plot.Point<uint>>()), offset, 0, callback)
         {
@@ -75,7 +74,7 @@ namespace Hparg
                 {
                     if (ch < chromosome)
                     {
-                        pi += pjumps / (double)(_chInfo.Count() - 1d) + _chPercent[ch];
+                        pi += pjumps / (double)(_chInfo.Count - 1d) + _chPercent[ch];
                     }
                 }
 
@@ -101,7 +100,7 @@ namespace Hparg
                 {
                     if (ch < chromosome)
                     {
-                        pi += pjumps / (double)(_chInfo.Count() - 1d) + _chPercent[ch];
+                        pi += pjumps / (double)(_chInfo.Count - 1d) + _chPercent[ch];
                     }
                 }
 
