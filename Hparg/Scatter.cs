@@ -13,7 +13,7 @@ namespace Hparg
             float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<IEnumerable<Vector2>> callback = null)
             : base(Enumerable.Range(0, x.Length).Select(i =>
             {
-                return new Plot.Point
+                return new Plot.Point<float>
                 {
                     X = x[i],
                     Y = y[i],
@@ -58,7 +58,7 @@ namespace Hparg
             }
         }
 
-        internal override (int x, int y) CalculateCoordinate(Plot.Point point, int width, int height)
+        internal override (int x, int y) CalculateCoordinate(Plot.Point<float> point, int width, int height)
         {
             var dX = _xMax.Value - _xMin.Value;
             var dY = _yMax.Value - _yMin.Value;
