@@ -73,8 +73,8 @@ namespace Hparg
             {
                 var dX = _xMax.Value - _xMin.Value;
                 var dY = _yMax.Value - _yMin.Value;
-                int x = dX == 0 ? 0 : (int)((canvas.Width - 2 * _offset - 1) * (point.X - _xMin.Value) / dX + _offset);
-                int y = dY == 0 ? 0 : (int)((canvas.Height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / dY) + _offset);
+                var x = dX == 0 ? 0 : (int)((canvas.Width - 2 * _offset - 1) * (point.X - _xMin.Value) / dX + _offset);
+                var y = dY == 0 ? 0 : (int)((canvas.Height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / dY) + _offset);
 
                 canvas.DrawPoint(x, y, point.Size, point.Shape, point.Color);
             }

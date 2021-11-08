@@ -13,6 +13,7 @@ namespace Hparg.Drawable
             Height = height;
             _bmp = new(width, height);
             _grf = Graphics.FromImage(_bmp);
+            _grf.SmoothingMode = SmoothingMode.HighQuality;
             _grf.InterpolationMode = InterpolationMode.HighQualityBicubic;
         }
 
