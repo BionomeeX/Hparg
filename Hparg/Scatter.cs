@@ -1,7 +1,7 @@
-﻿using Hparg.Plot;
+﻿using Hparg.Drawable;
+using Hparg.Plot;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Numerics;
 
@@ -9,11 +9,13 @@ namespace Hparg
 {
     public class Scatter : APlot
     {
-        public Scatter(float[] x, float[] y, Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
+        public Scatter(float[] x, float[] y, System.Drawing.Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
             float offset = 50, Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<IEnumerable<Vector2>> callback = null)
-            : base(Enumerable.Range(0, x.Length).Select(i =>
+            : base(callback)
+        {
+            _points = Enumerable.Range(0, x.Length).Select(i =>
             {
-                return new Plot.Point<float>
+                return new Point<float>
                 {
                     X = x[i],
                     Y = y[i],
@@ -21,8 +23,8 @@ namespace Hparg
                     Shape = shape,
                     Size = size
                 };
-            }), offset, lineSize, callback)
-        {
+            }).ToList();
+
             // Calculate the bounds if dynamic, else use the ones given in parameter
             _xMin = new(xMin ?? _points.Min(p => p.X), xMin == null);
             _xMax = new(xMax ?? _points.Max(p => p.X), xMax == null);
@@ -35,9 +37,16 @@ namespace Hparg
             }
         }
 
-        public override void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
+        public override void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
         {
-            base.AddPoint(x, y, color, shape, size);
+            _points.Add(new()
+            {
+                X = x,
+                Y = y,
+                Color = color,
+                Shape = shape,
+                Size = size
+            });
 
             // Recalculate all bounds if set they are set to dynamic
             if (_xMin.IsDynamic)
@@ -58,15 +67,20 @@ namespace Hparg
             }
         }
 
-        internal override (int x, int y) CalculateCoordinate(Plot.Point<float> point, int width, int height)
+        internal override void Render(Canvas canvas)
         {
-            var dX = _xMax.Value - _xMin.Value;
-            var dY = _yMax.Value - _yMin.Value;
-            int x = dX == 0 ? 0 : (int)((width - 2 * _offset - 1) * (point.X - _xMin.Value) / dX + _offset);
-            int y = dY == 0 ? 0 : (int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / dY) + _offset);
-            return (x, y);
+            foreach (var point in _points)
+            {
+                var dX = _xMax.Value - _xMin.Value;
+                var dY = _yMax.Value - _yMin.Value;
+                int x = dX == 0 ? 0 : (int)((canvas.Width - 2 * _offset - 1) * (point.X - _xMin.Value) / dX + _offset);
+                int y = dY == 0 ? 0 : (int)((canvas.Height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / dY) + _offset);
+
+                canvas.DrawPoint(x, y, point.Size, point.Shape, point.Color);
+            }
         }
 
         private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
+        private List<Point<float>> _points;
     }
 }

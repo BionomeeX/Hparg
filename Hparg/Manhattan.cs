@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using Hparg.Drawable;
 using Hparg.Plot;
 
 
@@ -11,11 +12,8 @@ namespace Hparg
     public class Manhattan : APlot
     {
         public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null, Plot.Point<uint>[] additionalPoints = null) :
-        base(ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints ?? Array.Empty<Plot.Point<uint>>()), offset, 0, callback)
-        {
-            _yMin = new(_points.Min(p => p.Y), false);
-            _yMax = new(_points.Max(p => p.Y), false);
-        }
+        base(callback)
+        { }
 
         public override void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
         {
@@ -118,14 +116,9 @@ namespace Hparg
 
             return result;
         }
-
-        internal override (int x, int y) CalculateCoordinate(Plot.Point<float> point, int width, int height)
+        internal override void Render(Canvas canvas)
         {
-            int x = (int)((width - 2 * _offset - 1) * point.X + _offset);
-            int y = (_yMax.Value - _yMin.Value == 0) ? 0 :(int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value)) + _offset);
-            return (x, y);
+            // TODO
         }
-
-        private readonly DynamicBoundary _yMin, _yMax;
     }
 }
