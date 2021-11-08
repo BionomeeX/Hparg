@@ -44,7 +44,7 @@ namespace Hparg.Plot
         /// <returns>Bitmap containing the points to render</returns>
         internal Bitmap GetRenderData(int width, int height)
         {
-            using var cvs = new Canvas(width, height);
+            var cvs = new Canvas(width, height);
 
             Render(cvs);
 
@@ -104,6 +104,6 @@ namespace Hparg.Plot
 
         private (Avalonia.Point start, Avalonia.Point end)? _dragAndDropSelection;
 
-        private Action<IEnumerable<Vector2>> _callback;
+        private readonly Action<IEnumerable<Vector2>> _callback;
     }
 }

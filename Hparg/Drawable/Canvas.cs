@@ -1,17 +1,18 @@
-﻿using Hparg.Plot;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
 namespace Hparg.Drawable
 {
-    public class Canvas : IDisposable
+    public class Canvas // TODO: Dispose?
     {
         internal Canvas(int width, int height)
         {
-            (Width, Height, _bmp, _grf) = (width, height, new(width, height), Graphics.FromImage(_bmp));
-            _grf.SmoothingMode = SmoothingMode.HighQuality;
+            Width = width;
+            Height = height;
+            _bmp = new(width, height);
+            _grf = Graphics.FromImage(_bmp);
             _grf.InterpolationMode = InterpolationMode.HighQualityBicubic;
         }
 
@@ -45,12 +46,6 @@ namespace Hparg.Drawable
             _grf.DrawRectangle(new(GetBrush(color), size), rect);
         }
 
-        public void Dispose()
-        {
-            _grf.Dispose();
-            _bmp.Dispose();
-        }
-
         /// <summary>
         /// Get the current brush given a point
         /// Allow to store brushes so we don't recreate them everytimes
@@ -71,8 +66,8 @@ namespace Hparg.Drawable
 
         public int Width { private init; get; }
         public int Height { private init; get; }
-        private Bitmap _bmp;
-        private Graphics _grf;
+        private readonly Bitmap _bmp;
+        private readonly Graphics _grf;
 
         private readonly Dictionary<Color, Brush> brushes = new();
     }

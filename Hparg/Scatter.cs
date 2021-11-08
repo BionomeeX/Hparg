@@ -81,6 +81,6 @@ namespace Hparg
         }
 
         private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
-        private List<Point<float>> _points;
+        private readonly List<Point<float>> _points;
     }
 }
