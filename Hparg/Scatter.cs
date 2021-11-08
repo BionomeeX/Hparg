@@ -67,16 +67,31 @@ namespace Hparg
             }
         }
 
+        private (int x, int y) GetCoordinate(int w, int h, float oX, float oY)
+        {
+            var dX = _xMax.Value - _xMin.Value;
+            var dY = _yMax.Value - _yMin.Value;
+            var x = dX == 0 ? 0 : (int)((w - 2 * _offset - 1) * (oX - _xMin.Value) / dX + _offset);
+            var y = dY == 0 ? 0 : (int)((h - 2 * _offset - 1) * (1f - (oY - _yMin.Value) / dY) + _offset);
+
+            return (x, y);
+        }
+
         internal override void Render(Canvas canvas)
         {
-            foreach (var point in _points)
+            for (int i = 0; i < _points.Count; i++)
             {
-                var dX = _xMax.Value - _xMin.Value;
-                var dY = _yMax.Value - _yMin.Value;
-                var x = dX == 0 ? 0 : (int)((canvas.Width - 2 * _offset - 1) * (point.X - _xMin.Value) / dX + _offset);
-                var y = dY == 0 ? 0 : (int)((canvas.Height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / dY) + _offset);
+                var point = _points[i];
 
+                (int x, int y) = GetCoordinate(canvas.Width, canvas.Height, point.X, point.Y);
                 canvas.DrawPoint(x, y, point.Size, point.Shape, point.Color);
+
+                if (i < _points.Count - 1)
+                {
+                    var next = _points[i + 1];
+                    (int nX, int nY) = GetCoordinate(canvas.Width, canvas.Height, next.X, next.Y);
+                    canvas.DrawLine(x, y, nX, nY, point.Size, point.Color);
+                }
             }
         }
 
