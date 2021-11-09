@@ -33,6 +33,7 @@ namespace Hparg.Plot
             _lines.Add(new() { Position = y, Color = color, Size = size, Orientation = Orientation.Horizontal });
         }
 
+        internal abstract (float X, float Y) ToRelativeSpace(float x, float y);
         internal abstract void Render(Canvas canvas);
         /// <summary>
         /// Get all the data to render on screen
@@ -45,6 +46,20 @@ namespace Hparg.Plot
             var cvs = new Canvas(width, height);
 
             Render(cvs);
+
+            foreach (var line in _lines)
+            {
+                if (line.Orientation == Orientation.Vertical)
+                {
+                    var (X, _) = ToRelativeSpace(line.Position, 0);
+                    cvs.DrawLine(X, 0f, X, 1f, line.Size, line.Color);
+                }
+                else
+                {
+                    var (_, Y) = ToRelativeSpace(0, line.Position);
+                    cvs.DrawLine(0f, Y, 1f, Y, line.Size, line.Color);
+                }
+            }
 
             if (_dragAndDropSelection.HasValue)
             {
@@ -98,7 +113,6 @@ namespace Hparg.Plot
         /// </summary>
         private readonly List<Line> _lines = new();
         protected readonly float _offset;
-        private readonly int _lineSize;
 
         private ((float X, float Y) start, (float X, float Y) end)? _dragAndDropSelection;
 

@@ -95,6 +95,11 @@ namespace Hparg
             }
         }
 
+        internal override (float X, float Y) ToRelativeSpace(float x, float y)
+        {
+            return GetCoordinate(x, y);
+        }
+
         private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
         private readonly List<Point<float>> _points;
     }
