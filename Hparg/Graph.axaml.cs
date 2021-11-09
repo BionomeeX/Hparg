@@ -18,13 +18,15 @@ namespace Hparg
             PointerPressed += (sender, e) =>
             {
                 _isDragAndDrop = true;
-                Plot?.BeginDragAndDrop(e.GetPosition(this));
+                var pos = e.GetPosition(this);
+                Plot?.BeginDragAndDrop((float)(pos.X / Bounds.Width), (float)(pos.Y / Bounds.Height));
             };
             PointerMoved += (sender, e) =>
             {
                 if (_isDragAndDrop)
                 {
-                    Plot?.DragAndDrop(e.GetPosition(this));
+                    var pos = e.GetPosition(this);
+                    Plot?.DragAndDrop((float)(pos.X / Bounds.Width), (float)(pos.Y / Bounds.Height));
                     InvalidateVisual();
                 }
             };

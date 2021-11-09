@@ -42,9 +42,9 @@ namespace Hparg.Drawable
                 new Point((int)(x2 * _width), (int)(y2 * _height)));
         }
 
-        public void DrawRectangle(Rectangle rect, int size, Color color)
+        public void DrawRectangle(float x, float y, float w, float h, int size, Color color)
         {
-            _grf.DrawRectangle(new(GetBrush(color), size), rect);
+            _grf.DrawRectangle(new(GetBrush(color), size), new((int)(x * _width), (int)(y * _height), (int)(w * _width), (int)(h * _height)));
         }
 
         /// <summary>

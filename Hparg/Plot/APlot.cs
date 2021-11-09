@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Numerics;
 
 namespace Hparg.Plot
@@ -50,11 +48,11 @@ namespace Hparg.Plot
 
             if (_dragAndDropSelection.HasValue)
             {
-                var xMin = (int)Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
-                var yMin = (int)Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-                var xMax = (int)Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
-                var yMax = (int)Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-                cvs.DrawRectangle(new Rectangle(xMin, yMin, xMax - xMin, yMax - yMin), 1, Color.Red);
+                var xMin = (float)Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
+                var yMin = (float)Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
+                var xMax = (float)Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
+                var yMax = (float)Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
+                cvs.DrawRectangle(xMin, yMin, xMax - xMin, yMax - yMin, 1, Color.Red);
             }
 
             return cvs.GetBitmap();
@@ -70,14 +68,14 @@ namespace Hparg.Plot
                 })
                 .Select(p => new Vector2(p.X, p.Y));*/
 
-        public void BeginDragAndDrop(Avalonia.Point p)
+        public void BeginDragAndDrop(float x, float y)
         {
-            _dragAndDropSelection = (p, p);
+            _dragAndDropSelection = ((x, y), (x, y));
         }
 
-        public void DragAndDrop(Avalonia.Point p)
+        public void DragAndDrop(float x, float y)
         {
-            _dragAndDropSelection = (_dragAndDropSelection!.Value.start, p);
+            _dragAndDropSelection = (_dragAndDropSelection!.Value.start, (x, y));
         }
 
         public void EndDragAndDrop(double width, double height)
@@ -102,7 +100,7 @@ namespace Hparg.Plot
         protected readonly float _offset;
         private readonly int _lineSize;
 
-        private (Avalonia.Point start, Avalonia.Point end)? _dragAndDropSelection;
+        private ((float X, float Y) start, (float X, float Y) end)? _dragAndDropSelection;
 
         private readonly Action<IEnumerable<Vector2>> _callback;
     }
