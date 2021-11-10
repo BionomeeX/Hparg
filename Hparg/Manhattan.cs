@@ -125,5 +125,10 @@ namespace Hparg
         {
             throw new NotImplementedException(); // TODO
         }
+
+        internal override IEnumerable<Vector2> GetPointsInRectangle(float x, float y, float w, float h)
+        {
+            return Array.Empty<Vector2>(); // TODO
+        }
     }
 }

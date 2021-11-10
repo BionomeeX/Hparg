@@ -100,6 +100,14 @@ namespace Hparg
             return GetCoordinate(x, y);
         }
 
+        internal override IEnumerable<Vector2> GetPointsInRectangle(float x, float y, float w, float h)
+        {
+            return _points
+                .Select(p => GetCoordinate(p.X, p.Y))
+                .Where(p => p.x >= x && p.x <= x + w && p.y >= y && p.y <= y + h)
+                .Select(p => new Vector2(p.x, p.y));
+        }
+
         private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
         private readonly List<Point<float>> _points;
     }

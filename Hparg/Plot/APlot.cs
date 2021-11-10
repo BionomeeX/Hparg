@@ -34,6 +34,7 @@ namespace Hparg.Plot
         }
 
         internal abstract (float X, float Y) ToRelativeSpace(float x, float y);
+        internal abstract IEnumerable<Vector2> GetPointsInRectangle(float x, float y, float w, float h);
         internal abstract void Render(Canvas canvas);
         /// <summary>
         /// Get all the data to render on screen
@@ -73,16 +74,6 @@ namespace Hparg.Plot
             return cvs.GetBitmap();
         }
 
-        private IEnumerable<Vector2> GetPointsInRectangle(Vector2 topLeft, Vector2 bottomRight, float width, float height)
-            => Array.Empty<Vector2>();
-            /*=> _points
-                .Where(p => {
-                    var nP = CalculateCoordinate(p, (int)width, (int)height);
-                    var rP = new Vector2(nP.x / width, nP.y / height);
-                    return rP.X >= topLeft.X && rP.X <= bottomRight.X && rP.Y >= topLeft.Y && rP.Y <= bottomRight.Y;
-                })
-                .Select(p => new Vector2(p.X, p.Y));*/
-
         public void BeginDragAndDrop(float x, float y)
         {
             _dragAndDropSelection = ((x, y), (x, y));
@@ -93,16 +84,13 @@ namespace Hparg.Plot
             _dragAndDropSelection = (_dragAndDropSelection!.Value.start, (x, y));
         }
 
-        public void EndDragAndDrop(double width, double height)
+        public void EndDragAndDrop()
         {
             var xMin = Math.Min(_dragAndDropSelection!.Value.start.X, _dragAndDropSelection.Value.end.X);
             var yMin = Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
             var xMax = Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
             var yMax = Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-            var points = GetPointsInRectangle(
-                new Vector2((float)(xMin / width), (float)(yMin / height)),
-                new Vector2((float)(xMax / width), (float)(yMax / height)),
-                (int)width, (int)height);
+            var points = GetPointsInRectangle(xMin, yMin, xMax - xMin, yMax - yMin);
             _callback?.Invoke(points);
 
             _dragAndDropSelection = null;

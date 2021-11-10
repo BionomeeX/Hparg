@@ -35,7 +35,7 @@ namespace Hparg
                 if (_isDragAndDrop)
                 {
                     _isDragAndDrop = false;
-                    Plot?.EndDragAndDrop(Bounds.Width, Bounds.Height);
+                    Plot?.EndDragAndDrop();
                     InvalidateVisual();
                 }
             };
