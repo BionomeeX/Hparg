@@ -68,8 +68,8 @@ namespace Hparg
             data.Dispose();
         }
 
-        private APlot _plot;
-        public APlot Plot
+        private IPlot _plot;
+        public IPlot Plot
         {
             set
             {

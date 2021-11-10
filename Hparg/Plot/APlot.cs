@@ -2,11 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Numerics;
 
 namespace Hparg.Plot
 {
-    public abstract class APlot
+    public abstract class APlot<T> : IPlot
     {
         /// <summary>
         /// Create a new plot
@@ -17,7 +16,7 @@ namespace Hparg.Plot
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
-        private protected APlot(Action<IEnumerable<Vector2>> callback)
+        private protected APlot(Action<IEnumerable<T>> callback)
         {
             _callback = callback;
         }
@@ -34,7 +33,7 @@ namespace Hparg.Plot
         }
 
         internal abstract (float X, float Y) ToRelativeSpace(float x, float y);
-        internal abstract IEnumerable<Vector2> GetPointsInRectangle(float x, float y, float w, float h);
+        internal abstract IEnumerable<T> GetPointsInRectangle(float x, float y, float w, float h);
         internal abstract void Render(Canvas canvas);
         /// <summary>
         /// Get all the data to render on screen
@@ -42,7 +41,7 @@ namespace Hparg.Plot
         /// <param name="width">Width of the window</param>
         /// <param name="height">Height of the window</param>
         /// <returns>Bitmap containing the points to render</returns>
-        internal Bitmap GetRenderData(int width, int height)
+        public Bitmap GetRenderData(int width, int height)
         {
             var cvs = new Canvas(width, height);
 
@@ -104,6 +103,6 @@ namespace Hparg.Plot
 
         private ((float X, float Y) start, (float X, float Y) end)? _dragAndDropSelection;
 
-        private readonly Action<IEnumerable<Vector2>> _callback;
+        private readonly Action<IEnumerable<T>> _callback;
     }
 }

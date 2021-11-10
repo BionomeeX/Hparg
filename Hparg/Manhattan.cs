@@ -2,19 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Numerics;
 using Hparg.Drawable;
 using Hparg.Plot;
 
 
 namespace Hparg
 {
-    public class Manhattan : APlot
+    public class Manhattan : APlot<uint>
     {
 
-        private List<Plot.Point<float, float>> _points;
+        private readonly List<Point<float, float>> _points;
 
-        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null, Point<uint, float>[] additionalPoints = null) :
+        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<uint>> callback = null, Point<uint, float>[] additionalPoints = null) :
         base(callback)
         {
             if (additionalPoints == null)
@@ -148,9 +147,9 @@ namespace Hparg
             throw new NotImplementedException(); // TODO
         }
 
-        internal override IEnumerable<Vector2> GetPointsInRectangle(float x, float y, float w, float h)
+        internal override IEnumerable<uint> GetPointsInRectangle(float x, float y, float w, float h)
         {
-            return Array.Empty<Vector2>(); // TODO
+            return Array.Empty<uint>(); // TODO
         }
     }
 }
