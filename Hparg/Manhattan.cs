@@ -14,9 +14,13 @@ namespace Hparg
 
         private List<Plot.Point<float, float>> _points;
 
-        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null, Plot.Point<uint, float>[] additionalPoints = null) :
+        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null, Point<uint, float>[] additionalPoints = null) :
         base(callback)
         {
+            if (additionalPoints == null)
+            {
+                additionalPoints = Array.Empty<Point<uint, float>>();
+            }
             _points = ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints);
         }
 
