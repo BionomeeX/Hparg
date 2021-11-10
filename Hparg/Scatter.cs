@@ -71,8 +71,8 @@ namespace Hparg
         {
             var dX = _xMax.Value - _xMin.Value;
             var dY = _yMax.Value - _yMin.Value;
-            var x = dX == 0 ? 0f : (oX - _xMin.Value) / dX + _offset;
-            var y = dY == 0 ? 0f : (1f - (oY - _yMin.Value) / dY) + _offset;
+            var x = dX == 0 ? 0f : (oX - _xMin.Value) / dX;
+            var y = dY == 0 ? 0f : (1f - (oY - _yMin.Value) / dY);
 
             return (x, y);
         }
