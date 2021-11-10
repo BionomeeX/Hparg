@@ -15,7 +15,7 @@ namespace Hparg
         {
             _points = Enumerable.Range(0, x.Length).Select(i =>
             {
-                return new Point<float>
+                return new Point<float, float>
                 {
                     X = x[i],
                     Y = y[i],
@@ -109,6 +109,6 @@ namespace Hparg
         }
 
         private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
-        private readonly List<Point<float>> _points;
+        private readonly List<Point<float, float>> _points;
     }
 }
