@@ -11,7 +11,8 @@ namespace Hparg
     public class Manhattan : APlot<uint>
     {
 
-        private readonly List<Point<float, float>> _points;
+        private List<Plot.Point<float, float>> _points;
+        private uint[] _chpos;
 
         public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<uint>> callback = null, Point<uint, float>[] additionalPoints = null) :
         base(callback)
@@ -21,6 +22,7 @@ namespace Hparg
                 additionalPoints = Array.Empty<Point<uint, float>>();
             }
             _points = ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints);
+            _chpos = chpos;
         }
 
         public override void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
@@ -74,6 +76,7 @@ namespace Hparg
 
             for (int i = 0; i < chpos.Length; ++i)
             {
+
                 int chromosome = (int)(chpos[i] % 100);
                 int position = (int)(chpos[i] / 100);
 
@@ -129,9 +132,6 @@ namespace Hparg
             return result;
         }
 
-
-
-
         internal override void Render(Canvas canvas)
         {
             for (int i = 0; i < _points.Count; i++)
@@ -149,7 +149,7 @@ namespace Hparg
 
         internal override IEnumerable<uint> GetPointsInRectangle(float x, float y, float w, float h)
         {
-            return Array.Empty<uint>(); // TODO
+            return _chpos.Where((_, i) => _points[i].X >= x && _points[i].X <= x + w && _points[i].Y >= y && _points[i].Y <= y + h);
         }
     }
 }
