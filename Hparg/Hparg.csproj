@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Library</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -10,6 +10,9 @@
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.3" />
    </ItemGroup>
   <ItemGroup>
+    <Compile Update="Preview\DemoWindow.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
     <Compile Update="Graph.axaml.cs">
       <DependentUpon>Graph.axaml</DependentUpon>
     </Compile>
