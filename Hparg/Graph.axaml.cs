@@ -69,17 +69,12 @@ namespace Hparg
         }
 
         private IPlot _plot;
+        public DirectProperty<Graph, IPlot> PlotProperty =
+            AvaloniaProperty.RegisterDirect<Graph, IPlot>(nameof(Plot), x => x._plot);
         public IPlot Plot
         {
-            set
-            {
-                _plot = value;
-                InvalidateVisual(); // TODO: Need to do that when calling AddPoint too
-            }
-            get
-            {
-                return _plot;
-            }
+            get => _plot;
+            set => SetAndRaise(PlotProperty, ref _plot, value);
         }
     }
 }
