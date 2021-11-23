@@ -7,6 +7,6 @@
         xmlns:graph="using:Hparg"
         Title="Hparg">
   <StackPanel>
-    <graph:Graph Name="DemoGraph" Plot="{Binding Plot}"></graph:Graph>
+    <graph:Graph Name="DemoGraph" Width="300" Height="500"></graph:Graph>
   </StackPanel>
 </Window>
