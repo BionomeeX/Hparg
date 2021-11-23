@@ -67,14 +67,15 @@ namespace Hparg
             context?.DrawImage(bmp, new Rect(0, 0, width, height));
             data.Dispose();
         }
-
         private IPlot _plot;
-        public DirectProperty<Graph, IPlot> PlotProperty =
-            AvaloniaProperty.RegisterDirect<Graph, IPlot>(nameof(Plot), x => x._plot);
         public IPlot Plot
         {
             get => _plot;
-            set => SetAndRaise(PlotProperty, ref _plot, value);
+            set
+            {
+                _plot = value;
+                InvalidateVisual();
+            }
         }
     }
 }
