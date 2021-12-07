@@ -2,10 +2,10 @@
 
 namespace Hparg.Plot
 {
-    public class Point<T>
+    public class Point<Tx, Ty>
     {
-        public float X { init; get; }
-        public T Y { init; get; }
+        public Tx X { init; get; }
+        public Ty Y { init; get; }
         public Color Color { init; get; }
         public Shape Shape { init; get; }
         public int Size { init; get; }

@@ -18,13 +18,15 @@ namespace Hparg
             PointerPressed += (sender, e) =>
             {
                 _isDragAndDrop = true;
-                Plot?.BeginDragAndDrop(e.GetPosition(this));
+                var pos = e.GetPosition(this);
+                Plot?.BeginDragAndDrop((float)(pos.X / Bounds.Width), (float)(pos.Y / Bounds.Height));
             };
             PointerMoved += (sender, e) =>
             {
                 if (_isDragAndDrop)
                 {
-                    Plot?.DragAndDrop(e.GetPosition(this));
+                    var pos = e.GetPosition(this);
+                    Plot?.DragAndDrop((float)(pos.X / Bounds.Width), (float)(pos.Y / Bounds.Height));
                     InvalidateVisual();
                 }
             };
@@ -33,7 +35,7 @@ namespace Hparg
                 if (_isDragAndDrop)
                 {
                     _isDragAndDrop = false;
-                    Plot?.EndDragAndDrop(Bounds.Width, Bounds.Height);
+                    Plot?.EndDragAndDrop();
                     InvalidateVisual();
                 }
             };
@@ -65,18 +67,14 @@ namespace Hparg
             context?.DrawImage(bmp, new Rect(0, 0, width, height));
             data.Dispose();
         }
-
-        private APlot _plot;
-        public APlot Plot
+        private IPlot _plot;
+        public IPlot Plot
         {
+            get => _plot;
             set
             {
                 _plot = value;
-                InvalidateVisual(); // TODO: Need to do that when calling AddPoint too
-            }
-            get
-            {
-                return _plot;
+                InvalidateVisual();
             }
         }
     }

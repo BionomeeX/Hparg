@@ -2,19 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Numerics;
+using Hparg.Drawable;
 using Hparg.Plot;
 
 
 namespace Hparg
 {
-    public class Manhattan : APlot
+    public class Manhattan : APlot<uint>
     {
-        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<Vector2>> callback = null, Plot.Point<uint>[] additionalPoints = null) :
-        base(ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints ?? Array.Empty<Plot.Point<uint>>()), offset, 0, callback)
+
+        private List<Plot.Point<float, float>> _points;
+        private uint[] _chpos;
+
+        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<uint>> callback = null, Point<uint, float>[] additionalPoints = null) :
+        base(callback)
         {
-            _yMin = new(_points.Min(p => p.Y), false);
-            _yMax = new(_points.Max(p => p.Y), false);
+            if (additionalPoints == null)
+            {
+                additionalPoints = Array.Empty<Point<uint, float>>();
+            }
+            _points = ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints);
+            _chpos = chpos;
         }
 
         public override void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
@@ -22,7 +30,7 @@ namespace Hparg
             throw new NotSupportedException("AddPoint can't be called for Manhattan plots");
         }
 
-        internal static List<Plot.Point<float>> ComputePointsNormalization(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size, Plot.Point<uint>[] additionalPoints)
+        internal static List<Plot.Point<float, float>> ComputePointsNormalization(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size, Plot.Point<uint, float>[] additionalPoints)
         {
             Dictionary<int, (int min, int max)> _chInfo = new();
             double pjumps = 0.05; // <- à modifier via les paramètres
@@ -51,20 +59,24 @@ namespace Hparg
                 }
             }
 
+            float ymin = y.Min();
+            float ymax = y.Max();
+
             int totalSize = _chInfo.Aggregate(0, (acc, val) => acc += val.Value.max - val.Value.min);
             Dictionary<int, double> _chPercent = new();
-            foreach(var el in _chInfo)
+            foreach (var el in _chInfo)
             {
                 _chPercent[el.Key] = (1d - pjumps) * (el.Value.max - el.Value.min) / totalSize;
             }
 
 
-            List<Plot.Point<float>> result = new();
+            List<Plot.Point<float, float>> result = new();
 
             // for each snp, compute x position
 
             for (int i = 0; i < chpos.Length; ++i)
             {
+
                 int chromosome = (int)(chpos[i] % 100);
                 int position = (int)(chpos[i] / 100);
 
@@ -79,9 +91,10 @@ namespace Hparg
                 }
 
                 result.Add(
-                    new Plot.Point<float>{
+                    new Plot.Point<float, float>
+                    {
                         X = (float)pi,
-                        Y = y[i],
+                        Y = 1f - (y[i] - ymin) / (ymax - ymin),
                         Color = chcolors.ElementAt((chromosome - 1) % chcolors.Count()),
                         Shape = shape,
                         Size = size
@@ -91,8 +104,8 @@ namespace Hparg
 
             foreach (var p in additionalPoints)
             {
-                int chromosome = (int)(p.Y % 100);
-                int position = (int)(p.Y / 100);
+                int chromosome = (int)(p.X % 100);
+                int position = (int)(p.X / 100);
 
                 double rho = (double)(position - _chInfo[chromosome].min) / (_chInfo[chromosome].max - _chInfo[chromosome].min);
                 double pi = rho * _chPercent[chromosome];
@@ -105,10 +118,10 @@ namespace Hparg
                 }
 
                 result.Add(
-                    new Plot.Point<float>
+                    new Plot.Point<float, float>
                     {
                         X = (float)pi,
-                        Y = p.X,
+                        Y = 1f - (p.Y - ymin) / (ymax - ymin),
                         Color = p.Color,
                         Shape = p.Shape,
                         Size = p.Size
@@ -119,13 +132,24 @@ namespace Hparg
             return result;
         }
 
-        internal override (int x, int y) CalculateCoordinate(Plot.Point<float> point, int width, int height)
+        internal override void Render(Canvas canvas)
         {
-            int x = (int)((width - 2 * _offset - 1) * point.X + _offset);
-            int y = (_yMax.Value - _yMin.Value == 0) ? 0 :(int)((height - 2 * _offset - 1) * (1f - (point.Y - _yMin.Value) / (_yMax.Value - _yMin.Value)) + _offset);
-            return (x, y);
+            for (int i = 0; i < _points.Count; i++)
+            {
+                var point = _points[i];
+
+                canvas.DrawPoint(point.X, point.Y, point.Size, point.Shape, point.Color);
+            }
         }
 
-        private readonly DynamicBoundary _yMin, _yMax;
+        internal override (float X, float Y) ToRelativeSpace(float x, float y)
+        {
+            throw new NotImplementedException(); // TODO
+        }
+
+        internal override IEnumerable<uint> GetPointsInRectangle(float x, float y, float w, float h)
+        {
+            return _chpos.Where((_, i) => _points[i].X >= x && _points[i].X <= x + w && _points[i].Y >= y && _points[i].Y <= y + h);
+        }
     }
 }
