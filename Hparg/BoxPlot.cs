@@ -16,7 +16,7 @@ namespace Hparg
 
         internal override IEnumerable<float> GetPointsInRectangle(float x, float y, float w, float h)
         {
-            throw new System.NotImplementedException();
+            return Array.Empty<float>();
         }
 
         internal override void Render(Canvas canvas)

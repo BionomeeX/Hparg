@@ -86,7 +86,7 @@ namespace Hparg
                 }
 
                 result.Add(
-                    new Plot.Point<float, float>
+                    new Point<float, float>
                     {
                         X = (float)pi,
                         Y = 1f - (y[i] - ymin) / (ymax - ymin),
