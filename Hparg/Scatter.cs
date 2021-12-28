@@ -37,7 +37,7 @@ namespace Hparg
             }
         }
 
-        public override void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
+        public void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
         {
             _points.Add(new()
             {

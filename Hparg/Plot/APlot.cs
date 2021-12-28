@@ -20,7 +20,6 @@ namespace Hparg.Plot
         {
             _callback = callback;
         }
-        public abstract void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5);
 
         public void AddVerticalLine(int x, Color color, int size = 2)
         {

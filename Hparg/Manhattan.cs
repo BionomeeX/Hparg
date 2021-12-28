@@ -25,11 +25,6 @@ namespace Hparg
             _chpos = chpos;
         }
 
-        public override void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
-        {
-            throw new NotSupportedException("AddPoint can't be called for Manhattan plots");
-        }
-
         internal static List<Point<float, float>> ComputePointsNormalization(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size, Plot.Point<uint, float>[] additionalPoints)
         {
             Dictionary<int, (int min, int max)> _chInfo = new();

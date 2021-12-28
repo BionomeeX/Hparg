@@ -14,11 +14,6 @@ namespace Hparg
 
         private IEnumerable<float> _data;
 
-        public override void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
-        {
-            throw new System.NotImplementedException();
-        }
-
         internal override IEnumerable<float> GetPointsInRectangle(float x, float y, float w, float h)
         {
             throw new System.NotImplementedException();
