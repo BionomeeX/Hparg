@@ -31,9 +31,9 @@ namespace Hparg
             }
 
             var ordered = _data.OrderBy(x => x);
-            var median = ToLocal(_data.ElementAt(_data.Count() / 2));
-            var firstQuartile = ToLocal(_data.ElementAt(_data.Count() / 4));
-            var thirdQuartile = ToLocal(_data.ElementAt(_data.Count() / 4 * 3));
+            var median = ToLocal(ordered.ElementAt(ordered.Count() / 2));
+            var firstQuartile = ToLocal(ordered.ElementAt(ordered.Count() / 4));
+            var thirdQuartile = ToLocal(ordered.ElementAt(ordered.Count() / 4 * 3));
 
             canvas.DrawLine(.4f, 0f, .6f, 0f, 5, Color.Black);
             canvas.DrawLine(.4f, 1f, .6f, 1f, 5, Color.Black);
