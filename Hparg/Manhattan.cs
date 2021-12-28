@@ -30,7 +30,7 @@ namespace Hparg
             throw new NotSupportedException("AddPoint can't be called for Manhattan plots");
         }
 
-        internal static List<Plot.Point<float, float>> ComputePointsNormalization(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size, Plot.Point<uint, float>[] additionalPoints)
+        internal static List<Point<float, float>> ComputePointsNormalization(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size, Plot.Point<uint, float>[] additionalPoints)
         {
             Dictionary<int, (int min, int max)> _chInfo = new();
             double pjumps = 0.05; // <- à modifier via les paramètres
@@ -70,7 +70,7 @@ namespace Hparg
             }
 
 
-            List<Plot.Point<float, float>> result = new();
+            List<Point<float, float>> result = new();
 
             // for each snp, compute x position
 
@@ -118,7 +118,7 @@ namespace Hparg
                 }
 
                 result.Add(
-                    new Plot.Point<float, float>
+                    new Point<float, float>
                     {
                         X = (float)pi,
                         Y = 1f - (p.Y - ymin) / (ymax - ymin),

@@ -41,6 +41,7 @@ namespace Hparg
                 y: _data.ToArray(),
                 color: Color.Black
             );
+            this.FindControl<Graph>("DemoGraph2").Plot = new BoxPlot(_data);
         }
 
         private Random _rand = new();
