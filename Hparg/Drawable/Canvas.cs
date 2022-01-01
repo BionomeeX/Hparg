@@ -7,8 +7,9 @@ namespace Hparg.Drawable
 {
     public class Canvas // TODO: Dispose?
     {
-        internal Canvas(int width, int height)
+        internal Canvas(int width, int height, int offset)
         {
+            _offset = offset;
             _width = width - 2 * _offset;
             _height = height - 2 * _offset;
             _bmp = new(width, height);
@@ -42,6 +43,11 @@ namespace Hparg.Drawable
                 new Point(_offset + (int)(x2 * _width), _offset + (int)(y2 * _height)));
         }
 
+        public void DrawText(float x, float y, string text)
+        {
+            _grf.DrawString(text, new Font("Arial", 10), GetBrush(Color.Black), new Rectangle(_offset + (int)(x * _width), _offset + (int)(y * _height), 100, 100));
+        }
+
         public void DrawRectangle(float x, float y, float w, float h, int size, Color color)
         {
             _grf.DrawRectangle(new(GetBrush(color), size), new(_offset + (int)(x * _width), _offset + (int)(y * _height), (int)(w * _width), (int)(h * _height)));
@@ -67,11 +73,10 @@ namespace Hparg.Drawable
 
         public int _width;
         public int _height;
+        private int _offset;
         private readonly Bitmap _bmp;
         private readonly Graphics _grf;
 
         private readonly Dictionary<Color, Brush> brushes = new();
-
-        private const int _offset = 20;
     }
 }

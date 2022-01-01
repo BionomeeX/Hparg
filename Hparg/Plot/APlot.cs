@@ -42,7 +42,7 @@ namespace Hparg.Plot
         /// <returns>Bitmap containing the points to render</returns>
         public Bitmap GetRenderData(int width, int height)
         {
-            var cvs = new Canvas(width, height);
+            var cvs = new Canvas(width, height, 20);
 
             Render(cvs);
 
@@ -68,6 +68,11 @@ namespace Hparg.Plot
                 var yMax = (float)Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
                 cvs.DrawRectangle(xMin, yMin, xMax - xMin, yMax - yMin, 1, Color.Red);
             }
+
+            // Draw axes
+            cvs.DrawLine(0f, 1f, 1f, 1f, 2, Color.Black);
+            cvs.DrawLine(0f, 0f, 0f, 1f, 2, Color.Black);
+            cvs.DrawText(0f, 1f, "0");
 
             return cvs.GetBitmap();
         }
