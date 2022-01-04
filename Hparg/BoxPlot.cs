@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Hparg
 {
-    internal class BoxPlot : APlot<float>
+    public class BoxPlot : APlot<float>
     {
         public BoxPlot(IEnumerable<float> data, Action<IEnumerable<float>> callback = null) : base(callback)
             => _data = data;
