@@ -67,6 +67,8 @@ namespace Hparg
             }
         }
 
+        internal override (float, float) GetMinMax() => (_points.Min(p => p.Y), _points.Max(p => p.Y));
+
         private (float x, float y) GetCoordinate(float oX, float oY)
         {
             var dX = _xMax.Value - _xMin.Value;

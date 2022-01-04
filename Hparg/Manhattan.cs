@@ -127,6 +127,8 @@ namespace Hparg
             return result;
         }
 
+        internal override (float, float) GetMinMax() => (_points.Min(p => p.Y), _points.Max(p => p.Y));
+
         internal override void Render(Canvas canvas)
         {
             for (int i = 0; i < _points.Count; i++)

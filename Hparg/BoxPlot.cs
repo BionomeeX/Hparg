@@ -47,7 +47,9 @@ namespace Hparg
 
         internal override (float X, float Y) ToRelativeSpace(float x, float y)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
+
+        internal override (float, float) GetMinMax() => (_data.Min(), _data.Max());
     }
 }

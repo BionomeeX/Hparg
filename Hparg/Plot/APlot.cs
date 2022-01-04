@@ -33,6 +33,7 @@ namespace Hparg.Plot
 
         internal abstract (float X, float Y) ToRelativeSpace(float x, float y);
         internal abstract IEnumerable<T> GetPointsInRectangle(float x, float y, float w, float h);
+        internal abstract (float, float) GetMinMax();
         internal abstract void Render(Canvas canvas);
         /// <summary>
         /// Get all the data to render on screen
@@ -72,7 +73,9 @@ namespace Hparg.Plot
             // Draw axes
             cvs.DrawLine(0f, 1f, 1f, 1f, 2, Color.Black);
             cvs.DrawLine(0f, 0f, 0f, 1f, 2, Color.Black);
-            cvs.DrawText(0f, 1f, "0");
+            var mm = GetMinMax();
+            cvs.DrawText(0f, 1f, mm.Item1.ToString());
+            cvs.DrawText(0f, 0f, mm.Item2.ToString());
 
             return cvs.GetBitmap();
         }
