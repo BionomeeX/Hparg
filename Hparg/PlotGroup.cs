@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace Hparg
 {
-    public class PlotGroup
+    public class PlotGroup : IPlot
     {
         public PlotGroup(params IPlot[] plots)
         {
@@ -22,6 +22,36 @@ namespace Hparg
                 _plots[i].GetRenderData(cvs);
             }
             return cvs.GetBitmap();
+        }
+
+        public void BeginDragAndDrop(float x, float y)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void DragAndDrop(float x, float y)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void EndDragAndDrop()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Canvas GetRenderData(Canvas cvs)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void AddVerticalLine(int x, Color color, int size = 2)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void AddHorizontalLine(int y, Color color, int size = 2)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
