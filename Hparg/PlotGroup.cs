@@ -18,7 +18,7 @@ namespace Hparg
             Canvas cvs = new(width, height, 20);
             for (int i = 0; i < _plots.Length; i++)
             {
-                cvs.SetDrawingZone(i / _plots.Length, (i + 1) / _plots.Length, 0f, 1f);
+                cvs.SetDrawingZone(i / (float)_plots.Length, (i + 1) / (float)_plots.Length, 0f, 1f);
                 _plots[i].GetRenderData(cvs);
             }
             return cvs.GetBitmap();
