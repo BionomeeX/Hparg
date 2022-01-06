@@ -12,7 +12,7 @@ namespace Hparg.Drawable
             _offset = offset;
             _maxWidth = width - 2 * _offset;
             _maxHeight = height - 2 * _offset;
-            SetDrawingZone(0f, 0f, 1f, 1f);
+            SetDrawingZone(0f, 1f, 0f, 1f);
 
             _bmp = new(width, height);
             _grf = Graphics.FromImage(_bmp);
@@ -22,13 +22,13 @@ namespace Hparg.Drawable
 
         public void SetDrawingZone(float xStart, float xStop, float yStart, float yStop)
         {
-            var x = _maxWidth - _offset;
-            var y = _maxHeight - _offset;
+            var x = _maxWidth;
+            var y = _maxHeight;
             _drawingZone = new(
-                x: (int)(x * xStart),
-                y: (int)(x * yStart),
-                width: (int)(x * (xStop - xStart)),
-                height: (int)(y * (yStop - yStart))
+                x: (int)(x * xStart) + _offset,
+                y: (int)(y * yStart) + _offset,
+                width: (int)(x * (xStop - xStart)) - _offset,
+                height: (int)(y * (yStop - yStart)) - _offset
             );
         }
 
