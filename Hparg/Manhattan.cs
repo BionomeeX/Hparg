@@ -11,10 +11,10 @@ namespace Hparg
     public class Manhattan : APlot<uint>
     {
 
-        private List<Plot.Point<float, float>> _points;
+        private List<Point<float, float>> _points;
         private uint[] _chpos;
 
-        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<uint>> callback = null, Point<uint, float>[] additionalPoints = null) :
+        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<uint>> callback = null, Point<uint, float>[] additionalPoints = null) :
         base(callback)
         {
             if (additionalPoints == null)

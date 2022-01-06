@@ -35,16 +35,9 @@ namespace Hparg.Plot
         internal abstract IEnumerable<T> GetPointsInRectangle(float x, float y, float w, float h);
         internal abstract (float, float) GetMinMax();
         internal abstract void Render(Canvas canvas);
-        /// <summary>
-        /// Get all the data to render on screen
-        /// </summary>
-        /// <param name="width">Width of the window</param>
-        /// <param name="height">Height of the window</param>
-        /// <returns>Bitmap containing the points to render</returns>
-        public Bitmap GetRenderData(int width, int height)
-        {
-            var cvs = new Canvas(width, height, 20);
 
+        public Canvas GetRenderData(Canvas cvs)
+        {
             Render(cvs);
 
             foreach (var line in _lines)
@@ -77,7 +70,19 @@ namespace Hparg.Plot
             cvs.DrawText(0f, 1f, mm.Item1.ToString());
             cvs.DrawText(0f, 0f, mm.Item2.ToString());
 
-            return cvs.GetBitmap();
+            return cvs;
+        }
+
+        /// <summary>
+        /// Get all the data to render on screen
+        /// </summary>
+        /// <param name="width">Width of the window</param>
+        /// <param name="height">Height of the window</param>
+        /// <returns>Bitmap containing the points to render</returns>
+        public Bitmap GetRenderData(int width, int height)
+        {
+            var cvs = new Canvas(width, height, 20);
+            return GetRenderData(cvs).GetBitmap();
         }
 
         public void BeginDragAndDrop(float x, float y)
