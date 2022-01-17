@@ -19,6 +19,16 @@ namespace Hparg
             return Array.Empty<float>();
         }
 
+        private float GetQuarter(IOrderedEnumerable<float> _data, int parts, int index)
+        {
+            float count = _data.Count() / (float)parts * index;
+            if (count == (int)count) // Devide give round value so everything is okay
+            {
+                return _data.ElementAt((int)count);
+            }
+            return (_data.ElementAt((int)count) + _data.ElementAt((int)count)) / 2f;
+        }
+
         internal override void Render(Canvas canvas)
         {
             var min = _data.Min();
@@ -31,18 +41,20 @@ namespace Hparg
             }
 
             var ordered = _data.OrderBy(x => x);
-            var median = ToLocal(ordered.ElementAt(ordered.Count() / 2));
-            var firstQuartile = ToLocal(ordered.ElementAt(ordered.Count() / 4));
-            var thirdQuartile = ToLocal(ordered.ElementAt(ordered.Count() / 4 * 3));
+            var median = ToLocal(GetQuarter(ordered, 2, 1));
+            var firstQuartile = ToLocal(GetQuarter(ordered, 4, 1));
+            var thirdQuartile = ToLocal(GetQuarter(ordered, 4, 3));
+            var minQuartile = ToLocal(GetQuarter(ordered, 100, 5));
+            var maxQuartile = ToLocal(GetQuarter(ordered, 100, 95));
 
-            canvas.DrawLine(.4f, 0f, .6f, 0f, 5, Color.Black);
-            canvas.DrawLine(.4f, 1f, .6f, 1f, 5, Color.Black);
+            canvas.DrawLine(.4f, minQuartile, .6f, minQuartile, 5, Color.Black);
+            canvas.DrawLine(.4f, maxQuartile, .6f, maxQuartile, 5, Color.Black);
             canvas.DrawLine(0f, firstQuartile, 1f, firstQuartile, 5, Color.Black);
             canvas.DrawLine(0f, thirdQuartile, 1f, thirdQuartile, 5, Color.Black);
             canvas.DrawLine(0f, median, 1f, median, 5, Color.Black);
             canvas.DrawLine(0f, firstQuartile, 0f, thirdQuartile, 5, Color.Black);
             canvas.DrawLine(1f, firstQuartile, 1f, thirdQuartile, 5, Color.Black);
-            canvas.DrawLine(.5f, 0f, .5f, 1f, 5, Color.Black);
+            canvas.DrawLine(.5f, minQuartile, .5f, maxQuartile, 5, Color.Black);
         }
 
         internal override (float X, float Y) ToRelativeSpace(float x, float y)
