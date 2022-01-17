@@ -12,5 +12,7 @@ namespace Hparg.Plot
         public Bitmap GetRenderData(int width, int height);
         public void AddVerticalLine(int x, Color color, int size = 2);
         public void AddHorizontalLine(int y, Color color, int size = 2);
+        public float Min { set; get; }
+        public float Max { set; get; }
     }
 }

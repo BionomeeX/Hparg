@@ -10,9 +10,13 @@ namespace Hparg
     public class BoxPlot : APlot<float>
     {
         public BoxPlot(IEnumerable<float> data, Action<IEnumerable<float>> callback = null) : base(callback)
-            => _data = data;
+        {
+            _data = data;
+            Min = _data.Min();
+            Max = _data.Max();
+        }
 
-        private IEnumerable<float> _data;
+        private readonly IEnumerable<float> _data;
 
         internal override IEnumerable<float> GetPointsInRectangle(float x, float y, float w, float h)
         {
@@ -31,13 +35,11 @@ namespace Hparg
 
         internal override void Render(Canvas canvas)
         {
-            var min = _data.Min();
-            var max = _data.Max();
-            var dist = max - min;
+            var dist = Max - Min;
 
             float ToLocal(float value)
             {
-                return (value + min) / (min + max);
+                return (value + Min) / (Min + Max);
             }
 
             var ordered = _data.OrderBy(x => x);
@@ -61,7 +63,5 @@ namespace Hparg
         {
             throw new NotImplementedException();
         }
-
-        internal override (float, float) GetMinMax() => (_data.Min(), _data.Max());
     }
 }

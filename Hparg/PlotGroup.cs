@@ -1,6 +1,7 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
 using System.Drawing;
+using System.Linq;
 
 namespace Hparg
 {
@@ -12,12 +13,15 @@ namespace Hparg
         }
 
         private IPlot[] _plots;
-
         public Bitmap GetRenderData(int width, int height)
         {
             Canvas cvs = new(width, height, 20);
+            var min = _plots.Select(x => x.Min).Min();
+            var max = _plots.Select(x => x.Max).Max();
             for (int i = 0; i < _plots.Length; i++)
             {
+                _plots[i].Min = min;
+                _plots[i].Max = max;
                 cvs.SetDrawingZone(i / (float)_plots.Length, (i + 1) / (float)_plots.Length, 0f, 1f);
                 _plots[i].GetRenderData(cvs);
             }
@@ -53,5 +57,8 @@ namespace Hparg
         {
             throw new System.NotImplementedException();
         }
+
+        public float Min { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public float Max { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
     }
 }

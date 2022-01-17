@@ -22,6 +22,8 @@ namespace Hparg
                 additionalPoints = Array.Empty<Point<uint, float>>();
             }
             _points = ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints);
+            Min = _points.Min(p => p.Y);
+            Max = _points.Max(p => p.Y);
             _chpos = chpos;
         }
 
@@ -126,8 +128,6 @@ namespace Hparg
 
             return result;
         }
-
-        internal override (float, float) GetMinMax() => (_points.Min(p => p.Y), _points.Max(p => p.Y));
 
         internal override void Render(Canvas canvas)
         {

@@ -28,10 +28,10 @@ namespace Hparg
             // Calculate the bounds if dynamic, else use the ones given in parameter
             _xMin = new(xMin ?? _points.Min(p => p.X), xMin == null);
             _xMax = new(xMax ?? _points.Max(p => p.X), xMax == null);
-            _yMin = new(yMin ?? _points.Min(p => p.Y), yMin == null);
-            _yMax = new(yMax ?? _points.Max(p => p.Y), yMax == null);
+            Min = _points.Min(p => p.Y);
+            Max = _points.Max(p => p.Y);
 
-            if (float.IsNaN(_xMin.Value) || float.IsNaN(_yMin.Value))
+            if (float.IsNaN(_xMin.Value) || float.IsNaN(Min))
             {
                 throw new ArgumentException("x and y can't contains NaN values");
             }
@@ -57,24 +57,16 @@ namespace Hparg
             {
                 _xMax.Value = Math.Max(_xMax.Value, x);
             }
-            if (_yMin.IsDynamic)
-            {
-                _yMin.Value = Math.Min(_yMin.Value, y);
-            }
-            if (_yMax.IsDynamic)
-            {
-                _yMax.Value = Math.Max(_yMax.Value, y);
-            }
+            Min = Math.Min(Min, y);
+            Max = Math.Max(Max, y);
         }
-
-        internal override (float, float) GetMinMax() => (_points.Min(p => p.Y), _points.Max(p => p.Y));
 
         private (float x, float y) GetCoordinate(float oX, float oY)
         {
             var dX = _xMax.Value - _xMin.Value;
-            var dY = _yMax.Value - _yMin.Value;
+            var dY = Max - Min;
             var x = dX == 0 ? 0f : (oX - _xMin.Value) / dX;
-            var y = dY == 0 ? 0f : (1f - (oY - _yMin.Value) / dY);
+            var y = dY == 0 ? 0f : (1f - (oY - Min) / dY);
 
             return (x, y);
         }
@@ -110,7 +102,7 @@ namespace Hparg
                 .Select(p => new Vector2(p.x, p.y));
         }
 
-        private readonly DynamicBoundary _xMin, _xMax, _yMin, _yMax;
+        private readonly DynamicBoundary _xMin, _xMax;
         private readonly List<Point<float, float>> _points;
     }
 }
