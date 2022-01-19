@@ -30,7 +30,7 @@ namespace Hparg
             {
                 return _data.ElementAt((int)count);
             }
-            return (_data.ElementAt((int)count) + _data.ElementAt((int)count)) / 2f;
+            return (_data.ElementAt((int)count) + _data.ElementAt((int)count) + 1) / 2f;
         }
 
         internal override void Render(Canvas canvas)
