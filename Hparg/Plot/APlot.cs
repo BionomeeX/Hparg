@@ -20,7 +20,6 @@ namespace Hparg.Plot
         {
             _callback = callback;
         }
-        public abstract void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5);
 
         public void AddVerticalLine(int x, Color color, int size = 2)
         {
@@ -34,17 +33,15 @@ namespace Hparg.Plot
 
         internal abstract (float X, float Y) ToRelativeSpace(float x, float y);
         internal abstract IEnumerable<T> GetPointsInRectangle(float x, float y, float w, float h);
-        internal abstract void Render(Canvas canvas);
-        /// <summary>
-        /// Get all the data to render on screen
-        /// </summary>
-        /// <param name="width">Width of the window</param>
-        /// <param name="height">Height of the window</param>
-        /// <returns>Bitmap containing the points to render</returns>
-        public Bitmap GetRenderData(int width, int height)
-        {
-            var cvs = new Canvas(width, height);
+        protected float Min { set; get; }
+        protected float Max { set; get; }
+        float IPlot.Min { set => Min = value; get => Min; }
+        float IPlot.Max { set => Max = value; get => Max; }
 
+        internal abstract void Render(Canvas canvas);
+
+        public Canvas GetRenderData(Canvas cvs)
+        {
             Render(cvs);
 
             foreach (var line in _lines)
@@ -70,7 +67,25 @@ namespace Hparg.Plot
                 cvs.DrawRectangle(xMin, yMin, xMax - xMin, yMax - yMin, 1, Color.Red);
             }
 
-            return cvs.GetBitmap();
+            // Draw axes
+            cvs.DrawLine(0f, 1f, 1f, 1f, 2, Color.Black);
+            cvs.DrawLine(0f, 0f, 0f, 1f, 2, Color.Black);
+            cvs.DrawText(0f, 1f, $"{Min}");
+            cvs.DrawText(0f, 0f, $"{Max}");
+
+            return cvs;
+        }
+
+        /// <summary>
+        /// Get all the data to render on screen
+        /// </summary>
+        /// <param name="width">Width of the window</param>
+        /// <param name="height">Height of the window</param>
+        /// <returns>Bitmap containing the points to render</returns>
+        public Bitmap GetRenderData(int width, int height)
+        {
+            var cvs = new Canvas(width, height, 20);
+            return GetRenderData(cvs).GetBitmap();
         }
 
         public void BeginDragAndDrop(float x, float y)

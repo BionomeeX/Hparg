@@ -41,6 +41,25 @@ namespace Hparg
                 y: _data.ToArray(),
                 color: Color.Black
             );
+            List<float> odds = new(), evens = new();
+            for (int i = 0; i < _data.Count; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    evens.Add(_data[i]);
+                }
+                else
+                {
+                    odds.Add(_data[i]);
+                }
+            }
+            this.FindControl<Graph>("DemoGraph2").Plot = new PlotGroup(
+                new[]
+                {
+                    new BoxPlot(evens),
+                    new BoxPlot(odds)
+                }
+            );
         }
 
         private Random _rand = new();

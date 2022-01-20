@@ -11,10 +11,10 @@ namespace Hparg
     public class Manhattan : APlot<uint>
     {
 
-        private List<Plot.Point<float, float>> _points;
+        private List<Point<float, float>> _points;
         private uint[] _chpos;
 
-        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, float offset = 50, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<uint>> callback = null, Point<uint, float>[] additionalPoints = null) :
+        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<uint>> callback = null, Point<uint, float>[] additionalPoints = null) :
         base(callback)
         {
             if (additionalPoints == null)
@@ -22,15 +22,12 @@ namespace Hparg
                 additionalPoints = Array.Empty<Point<uint, float>>();
             }
             _points = ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints);
+            Min = _points.Min(p => p.Y);
+            Max = _points.Max(p => p.Y);
             _chpos = chpos;
         }
 
-        public override void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
-        {
-            throw new NotSupportedException("AddPoint can't be called for Manhattan plots");
-        }
-
-        internal static List<Plot.Point<float, float>> ComputePointsNormalization(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size, Plot.Point<uint, float>[] additionalPoints)
+        internal static List<Point<float, float>> ComputePointsNormalization(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size, Plot.Point<uint, float>[] additionalPoints)
         {
             Dictionary<int, (int min, int max)> _chInfo = new();
             double pjumps = 0.05; // <- à modifier via les paramètres
@@ -70,7 +67,7 @@ namespace Hparg
             }
 
 
-            List<Plot.Point<float, float>> result = new();
+            List<Point<float, float>> result = new();
 
             // for each snp, compute x position
 
@@ -91,7 +88,7 @@ namespace Hparg
                 }
 
                 result.Add(
-                    new Plot.Point<float, float>
+                    new Point<float, float>
                     {
                         X = (float)pi,
                         Y = 1f - (y[i] - ymin) / (ymax - ymin),
@@ -118,7 +115,7 @@ namespace Hparg
                 }
 
                 result.Add(
-                    new Plot.Point<float, float>
+                    new Point<float, float>
                     {
                         X = (float)pi,
                         Y = 1f - (p.Y - ymin) / (ymax - ymin),
