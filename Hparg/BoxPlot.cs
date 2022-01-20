@@ -22,15 +22,14 @@ namespace Hparg
         {
             return Array.Empty<float>();
         }
-
-        private float GetQuarter(IOrderedEnumerable<float> _data, int parts, int index)
+        private float Quantile(IOrderedEnumerable<float> _data, float q)
         {
-            float count = _data.Count() / (float)parts * index;
-            if (count == (int)count) // Devide give round value so everything is okay
+            float count = _data.Count() * q;
+            if (count == (int)count)
             {
                 return _data.ElementAt((int)count);
             }
-            return (_data.ElementAt((int)count) + _data.ElementAt((int)count) + 1) / 2f;
+            return (1f - q) * _data.ElementAt((int)count) + q * _data.ElementAt((int)count + 1);
         }
 
         internal override void Render(Canvas canvas)
@@ -39,15 +38,15 @@ namespace Hparg
 
             float ToLocal(float value)
             {
-                return (value + Min) / (Min + Max);
+                return (value - Min) / (Max - Min);
             }
 
             var ordered = _data.OrderBy(x => x);
-            var median = ToLocal(GetQuarter(ordered, 2, 1));
-            var firstQuartile = ToLocal(GetQuarter(ordered, 4, 1));
-            var thirdQuartile = ToLocal(GetQuarter(ordered, 4, 3));
-            var minQuartile = ToLocal(GetQuarter(ordered, 100, 5));
-            var maxQuartile = ToLocal(GetQuarter(ordered, 100, 95));
+            var median = ToLocal(Quantile(ordered, .5f));
+            var firstQuartile = ToLocal(Quantile(ordered, .25f));
+            var thirdQuartile = ToLocal(Quantile(ordered, .75f));
+            var minQuartile = ToLocal(Quantile(ordered, .05f));
+            var maxQuartile = ToLocal(Quantile(ordered, .95f));
 
             canvas.DrawLine(.4f, minQuartile, .6f, minQuartile, 5, Color.Black);
             canvas.DrawLine(.4f, maxQuartile, .6f, maxQuartile, 5, Color.Black);
