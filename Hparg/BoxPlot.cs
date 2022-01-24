@@ -12,8 +12,8 @@ namespace Hparg
         public BoxPlot(IEnumerable<float> data, Action<IEnumerable<float>> callback = null) : base(callback)
         {
             _data = data;
-            Min = _data.Min();
-            Max = _data.Max();
+            Min = _data.Any() ? _data.Min() : 0f;
+            Max = _data.Any() ? _data.Max() : 0f;
         }
 
         private readonly IEnumerable<float> _data;
