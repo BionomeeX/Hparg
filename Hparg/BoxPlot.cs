@@ -50,11 +50,11 @@ namespace Hparg
 
             canvas.DrawLine(.4f, minQuartile, .6f, minQuartile, 5, Color.Black);
             canvas.DrawLine(.4f, maxQuartile, .6f, maxQuartile, 5, Color.Black);
-            canvas.DrawLine(0f, firstQuartile, 1f, firstQuartile, 5, Color.Black);
-            canvas.DrawLine(0f, thirdQuartile, 1f, thirdQuartile, 5, Color.Black);
-            canvas.DrawLine(0f, median, 1f, median, 5, Color.Black);
-            canvas.DrawLine(0f, firstQuartile, 0f, thirdQuartile, 5, Color.Black);
-            canvas.DrawLine(1f, firstQuartile, 1f, thirdQuartile, 5, Color.Black);
+            canvas.DrawLine(.1f, firstQuartile, .9f, firstQuartile, 5, Color.Black);
+            canvas.DrawLine(.1f, thirdQuartile, .9f, thirdQuartile, 5, Color.Black);
+            canvas.DrawLine(.1f, median, .9f, median, 5, Color.Black);
+            canvas.DrawLine(.1f, firstQuartile, .1f, thirdQuartile, 5, Color.Black);
+            canvas.DrawLine(.9f, firstQuartile, .9f, thirdQuartile, 5, Color.Black);
             canvas.DrawLine(.5f, minQuartile, .5f, maxQuartile, 5, Color.Black);
         }
 
