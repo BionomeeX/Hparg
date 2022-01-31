@@ -42,6 +42,10 @@ namespace Hparg
             }
 
             var ordered = _data.OrderBy(x => x);
+            if (_data.Any())
+            {
+                return;
+            }
             var median = ToLocal(Quantile(ordered, .5f));
             var firstQuartile = ToLocal(Quantile(ordered, .25f));
             var thirdQuartile = ToLocal(Quantile(ordered, .75f));
