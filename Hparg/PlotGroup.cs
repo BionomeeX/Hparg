@@ -26,12 +26,7 @@ namespace Hparg
                 _plots[i].GetRenderData(cvs);
             }
 
-            // Draw axes
-            cvs.SetDrawingZone(0f, 1f, 0f, 1f);
-            cvs.DrawLine(0f, 1f, 1f, 1f, 2, Color.Black);
-            cvs.DrawLine(0f, 0f, 0f, 1f, 2, Color.Black);
-            cvs.DrawText(0f, 1f, $"{Min}");
-            cvs.DrawText(0f, 0f, $"{Max}");
+            cvs.DrawAxis(Min, Max);
 
             return cvs.GetBitmap();
         }

@@ -79,13 +79,7 @@ namespace Hparg.Plot
         public Bitmap GetRenderData(int width, int height)
         {
             var cvs = new Canvas(width, height, 20);
-
-            // Draw axes
-            cvs.DrawLine(0f, 1f, 1f, 1f, 2, Color.Black);
-            cvs.DrawLine(0f, 0f, 0f, 1f, 2, Color.Black);
-            cvs.DrawText(0f, 1f, $"{Min}");
-            cvs.DrawText(0f, 0f, $"{Max}");
-
+            cvs.DrawAxis(Min, Max);
             return GetRenderData(cvs).GetBitmap();
         }
 
