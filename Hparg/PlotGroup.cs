@@ -25,6 +25,9 @@ namespace Hparg
                 cvs.SetDrawingZone(i / (float)_plots.Length, (i + 1) / (float)_plots.Length, 0f, 1f);
                 _plots[i].GetRenderData(cvs);
             }
+
+            cvs.DrawAxis(Min, Max);
+
             return cvs.GetBitmap();
         }
 
@@ -58,7 +61,7 @@ namespace Hparg
             throw new System.NotImplementedException();
         }
 
-        public float Min { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public float Max { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public float Min { get => _plots.Select(x => x.Min).Min(); set => throw new System.NotImplementedException(); }
+        public float Max { get => _plots.Select(x => x.Max).Max(); set => throw new System.NotImplementedException(); }
     }
 }

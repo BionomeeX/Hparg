@@ -12,8 +12,8 @@ namespace Hparg
         public BoxPlot(IEnumerable<float> data, Action<IEnumerable<float>> callback = null) : base(callback)
         {
             _data = data;
-            Min = _data.Min();
-            Max = _data.Max();
+            Min = _data.Any() ? _data.Min() : 0f;
+            Max = _data.Any() ? _data.Max() : 0f;
         }
 
         private readonly IEnumerable<float> _data;
@@ -24,7 +24,7 @@ namespace Hparg
         }
         private float Quantile(IOrderedEnumerable<float> _data, float q)
         {
-            float count = _data.Count() * q;
+            float count = (_data.Count() - 1) * q;
             if (count == (int)count)
             {
                 return _data.ElementAt((int)count);
@@ -50,11 +50,11 @@ namespace Hparg
 
             canvas.DrawLine(.4f, minQuartile, .6f, minQuartile, 5, Color.Black);
             canvas.DrawLine(.4f, maxQuartile, .6f, maxQuartile, 5, Color.Black);
-            canvas.DrawLine(0f, firstQuartile, 1f, firstQuartile, 5, Color.Black);
-            canvas.DrawLine(0f, thirdQuartile, 1f, thirdQuartile, 5, Color.Black);
-            canvas.DrawLine(0f, median, 1f, median, 5, Color.Black);
-            canvas.DrawLine(0f, firstQuartile, 0f, thirdQuartile, 5, Color.Black);
-            canvas.DrawLine(1f, firstQuartile, 1f, thirdQuartile, 5, Color.Black);
+            canvas.DrawLine(.1f, firstQuartile, .9f, firstQuartile, 5, Color.Black);
+            canvas.DrawLine(.1f, thirdQuartile, .9f, thirdQuartile, 5, Color.Black);
+            canvas.DrawLine(.1f, median, .9f, median, 5, Color.Black);
+            canvas.DrawLine(.1f, firstQuartile, .1f, thirdQuartile, 5, Color.Black);
+            canvas.DrawLine(.9f, firstQuartile, .9f, thirdQuartile, 5, Color.Black);
             canvas.DrawLine(.5f, minQuartile, .5f, maxQuartile, 5, Color.Black);
         }
 

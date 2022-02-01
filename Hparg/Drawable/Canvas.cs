@@ -20,7 +20,7 @@ namespace Hparg.Drawable
             _grf.InterpolationMode = InterpolationMode.HighQualityBicubic;
         }
 
-        public void SetDrawingZone(float xStart, float xStop, float yStart, float yStop)
+        internal void SetDrawingZone(float xStart, float xStop, float yStart, float yStop)
         {
             var x = _maxWidth;
             var y = _maxHeight;
@@ -32,7 +32,7 @@ namespace Hparg.Drawable
             );
         }
 
-        public void DrawPoint(float x, float y, int size, Shape shape, Color color)
+        internal void DrawPoint(float x, float y, int size, Shape shape, Color color)
         {
             var brush = GetBrush(color);
             switch (shape)
@@ -56,20 +56,20 @@ namespace Hparg.Drawable
             }
         }
 
-        public void DrawLine(float x1, float y1, float x2, float y2, int size, Color color)
+        internal void DrawLine(float x1, float y1, float x2, float y2, int size, Color color)
         {
             _grf.DrawLine(new Pen(GetBrush(color), size),
                 new Point((int)(_drawingZone.X + _drawingZone.Width * x1), (int)(_drawingZone.Y + _drawingZone.Height * y1)),
                 new Point((int)(_drawingZone.X + _drawingZone.Width * x2), (int)(_drawingZone.Y + _drawingZone.Height * y2)));
         }
 
-        public void DrawText(float x, float y, string text)
+        internal void DrawText(float x, float y, string text)
         {
             _grf.DrawString(text, new Font("Arial", 10), GetBrush(Color.Black),
                 new Rectangle((int)(_drawingZone.X + _drawingZone.Width * x), (int)(_drawingZone.Y + _drawingZone.Height * y), 100, 100));
         }
 
-        public void DrawRectangle(float x, float y, float w, float h, int size, Color color)
+        internal void DrawRectangle(float x, float y, float w, float h, int size, Color color)
         {
             _grf.DrawRectangle(new(GetBrush(color), size),
                 new(
@@ -79,6 +79,15 @@ namespace Hparg.Drawable
                     (int)(_drawingZone.Height * h)
                 )
             );
+        }
+
+        internal void DrawAxis(float min, float max)
+        {
+            SetDrawingZone(0f, 1f, 0f, 1f);
+            DrawLine(0f, 1f, 1f, 1f, 2, Color.Black);
+            DrawLine(0f, 0f, 0f, 1f, 2, Color.Black);
+            DrawText(0f, 1f, $"{min}");
+            DrawText(0f, 0f, $"{max}");
         }
 
         /// <summary>
