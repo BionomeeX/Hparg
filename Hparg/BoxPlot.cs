@@ -34,6 +34,10 @@ namespace Hparg
 
         internal override void Render(Canvas canvas)
         {
+            if (_data.Any())
+            {
+                return;
+            }
             var dist = Max - Min;
 
             float ToLocal(float value)
@@ -56,11 +60,18 @@ namespace Hparg
             canvas.DrawLine(.1f, firstQuartile, .1f, thirdQuartile, 5, Color.Black);
             canvas.DrawLine(.9f, firstQuartile, .9f, thirdQuartile, 5, Color.Black);
             canvas.DrawLine(.5f, minQuartile, .5f, maxQuartile, 5, Color.Black);
+
+            foreach (var point in _data)
+            {
+                canvas.DrawPoint((float)_rand.NextDouble() / 10f + .5f - .05f, ToLocal(point), 3, Shape.Circle, Color.FromArgb(150, 255, 0, 0));
+            }
         }
 
         internal override (float X, float Y) ToRelativeSpace(float x, float y)
         {
             throw new NotImplementedException();
         }
+
+        private Random _rand = new();
     }
 }
