@@ -34,7 +34,7 @@ namespace Hparg
 
         internal override void Render(Canvas canvas)
         {
-            if (_data.Any())
+            if (!_data.Any())
             {
                 return;
             }
