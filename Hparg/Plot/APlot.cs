@@ -2,6 +2,7 @@
 using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Hparg.Plot
 {
@@ -76,11 +77,11 @@ namespace Hparg.Plot
         /// <param name="width">Width of the window</param>
         /// <param name="height">Height of the window</param>
         /// <returns>Bitmap containing the points to render</returns>
-        public Image GetRenderData(int width, int height)
+        public MemoryStream GetRenderData(int width, int height)
         {
             var cvs = new Canvas(width, height, 20);
             cvs.DrawAxis(Min, Max);
-            return GetRenderData(cvs).GetImage();
+            return GetRenderData(cvs).ToStream();
         }
 
         public void BeginDragAndDrop(float x, float y)

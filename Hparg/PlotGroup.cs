@@ -1,6 +1,7 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
 using SixLabors.ImageSharp;
+using System.IO;
 using System.Linq;
 
 namespace Hparg
@@ -13,7 +14,7 @@ namespace Hparg
         }
 
         private IPlot[] _plots;
-        public Image GetRenderData(int width, int height)
+        public MemoryStream GetRenderData(int width, int height)
         {
             Canvas cvs = new(width, height, 20);
             var min = _plots.Select(x => x.Min).Min();
@@ -28,7 +29,7 @@ namespace Hparg
 
             cvs.DrawAxis(Min, Max);
 
-            return cvs.GetImage();
+            return cvs.ToStream();
         }
 
         public void BeginDragAndDrop(float x, float y)

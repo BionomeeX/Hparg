@@ -2,9 +2,11 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System;
+using System.IO;
 
 namespace Hparg.Drawable
 {
@@ -17,7 +19,7 @@ namespace Hparg.Drawable
             _maxHeight = height - 2 * _offset;
             SetDrawingZone(0f, 1f, 0f, 1f);
 
-            _img = new Image<Rgba32>(width, height);
+            _img = Image.Load("C:\\Users\\xwila\\Pictures\\H\\8b36a1c1d22023f6a5f8d3e8374832e9.jpg");
         }
 
         internal void SetDrawingZone(float xStart, float xStop, float yStart, float yStop)
@@ -83,8 +85,13 @@ namespace Hparg.Drawable
             DrawText(0f, 0f, $"{max}");
         }
 
-        internal Image GetImage()
-            => _img;
+        internal MemoryStream ToStream()
+        {
+            var stream = new MemoryStream();
+            _img.Save(stream, new JpegEncoder());
+            stream.Position = 0;
+            return stream;
+        }
 
         public int _maxWidth, _maxHeight;
         public Rectangle _drawingZone;
