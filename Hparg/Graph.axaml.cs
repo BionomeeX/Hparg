@@ -4,8 +4,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Hparg.Plot;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using System.IO;
 
 namespace Hparg
 {
