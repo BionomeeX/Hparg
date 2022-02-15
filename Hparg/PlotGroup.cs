@@ -52,12 +52,12 @@ namespace Hparg
             throw new System.NotImplementedException();
         }
 
-        public void AddVerticalLine(int x, Color color, int size = 2)
+        public void AddVerticalLine(int x, System.Drawing.Color color, int size = 2)
         {
             throw new System.NotImplementedException();
         }
 
-        public void AddHorizontalLine(int y, Color color, int size = 2)
+        public void AddHorizontalLine(int y, System.Drawing.Color color, int size = 2)
         {
             throw new System.NotImplementedException();
         }

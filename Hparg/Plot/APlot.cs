@@ -1,5 +1,6 @@
 ﻿using Hparg.Drawable;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,14 +23,14 @@ namespace Hparg.Plot
             _callback = callback;
         }
 
-        public void AddVerticalLine(int x, Color color, int size = 2)
+        public void AddVerticalLine(int x, System.Drawing.Color color, int size = 2)
         {
-            _lines.Add(new() { Position = x, Color = color, Size = size, Orientation = Orientation.Vertical });
+            _lines.Add(new() { Position = x, Color = new Rgba32(color.R, color.G, color.B, color.A), Size = size, Orientation = Orientation.Vertical });
         }
 
-        public void AddHorizontalLine(int y, Color color, int size = 2)
+        public void AddHorizontalLine(int y, System.Drawing.Color color, int size = 2)
         {
-            _lines.Add(new() { Position = y, Color = color, Size = size, Orientation = Orientation.Horizontal });
+            _lines.Add(new() { Position = y, Color = new Rgba32(color.R, color.G, color.B, color.A), Size = size, Orientation = Orientation.Horizontal });
         }
 
         internal abstract (float X, float Y) ToRelativeSpace(float x, float y);

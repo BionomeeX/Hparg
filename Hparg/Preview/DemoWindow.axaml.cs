@@ -39,7 +39,7 @@ namespace Hparg
             this.FindControl<Graph>("DemoGraph").Plot = new Scatter(
                 x: Enumerable.Range(0, _data.Count).Select(x => (float)x).ToArray(),
                 y: _data.ToArray(),
-                color: Color.Black
+                color: System.Drawing.Color.Black
             );
             List<float> odds = new(), evens = new();
             for (int i = 0; i < _data.Count; i++)

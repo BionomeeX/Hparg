@@ -1,5 +1,5 @@
 ﻿using Hparg.Drawable;
-using SixLabors.ImageSharp;
+using System.Drawing;
 using System.IO;
 
 namespace Hparg.Plot

@@ -1,6 +1,6 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
-using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace Hparg
 {
     public class Scatter : APlot<Vector2>
     {
-        public Scatter(float[] x, float[] y, Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
+        public Scatter(float[] x, float[] y, System.Drawing.Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
             Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<IEnumerable<Vector2>> callback = null)
             : base(callback)
         {
@@ -38,7 +38,7 @@ namespace Hparg
             }
         }
 
-        public void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
+        public void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
         {
             _points.Add(new()
             {
@@ -79,13 +79,13 @@ namespace Hparg
                 var point = _points[i];
 
                 (float x, float y) = GetCoordinate(point.X, point.Y);
-                canvas.DrawPoint(x, y, point.Size, point.Shape, point.Color);
+                canvas.DrawPoint(x, y, point.Size, point.Shape, new Rgba32(point.Color.R, point.Color.G, point.Color.B, point.Color.A));
 
                 if (i < _points.Count - 1)
                 {
                     var next = _points[i + 1];
                     (float nX, float nY) = GetCoordinate(next.X, next.Y);
-                    canvas.DrawLine(x, y, nX, nY, point.Size, point.Color);
+                    canvas.DrawLine(x, y, nX, nY, point.Size, new Rgba32(point.Color.R, point.Color.G, point.Color.B, point.Color.A));
                 }
             }
         }
