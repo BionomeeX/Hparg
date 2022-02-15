@@ -64,7 +64,7 @@ namespace Hparg
 
             foreach (var point in _data)
             {
-                canvas.DrawPoint((float)_rand.NextDouble() / 10f + .5f - .05f, ToLocal(point), 3, Shape.Circle, new Color(new Rgba32(150, 255, 0, 0)));
+                canvas.DrawPoint((float)_rand.NextDouble() / 10f + .5f - .05f, 1f - ToLocal(point), 3, Shape.Circle, new Color(new Rgba32(150, 255, 0, 0)));
             }
         }
 
