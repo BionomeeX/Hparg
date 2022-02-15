@@ -1,5 +1,6 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Hparg
 {
     public class Scatter : APlot<Vector2>
     {
-        public Scatter(float[] x, float[] y, System.Drawing.Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
+        public Scatter(float[] x, float[] y, Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
             Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<IEnumerable<Vector2>> callback = null)
             : base(callback)
         {
@@ -37,7 +38,7 @@ namespace Hparg
             }
         }
 
-        public void AddPoint(float x, float y, System.Drawing.Color color, Shape shape = Shape.Circle, int size = 5)
+        public void AddPoint(float x, float y, Color color, Shape shape = Shape.Circle, int size = 5)
         {
             _points.Add(new()
             {

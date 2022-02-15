@@ -1,5 +1,5 @@
 ﻿using Hparg.Drawable;
-using System.Drawing;
+using SixLabors.ImageSharp;
 
 namespace Hparg.Plot
 {
@@ -9,7 +9,7 @@ namespace Hparg.Plot
         public void DragAndDrop(float x, float y);
         public void EndDragAndDrop();
         public Canvas GetRenderData(Canvas cvs);
-        public Bitmap GetRenderData(int width, int height);
+        public Image GetRenderData(int width, int height);
         public void AddVerticalLine(int x, Color color, int size = 2);
         public void AddHorizontalLine(int y, Color color, int size = 2);
         public float Min { set; get; }

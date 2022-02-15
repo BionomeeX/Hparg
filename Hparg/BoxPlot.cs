@@ -1,8 +1,9 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace Hparg
@@ -63,7 +64,7 @@ namespace Hparg
 
             foreach (var point in _data)
             {
-                canvas.DrawPoint((float)_rand.NextDouble() / 10f + .5f - .05f, ToLocal(point), 3, Shape.Circle, Color.FromArgb(150, 255, 0, 0));
+                canvas.DrawPoint((float)_rand.NextDouble() / 10f + .5f - .05f, ToLocal(point), 3, Shape.Circle, new Color(new Rgba32(150, 255, 0, 0)));
             }
         }
 
