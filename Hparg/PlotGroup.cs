@@ -33,19 +33,13 @@ namespace Hparg
         }
 
         public void BeginDragAndDrop(float x, float y)
-        {
-            throw new System.NotImplementedException();
-        }
+        { }
 
         public void DragAndDrop(float x, float y)
-        {
-            throw new System.NotImplementedException();
-        }
+        { }
 
         public void EndDragAndDrop()
-        {
-            throw new System.NotImplementedException();
-        }
+        { }
 
         public Canvas GetRenderData(Canvas cvs)
         {
