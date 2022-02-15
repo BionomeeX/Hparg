@@ -39,13 +39,13 @@ namespace Hparg.Drawable
             RegularPolygon point = shape switch
             {
                 Shape.Circle => new RegularPolygon(
-                    _drawingZone.X + _drawingZone.Width * x - size / 2,
-                    _drawingZone.Y + _drawingZone.Height * y - size / 2,
+                    _drawingZone.X + _drawingZone.Width * x,
+                    _drawingZone.Y + _drawingZone.Height * y,
                     50,
                     size),
                 Shape.Diamond => new RegularPolygon(
-                    _drawingZone.X + _drawingZone.Width * x - size / 2,
-                    _drawingZone.Y + _drawingZone.Height * y - size / 2,
+                    _drawingZone.X + _drawingZone.Width * x,
+                    _drawingZone.Y + _drawingZone.Height * y,
                     4,
                     size),
                 _ => throw new NotImplementedException(),
@@ -63,7 +63,7 @@ namespace Hparg.Drawable
 
         internal void DrawText(float x, float y, string text)
         {
-            _img.Mutate(i => i.DrawText(text, SystemFonts.CreateFont("Arial", 16, FontStyle.Regular), Color.Black, new PointF(x, y)));
+            _img.Mutate(i => i.DrawText(text, SystemFonts.CreateFont("Arial", 16, FontStyle.Regular), Color.Black, new PointF(_drawingZone.X + _drawingZone.Width * x, _drawingZone.Y + _drawingZone.Height * y)));
         }
 
         internal void DrawRectangle(float x, float y, float w, float h, int size, Color color)
