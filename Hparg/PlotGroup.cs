@@ -23,7 +23,7 @@ namespace Hparg
             {
                 _plots[i].Min = min;
                 _plots[i].Max = max;
-                cvs.SetDrawingZone(i / (float)_plots.Length, (i + 1) / (float)_plots.Length, 0f, 1f);
+                //cvs.SetDrawingZone(i / (float)_plots.Length, (i + 1) / (float)_plots.Length, 0f, 1f);
                 _plots[i].GetRenderData(cvs);
             }
 

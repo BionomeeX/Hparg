@@ -135,7 +135,7 @@ namespace Hparg
             {
                 var point = _points[i];
 
-                canvas.DrawPoint(point.X, point.Y, point.Size, point.Shape, new Rgba32(point.Color.R, point.Color.G, point.Color.B, point.Color.A));
+                canvas.DrawPoint(Zone.Main, point.X, point.Y, point.Size, point.Shape, new Rgba32(point.Color.R, point.Color.G, point.Color.B, point.Color.A));
             }
         }
 

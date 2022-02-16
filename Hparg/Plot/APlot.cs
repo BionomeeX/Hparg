@@ -51,12 +51,12 @@ namespace Hparg.Plot
                 if (line.Orientation == Orientation.Vertical)
                 {
                     var (X, _) = ToRelativeSpace(line.Position, 0);
-                    cvs.DrawLine(X, 0f, X, 1f, line.Size, line.Color);
+                    cvs.DrawLine(Zone.Main, X, 0f, X, 1f, line.Size, line.Color);
                 }
                 else
                 {
                     var (_, Y) = ToRelativeSpace(0, line.Position);
-                    cvs.DrawLine(0f, Y, 1f, Y, line.Size, line.Color);
+                    cvs.DrawLine(Zone.Main, 0f, Y, 1f, Y, line.Size, line.Color);
                 }
             }
 
@@ -66,7 +66,7 @@ namespace Hparg.Plot
                 var yMin = (float)Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
                 var xMax = (float)Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
                 var yMax = (float)Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-                cvs.DrawRectangle(xMin, yMin, xMax - xMin, yMax - yMin, 1, Color.Red);
+                cvs.DrawRectangle(Zone.Main, xMin, yMin, xMax - xMin, yMax - yMin, 1, Color.Red);
             }
 
             return cvs;
