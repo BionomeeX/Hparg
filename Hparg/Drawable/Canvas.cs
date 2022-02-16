@@ -17,8 +17,8 @@ namespace Hparg.Drawable
         {
             _maxWidth = width;
             _maxHeight = height;
-            var wOffset = (_maxWidth - offset) / _maxWidth;
-            var hOffset = (_maxHeight - offset) / _maxHeight;
+            var wOffset = (_maxWidth - (float)offset) / _maxWidth;
+            var hOffset = (_maxHeight - (float)offset) / _maxHeight;
             _zones = new()
             {
                 { Zone.Main,        new(wOffset, hOffset, 1f - 2f * wOffset, 1f - 2f * hOffset) },
