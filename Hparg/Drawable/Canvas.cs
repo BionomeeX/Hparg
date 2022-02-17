@@ -14,35 +14,61 @@ namespace Hparg.Drawable
     public class Canvas // TODO: Dispose?
     {
         internal Canvas(int width, int height, int offset, int mainSurfaceCount = 1)
+            : this(width, height, offset, offset, offset, offset, mainSurfaceCount)
+        { }
+
+        private float GetOffset(int o, int max)
+            => (max - (float)o) / max;
+
+        internal Canvas(int width, int height, int leftOffset, int rightOffset, int upOffset, int downOffset, int mainSurfaceCount = 1)
         {
             _maxWidth = width;
             _maxHeight = height;
-            var wOffset = (_maxWidth - (float)offset) / _maxWidth;
-            var hOffset = (_maxHeight - (float)offset) / _maxHeight;
-            if (offset > 0)
+            _zones = new()
             {
-                _zones = new()
-                {
-                    { Zone.LeftMargin, new(0f, hOffset, wOffset, 1f - 2f * hOffset) },
-                    { Zone.UpperMargin, new(wOffset, 0f, 1f - 2f * wOffset, hOffset) },
-                    { Zone.RightMargin, new(1f - wOffset, hOffset, wOffset, 1f - 2f * hOffset) },
-                    { Zone.LowerMargin, new(wOffset, 1f - hOffset, 1f - 2f * hOffset, hOffset) }
-                };
-            }
-            else // No point in adding the margin zones if there are none
-            {
-                _zones = new();
-            }
+                { Zone.LeftMargin,
+                    new(
+                        0f,
+                        GetOffset(upOffset, _maxHeight),
+                        GetOffset(leftOffset, _maxWidth),
+                        1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
+                    )
+                },
+                { Zone.UpperMargin,
+                    new(
+                        GetOffset(leftOffset, _maxWidth),
+                        0f,
+                        1f - (GetOffset(leftOffset, _maxHeight) + GetOffset(rightOffset, _maxWidth)),
+                        GetOffset(upOffset, _maxHeight)
+                    )
+                },
+                { Zone.RightMargin,
+                    new(
+                        1f - GetOffset(rightOffset, _maxWidth),
+                        GetOffset(upOffset, _maxHeight),
+                        GetOffset(rightOffset, _maxWidth),
+                        1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
+                    )
+                },
+                { Zone.LowerMargin,
+                    new(
+                        GetOffset(leftOffset, _maxWidth),
+                        1f - GetOffset(downOffset, _maxHeight),
+                        1f - (GetOffset(leftOffset, _maxHeight) + GetOffset(rightOffset, _maxWidth)),
+                        GetOffset(downOffset, _maxHeight)
+                    )
+                }
+            };
 
-            var mx = (1f - 2f * wOffset) / mainSurfaceCount;
+            var mx = (1f - (GetOffset(leftOffset, _maxHeight) + GetOffset(rightOffset, _maxWidth))) / mainSurfaceCount;
             for (int i = 0; i < mainSurfaceCount; i++)
             {
                 _zones.Add((Zone)i,
                     new(
-                        x: wOffset + mx * i,
-                        y: hOffset,
+                        x: GetOffset(leftOffset, _maxWidth) + mx * i,
+                        y: GetOffset(upOffset, _maxHeight),
                         w: mx,
-                        h: 1f - 2f * hOffset
+                        h: 1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
                     )
                 );
             }
