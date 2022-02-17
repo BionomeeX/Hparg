@@ -7,9 +7,10 @@ namespace Hparg
 {
     public class PlotGroup : IPlot
     {
-        public PlotGroup(params IPlot[] plots)
+        public PlotGroup(IPlot[] plots, string title = null)
         {
             _plots = plots;
+            _title = title;
         }
 
         private IPlot[] _plots;
@@ -17,7 +18,7 @@ namespace Hparg
         {
             var min = _plots.Select(x => x.Min).Min();
             var max = _plots.Select(x => x.Max).Max();
-            var cvs = new Canvas(width, height, 20, _plots.Length);
+            var cvs = new Canvas(width, height, 20, 20, 20, 50, _plots.Length);
             for (int i = 0; i < _plots.Length; i++)
             {
                 _plots[i].Min = min;
@@ -26,6 +27,11 @@ namespace Hparg
             }
 
             cvs.DrawAxis(Min, Max);
+
+            if (_title != null)
+            {
+                cvs.DrawText(Zone.LowerMarginFull, .5f, .5f, _title);
+            }
 
             return cvs.ToStream();
         }
@@ -56,5 +62,7 @@ namespace Hparg
 
         public float Min { get => _plots.Select(x => x.Min).Min(); set => throw new System.NotImplementedException(); }
         public float Max { get => _plots.Select(x => x.Max).Max(); set => throw new System.NotImplementedException(); }
+
+        private string _title;
     }
 }

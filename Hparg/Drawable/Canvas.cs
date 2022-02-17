@@ -154,7 +154,7 @@ namespace Hparg.Drawable
         {
             DrawLine(Zone.LeftMargin, 1f, 0f, 1f, 1f, 2, Color.Black);
             DrawLine(Zone.LowerMarginFull, 0f, 0f, 1f, 0f, 2, Color.Black);
-            DrawText(Zone.LeftMargin, 1.2f, 1.02f, $"{min}", HorizontalAlignment.Left);
+            DrawText(Zone.LeftMargin, 1.2f, 1.03f, $"{min}", HorizontalAlignment.Left);
             DrawText(Zone.LeftMargin, 1.2f, 0f, $"{max}", HorizontalAlignment.Left);
         }
 
