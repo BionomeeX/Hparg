@@ -2,9 +2,13 @@
 {
     internal enum Zone
     {
-        LeftMargin = -2,
+        LeftMargin = -4,
         RightMargin,
 
+        UpperMarginFull,
+        LowerMarginFull,
+
+        // Sub zones, each zone is an increment of 3 starting at 0
         UpperMargin,
         Main,
         LowerMargin

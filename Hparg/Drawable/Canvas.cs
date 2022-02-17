@@ -18,7 +18,7 @@ namespace Hparg.Drawable
         { }
 
         private float GetOffset(int o, int max)
-            => (max - (float)o) / max;
+            => (float)o / max;
 
         internal Canvas(int width, int height, int leftOffset, int rightOffset, int upOffset, int downOffset, int mainSurfaceCount = 1)
         {
@@ -26,7 +26,8 @@ namespace Hparg.Drawable
             _maxHeight = height;
             _zones = new()
             {
-                { Zone.LeftMargin,
+                {
+                    Zone.LeftMargin,
                     new(
                         0f,
                         GetOffset(upOffset, _maxHeight),
@@ -34,12 +35,31 @@ namespace Hparg.Drawable
                         1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
                     )
                 },
-                { Zone.RightMargin,
+                {
+                    Zone.RightMargin,
                     new(
                         1f - GetOffset(rightOffset, _maxWidth),
                         GetOffset(upOffset, _maxHeight),
                         GetOffset(rightOffset, _maxWidth),
                         1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
+                    )
+                },
+                {
+                    Zone.UpperMarginFull,
+                    new(
+                        GetOffset(leftOffset, _maxWidth),
+                        0f,
+                        1f - (GetOffset(leftOffset, _maxHeight) + GetOffset(rightOffset, _maxWidth)),
+                        GetOffset(upOffset, _maxHeight)
+                    )
+                },
+                {
+                    Zone.LowerMarginFull,
+                    new(
+                        GetOffset(leftOffset, _maxWidth),
+                        1f - GetOffset(downOffset, _maxHeight),
+                        1f - (GetOffset(leftOffset, _maxHeight) + GetOffset(rightOffset, _maxWidth)),
+                        GetOffset(downOffset, _maxHeight)
                     )
                 }
             };
@@ -84,7 +104,7 @@ namespace Hparg.Drawable
         private PointF Tr(Zone zone, float x, float y)
         {
             var l = _zones[zone].ToLocal(x, y);
-            return new PointF(_maxWidth - l.X * _maxWidth, _maxHeight - l.Y * _maxHeight);
+            return new PointF(l.X * _maxWidth, l.Y * _maxHeight);
         }
 
         internal void DrawPoint(Zone zone, float x, float y, int size, Shape shape, Color color)
@@ -126,7 +146,7 @@ namespace Hparg.Drawable
         internal void DrawAxis(float min, float max)
         {
             DrawLine(Zone.LeftMargin, 1f, 0f, 1f, 1f, 2, Color.Black);
-            DrawLine(Zone.LowerMargin, 0f, 0f, 1f, 0f, 2, Color.Black);
+            DrawLine(Zone.LowerMarginFull, 0f, 0f, 1f, 0f, 2, Color.Black);
             DrawText(Zone.LeftMargin, 1f, 0f, $"{min}");
             DrawText(Zone.LeftMargin, 1f, 1f, $"{max}");
         }
