@@ -20,6 +20,7 @@ namespace Hparg.Plot
         /// <param name="size">Size of the points</param>
         private protected APlot(Metadata? metadata, Action<IEnumerable<T>> callback)
         {
+            _metadata = metadata;
             _callback = callback;
         }
 
@@ -70,9 +71,9 @@ namespace Hparg.Plot
                 cvs.DrawRectangle(Zone.Main, xMin, yMin, xMax - xMin, yMax - yMin, 1, Color.Red);
             }
 
-            if (metadata != null)
+            if (_metadata != null)
             {
-                cvs.DrawText((Zone)(drawingZone + 1), .5f, .5f, metadata.Title);
+                cvs.DrawText((Zone)(drawingZone + 1), .5f, .5f, _metadata.Title);
             }
 
             return cvs;
@@ -123,6 +124,6 @@ namespace Hparg.Plot
 
         private readonly Action<IEnumerable<T>> _callback;
 
-        protected Metadata metadata;
+        protected Metadata? _metadata;
     }
 }
