@@ -23,10 +23,10 @@ namespace Hparg.Drawable
             {
                 _zones = new()
                 {
-                    { Zone.LeftMargin, new(0f, 0f, wOffset, 1f) },
-                    { Zone.UpperMargin, new(0f, 0f, hOffset, 1f) },
-                    { Zone.RightMargin, new(1f - wOffset, 0f, wOffset, 1f) },
-                    { Zone.LowerMargin, new(0f, 1f - hOffset, 1f, hOffset) }
+                    { Zone.LeftMargin, new(0f, hOffset, wOffset, 1f - 2f * hOffset) },
+                    { Zone.UpperMargin, new(wOffset, 0f, 1f - 2f * wOffset, hOffset) },
+                    { Zone.RightMargin, new(1f - wOffset, hOffset, wOffset, 1f - 2f * hOffset) },
+                    { Zone.LowerMargin, new(wOffset, 1f - hOffset, 1f - 2f * hOffset, hOffset) }
                 };
             }
             else // No point in adding the margin zones if there are none
@@ -35,15 +35,14 @@ namespace Hparg.Drawable
             }
 
             var mx = (1f - 2f * wOffset) / mainSurfaceCount;
-            var my = (1f - 2f * hOffset) / mainSurfaceCount;
             for (int i = 0; i < mainSurfaceCount; i++)
             {
                 _zones.Add((Zone)i,
                     new(
                         x: wOffset + mx * i,
-                        y: hOffset + my * i,
+                        y: hOffset,
                         w: mx,
-                        h: my
+                        h: 1f - 2f * hOffset
                     )
                 );
             }
@@ -54,7 +53,7 @@ namespace Hparg.Drawable
         private PointF Tr(Zone zone, float x, float y)
         {
             var l = _zones[zone].ToLocal(x, y);
-            return new PointF(l.X * _maxWidth, l.Y * _maxHeight);
+            return new PointF(_maxWidth - l.X * _maxWidth, _maxHeight - l.Y * _maxHeight);
         }
 
         internal void DrawPoint(Zone zone, float x, float y, int size, Shape shape, Color color)
@@ -95,10 +94,10 @@ namespace Hparg.Drawable
 
         internal void DrawAxis(float min, float max)
         {
-            DrawLine(Zone.Main, 0f, 1f, 1f, 1f, 2, Color.Black);
-            DrawLine(Zone.Main, 0f, 0f, 0f, 1f, 2, Color.Black);
-            DrawText(Zone.Main, 0f, 1f, $"{min}");
-            DrawText(Zone.Main, 0f, 0f, $"{max}");
+            DrawLine(Zone.LeftMargin, 1f, 0f, 1f, 1f, 2, Color.Black);
+            DrawLine(Zone.LowerMargin, 0f, 0f, 1f, 0f, 2, Color.Black);
+            DrawText(Zone.LeftMargin, 1f, 0f, $"{min}");
+            DrawText(Zone.LeftMargin, 1f, 1f, $"{max}");
         }
 
         internal MemoryStream ToStream()
