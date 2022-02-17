@@ -33,7 +33,7 @@ namespace Hparg
             return (1f - q) * _data.ElementAt((int)count) + q * _data.ElementAt((int)count + 1);
         }
 
-        internal override void Render(Canvas canvas)
+        internal override void Render(Canvas canvas, Zone drawingZone)
         {
             if (!_data.Any())
             {
@@ -53,18 +53,18 @@ namespace Hparg
             var minQuartile = ToLocal(Quantile(ordered, .05f));
             var maxQuartile = ToLocal(Quantile(ordered, .95f));
 
-            canvas.DrawLine(Zone.Main, .4f, 1f - minQuartile, .6f, 1f - minQuartile, 5, Color.Black);
-            canvas.DrawLine(Zone.Main, .4f, 1f - maxQuartile, .6f, 1f - maxQuartile, 5, Color.Black);
-            canvas.DrawLine(Zone.Main, .1f, 1f - firstQuartile, .9f, 1f - firstQuartile, 5, Color.Black);
-            canvas.DrawLine(Zone.Main, .1f, 1f - thirdQuartile, .9f, 1f - thirdQuartile, 5, Color.Black);
-            canvas.DrawLine(Zone.Main, .1f, 1f - median, .9f, 1f - median, 5, Color.Black);
-            canvas.DrawLine(Zone.Main, .1f, 1f - firstQuartile, .1f, 1f - thirdQuartile, 5, Color.Black);
-            canvas.DrawLine(Zone.Main, .9f, 1f - firstQuartile, .9f, 1f - thirdQuartile, 5, Color.Black);
-            canvas.DrawLine(Zone.Main, .5f, 1f - minQuartile, .5f, 1f - maxQuartile, 5, Color.Black);
+            canvas.DrawLine(drawingZone, .4f, 1f - minQuartile, .6f, 1f - minQuartile, 5, Color.Black);
+            canvas.DrawLine(drawingZone, .4f, 1f - maxQuartile, .6f, 1f - maxQuartile, 5, Color.Black);
+            canvas.DrawLine(drawingZone, .1f, 1f - firstQuartile, .9f, 1f - firstQuartile, 5, Color.Black);
+            canvas.DrawLine(drawingZone, .1f, 1f - thirdQuartile, .9f, 1f - thirdQuartile, 5, Color.Black);
+            canvas.DrawLine(drawingZone, .1f, 1f - median, .9f, 1f - median, 5, Color.Black);
+            canvas.DrawLine(drawingZone, .1f, 1f - firstQuartile, .1f, 1f - thirdQuartile, 5, Color.Black);
+            canvas.DrawLine(drawingZone, .9f, 1f - firstQuartile, .9f, 1f - thirdQuartile, 5, Color.Black);
+            canvas.DrawLine(drawingZone, .5f, 1f - minQuartile, .5f, 1f - maxQuartile, 5, Color.Black);
 
             foreach (var point in _data)
             {
-                canvas.DrawPoint(Zone.Main, (float)_rand.NextDouble() / 10f + .5f - .05f, 1f - ToLocal(point), 3, Shape.Circle, new Color(new Rgba32(255, 0, 0, 150)));
+                canvas.DrawPoint(drawingZone, (float)_rand.NextDouble() / 10f + .5f - .05f, 1f - ToLocal(point), 3, Shape.Circle, new Color(new Rgba32(255, 0, 0, 150)));
             }
         }
 

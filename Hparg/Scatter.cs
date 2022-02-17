@@ -72,20 +72,20 @@ namespace Hparg
             return (x, y);
         }
 
-        internal override void Render(Canvas canvas)
+        internal override void Render(Canvas canvas, Zone drawingZone)
         {
             for (int i = 0; i < _points.Count; i++)
             {
                 var point = _points[i];
 
                 (float x, float y) = GetCoordinate(point.X, point.Y);
-                canvas.DrawPoint(Zone.Main, x, y, point.Size, point.Shape, new Rgba32(point.Color.R, point.Color.G, point.Color.B, point.Color.A));
+                canvas.DrawPoint(drawingZone, x, y, point.Size, point.Shape, new Rgba32(point.Color.R, point.Color.G, point.Color.B, point.Color.A));
 
                 if (i < _points.Count - 1)
                 {
                     var next = _points[i + 1];
                     (float nX, float nY) = GetCoordinate(next.X, next.Y);
-                    canvas.DrawLine(Zone.Main, x, y, nX, nY, point.Size, new Rgba32(point.Color.R, point.Color.G, point.Color.B, point.Color.A));
+                    canvas.DrawLine(drawingZone, x, y, nX, nY, point.Size, new Rgba32(point.Color.R, point.Color.G, point.Color.B, point.Color.A));
                 }
             }
         }

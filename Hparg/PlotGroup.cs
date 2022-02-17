@@ -1,6 +1,5 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
-using SixLabors.ImageSharp;
 using System.IO;
 using System.Linq;
 
@@ -16,15 +15,14 @@ namespace Hparg
         private IPlot[] _plots;
         public MemoryStream GetRenderData(int width, int height)
         {
-            Canvas cvs = new(width, height, 20);
             var min = _plots.Select(x => x.Min).Min();
             var max = _plots.Select(x => x.Max).Max();
+            var cvs = new Canvas(width, height, 20, _plots.Length);
             for (int i = 0; i < _plots.Length; i++)
             {
                 _plots[i].Min = min;
                 _plots[i].Max = max;
-                //cvs.SetDrawingZone(i / (float)_plots.Length, (i + 1) / (float)_plots.Length, 0f, 1f);
-                _plots[i].GetRenderData(cvs);
+                _plots[i].GetRenderData(cvs, i);
             }
 
             cvs.DrawAxis(Min, Max);
@@ -41,7 +39,7 @@ namespace Hparg
         public void EndDragAndDrop()
         { }
 
-        public Canvas GetRenderData(Canvas cvs)
+        public Canvas GetRenderData(Canvas cvs, int drawingZone)
         {
             throw new System.NotImplementedException();
         }

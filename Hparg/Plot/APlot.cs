@@ -40,23 +40,24 @@ namespace Hparg.Plot
         float IPlot.Min { set => Min = value; get => Min; }
         float IPlot.Max { set => Max = value; get => Max; }
 
-        internal abstract void Render(Canvas canvas);
+        internal abstract void Render(Canvas canvas, Zone drawingZone);
 
-        public Canvas GetRenderData(Canvas cvs)
+        public Canvas GetRenderData(Canvas cvs, int drawingZone)
         {
-            Render(cvs);
+            var zone = (Zone)drawingZone;
+            Render(cvs, zone);
 
             foreach (var line in _lines)
             {
                 if (line.Orientation == Orientation.Vertical)
                 {
                     var (X, _) = ToRelativeSpace(line.Position, 0);
-                    cvs.DrawLine(Zone.Main, X, 0f, X, 1f, line.Size, line.Color);
+                    cvs.DrawLine(zone, X, 0f, X, 1f, line.Size, line.Color);
                 }
                 else
                 {
                     var (_, Y) = ToRelativeSpace(0, line.Position);
-                    cvs.DrawLine(Zone.Main, 0f, Y, 1f, Y, line.Size, line.Color);
+                    cvs.DrawLine(zone, 0f, Y, 1f, Y, line.Size, line.Color);
                 }
             }
 
@@ -82,7 +83,7 @@ namespace Hparg.Plot
         {
             var cvs = new Canvas(width, height, 20);
             cvs.DrawAxis(Min, Max);
-            return GetRenderData(cvs).ToStream();
+            return GetRenderData(cvs, 0).ToStream();
         }
 
         public void BeginDragAndDrop(float x, float y)
