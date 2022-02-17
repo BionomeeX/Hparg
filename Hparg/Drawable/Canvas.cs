@@ -70,7 +70,7 @@ namespace Hparg.Drawable
                 // Main zone
                 _zones.Add((Zone)(i + 1),
                     new(
-                        x: GetOffset(leftOffset, _maxWidth) + mx * i,
+                        x: GetOffset(leftOffset, _maxWidth) + mx * (i / 3),
                         y: GetOffset(upOffset, _maxHeight),
                         w: mx,
                         h: 1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
@@ -81,7 +81,7 @@ namespace Hparg.Drawable
                 _zones.Add(
                     (Zone)i,
                     new(
-                        GetOffset(leftOffset, _maxWidth) + mx * i,
+                        GetOffset(leftOffset, _maxWidth) + mx * (i / 3),
                         0f,
                         mx,
                         GetOffset(upOffset, _maxHeight)
@@ -90,7 +90,7 @@ namespace Hparg.Drawable
                 _zones.Add(
                     (Zone)(i + 2),
                     new(
-                        GetOffset(leftOffset, _maxWidth) + mx * i,
+                        GetOffset(leftOffset, _maxWidth) + mx * (i / 3),
                         1f - GetOffset(downOffset, _maxHeight),
                         mx,
                         GetOffset(downOffset, _maxHeight)
