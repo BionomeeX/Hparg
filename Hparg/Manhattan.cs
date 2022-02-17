@@ -14,7 +14,7 @@ namespace Hparg
         private uint[] _chpos;
 
         public Manhattan(uint[] chpos, float[] y, IEnumerable<System.Drawing.Color> chcolors, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<uint>> callback = null, Point<uint, float>[] additionalPoints = null) :
-        base(callback)
+        base(null, callback)
         {
             if (additionalPoints == null)
             {

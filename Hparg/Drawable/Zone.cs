@@ -2,11 +2,11 @@
 {
     internal enum Zone
     {
-        UpperMargin = -4,
-        LowerMargin,
-        LeftMargin,
+        LeftMargin = -2,
         RightMargin,
 
-        Main
+        UpperMargin,
+        Main,
+        LowerMargin
     }
 }

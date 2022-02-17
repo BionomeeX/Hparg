@@ -10,7 +10,7 @@ namespace Hparg
 {
     public class BoxPlot : APlot<float>
     {
-        public BoxPlot(IEnumerable<float> data, Action<IEnumerable<float>> callback = null) : base(callback)
+        public BoxPlot(IEnumerable<float> data, Action<IEnumerable<float>> callback = null, Metadata? metadata = null) : base(metadata, callback)
         {
             _data = data;
             Min = _data.Any() ? _data.Min() : 0f;

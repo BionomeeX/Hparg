@@ -22,7 +22,7 @@ namespace Hparg
             {
                 _plots[i].Min = min;
                 _plots[i].Max = max;
-                _plots[i].GetRenderData(cvs, i);
+                _plots[i].GetRenderData(cvs, (i * 3) + 1);
             }
 
             cvs.DrawAxis(Min, Max);

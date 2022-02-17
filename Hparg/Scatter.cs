@@ -12,7 +12,7 @@ namespace Hparg
     {
         public Scatter(float[] x, float[] y, System.Drawing.Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
             Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<IEnumerable<Vector2>> callback = null)
-            : base(callback)
+            : base(null, callback)
         {
             _points = Enumerable.Range(0, x.Length).Select(i =>
             {

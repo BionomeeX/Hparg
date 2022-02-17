@@ -56,8 +56,8 @@ namespace Hparg
             this.FindControl<Graph>("DemoGraph2").Plot = new PlotGroup(
                 new[]
                 {
-                    new BoxPlot(evens),
-                    new BoxPlot(odds)
+                    new BoxPlot(evens, metadata: new Metadata() { Title = "Evens" }),
+                    new BoxPlot(odds, metadata: new Metadata() { Title = "Odds" })
                 }
             );
         }

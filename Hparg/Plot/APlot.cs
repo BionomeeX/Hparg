@@ -18,7 +18,7 @@ namespace Hparg.Plot
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
-        private protected APlot(Action<IEnumerable<T>> callback)
+        private protected APlot(Metadata? metadata, Action<IEnumerable<T>> callback)
         {
             _callback = callback;
         }
@@ -70,6 +70,11 @@ namespace Hparg.Plot
                 cvs.DrawRectangle(Zone.Main, xMin, yMin, xMax - xMin, yMax - yMin, 1, Color.Red);
             }
 
+            if (metadata != null)
+            {
+                cvs.DrawText((Zone)(drawingZone + 1), .5f, .5f, metadata.Title);
+            }
+
             return cvs;
         }
 
@@ -83,7 +88,7 @@ namespace Hparg.Plot
         {
             var cvs = new Canvas(width, height, 20);
             cvs.DrawAxis(Min, Max);
-            return GetRenderData(cvs, 0).ToStream();
+            return GetRenderData(cvs, (int)Zone.Main).ToStream();
         }
 
         public void BeginDragAndDrop(float x, float y)
@@ -117,5 +122,7 @@ namespace Hparg.Plot
         private ((float X, float Y) start, (float X, float Y) end)? _dragAndDropSelection;
 
         private readonly Action<IEnumerable<T>> _callback;
+
+        protected Metadata metadata;
     }
 }
