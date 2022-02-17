@@ -147,8 +147,8 @@ namespace Hparg.Drawable
         {
             DrawLine(Zone.LeftMargin, 1f, 0f, 1f, 1f, 2, Color.Black);
             DrawLine(Zone.LowerMarginFull, 0f, 0f, 1f, 0f, 2, Color.Black);
-            DrawText(Zone.LeftMargin, 1f, 0f, $"{min}");
-            DrawText(Zone.LeftMargin, 1f, 1f, $"{max}");
+            DrawText(Zone.LeftMargin, 1f, 1f, $"{min}");
+            DrawText(Zone.LeftMargin, 1f, 0f, $"{max}");
         }
 
         internal MemoryStream ToStream()
