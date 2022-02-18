@@ -87,7 +87,7 @@ namespace Hparg.Plot
         /// <returns>Bitmap containing the points to render</returns>
         public MemoryStream GetRenderData(int width, int height)
         {
-            var cvs = new Canvas(width, height, 20);
+            var cvs = new Canvas(width, height, 75, 20, 20, 20);
             cvs.DrawAxis(Min, Max);
             return GetRenderData(cvs, (int)Zone.Main).ToStream();
         }

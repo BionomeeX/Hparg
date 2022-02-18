@@ -154,8 +154,8 @@ namespace Hparg.Drawable
         {
             DrawLine(Zone.LeftMargin, 1f, 0f, 1f, 1f, 2, Color.Black);
             DrawLine(Zone.LowerMarginFull, 0f, 0f, 1f, 0f, 2, Color.Black);
-            DrawText(Zone.LeftMargin, 1.2f, 1.03f, $"{min}", HorizontalAlignment.Left);
-            DrawText(Zone.LeftMargin, 1.2f, 0f, $"{max}", HorizontalAlignment.Left);
+            DrawText(Zone.LeftMargin, .8f, 1f, $"{min:0.00}", HorizontalAlignment.Right);
+            DrawText(Zone.LeftMargin, .8f, 0f, $"{max:0.00}", HorizontalAlignment.Right);
         }
 
         internal MemoryStream ToStream()
