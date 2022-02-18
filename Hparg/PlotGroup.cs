@@ -18,6 +18,9 @@ namespace Hparg
         {
             var min = _plots.Select(x => x.Min).Min();
             var max = _plots.Select(x => x.Max).Max();
+            var diff = (max - min);
+            min -= diff * .1f;
+            max += diff * .1f;
             var cvs = new Canvas(width, height, 75, 20, 20, 20, _plots.Length);
             for (int i = 0; i < _plots.Length; i++)
             {
