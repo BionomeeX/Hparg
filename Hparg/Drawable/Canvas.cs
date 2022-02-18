@@ -131,11 +131,11 @@ namespace Hparg.Drawable
             _img.Mutate(x => x.Draw(new Pen(color, size), path.Build()));
         }
 
-        internal void DrawText(Zone zone, float x, float y, string text,
+        internal void DrawText(Zone zone, float x, float y, string text, int size,
             HorizontalAlignment horAlignment = HorizontalAlignment.Center,
             VerticalAlignment verAlignment = VerticalAlignment.Center)
         {
-            _img.Mutate(i => i.DrawText(new TextOptions(SystemFonts.CreateFont("Arial", 16, FontStyle.Regular))
+            _img.Mutate(i => i.DrawText(new TextOptions(SystemFonts.CreateFont("Arial", size, FontStyle.Regular))
             {
                 HorizontalAlignment = horAlignment,
                 VerticalAlignment = verAlignment,
@@ -154,8 +154,8 @@ namespace Hparg.Drawable
         {
             DrawLine(Zone.LeftMargin, 1f, 0f, 1f, 1f, 2, Color.Black);
             DrawLine(Zone.LowerMarginFull, 0f, 0f, 1f, 0f, 2, Color.Black);
-            DrawText(Zone.LeftMargin, .8f, 1f, $"{min:0.00}", HorizontalAlignment.Right);
-            DrawText(Zone.LeftMargin, .8f, 0f, $"{max:0.00}", HorizontalAlignment.Right);
+            DrawText(Zone.LeftMargin, .8f, 1f, $"{min:0.00}", 16, HorizontalAlignment.Right);
+            DrawText(Zone.LeftMargin, .8f, 0f, $"{max:0.00}", 16, HorizontalAlignment.Right);
         }
 
         internal MemoryStream ToStream()

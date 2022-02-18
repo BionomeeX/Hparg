@@ -30,7 +30,7 @@ namespace Hparg
 
             if (_title != null)
             {
-                cvs.DrawText(Zone.UpperMarginFull, .5f, .5f, _title);
+                cvs.DrawText(Zone.UpperMarginFull, .5f, .5f, _title, 20);
             }
 
             return cvs.ToStream();

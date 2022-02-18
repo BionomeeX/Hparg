@@ -1,4 +1,5 @@
-﻿using Hparg.Drawable;
+﻿using Avalonia.Layout;
+using Hparg.Drawable;
 using Hparg.Plot;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -53,13 +54,36 @@ namespace Hparg
             var minQuartile = ToLocal(Quantile(ordered, .05f));
             var maxQuartile = ToLocal(Quantile(ordered, .95f));
 
+            var textSize = 11;
+            var textOffset = .02f;
+
+            var borderLeft = .5f - .25f;
+            var borderRight = .5f + .25f;
+
+            // Draw horizonal lines for box plot along with text
+
+            // .05
             canvas.DrawLine(drawingZone, .35f, 1f - minQuartile, .65f, 1f - minQuartile, lineSize, Color.Black);
+            canvas.DrawText(drawingZone, .35f - textOffset, 1f - minQuartile, $"{Quantile(ordered, .05f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Right);
+            // .95
             canvas.DrawLine(drawingZone, .35f, 1f - maxQuartile, .65f, 1f - maxQuartile, lineSize, Color.Black);
-            canvas.DrawLine(drawingZone, .1f, 1f - firstQuartile, .9f, 1f - firstQuartile, lineSize, Color.Black);
-            canvas.DrawLine(drawingZone, .1f, 1f - thirdQuartile, .9f, 1f - thirdQuartile, lineSize, Color.Black);
-            canvas.DrawLine(drawingZone, .1f, 1f - median, .9f, 1f - median, lineSize, Color.Black);
-            canvas.DrawLine(drawingZone, .1f, 1f - firstQuartile, .1f, 1f - thirdQuartile, lineSize, Color.Black);
-            canvas.DrawLine(drawingZone, .9f, 1f - firstQuartile, .9f, 1f - thirdQuartile, lineSize, Color.Black);
+            canvas.DrawText(drawingZone, .35f - textOffset, 1f - maxQuartile, $"{Quantile(ordered, .95f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Right);
+
+            // First quartile
+            canvas.DrawLine(drawingZone, borderLeft, 1f - firstQuartile, borderRight, 1f - firstQuartile, lineSize, Color.Black);
+            canvas.DrawText(drawingZone, borderRight + textOffset, 1f - firstQuartile, $"{Quantile(ordered, .25f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Left);
+
+            // Third quartile
+            canvas.DrawLine(drawingZone, borderLeft, 1f - thirdQuartile, borderRight, 1f - thirdQuartile, lineSize, Color.Black);
+            canvas.DrawText(drawingZone, borderRight + textOffset, 1f - thirdQuartile, $"{Quantile(ordered, .75f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Left);
+
+            // Median
+            canvas.DrawLine(drawingZone, borderLeft, 1f - median, borderRight, 1f - median, lineSize, Color.Black);
+            canvas.DrawText(drawingZone, borderLeft - textOffset, 1f - median, $"{Quantile(ordered, .5f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Right);
+
+            // Vertical lines
+            canvas.DrawLine(drawingZone, borderLeft, 1f - firstQuartile, borderLeft, 1f - thirdQuartile, lineSize, Color.Black);
+            canvas.DrawLine(drawingZone, borderRight, 1f - firstQuartile, borderRight, 1f - thirdQuartile, lineSize, Color.Black);
             canvas.DrawLine(drawingZone, .5f, 1f - minQuartile, .5f, 1f - maxQuartile, lineSize, Color.Black);
 
             foreach (var point in _data)

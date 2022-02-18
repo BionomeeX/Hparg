@@ -73,7 +73,7 @@ namespace Hparg.Plot
 
             if (_metadata != null)
             {
-                cvs.DrawText((Zone)(drawingZone + 1), .5f, .5f, _metadata.Title);
+                cvs.DrawText((Zone)(drawingZone + 1), .5f, .5f, _metadata.Title, 16);
             }
 
             return cvs;
