@@ -36,10 +36,38 @@ namespace Hparg.Plot
 
         internal abstract (float X, float Y) ToRelativeSpace(float x, float y);
         internal abstract IEnumerable<T> GetPointsInRectangle(float x, float y, float w, float h);
-        protected float Min { set; get; }
-        protected float Max { set; get; }
-        float IPlot.Min { set => Min = value; get => Min; }
-        float IPlot.Max { set => Max = value; get => Max; }
+        private float _min = float.MaxValue;
+        private float _max = float.MinValue;
+        protected float Min
+        {
+            set
+            {
+                if (value < DisplayMin)
+                {
+                    DisplayMin = value;
+                }
+                _min = value;
+            }
+            get => _min;
+        }
+        protected float Max
+        {
+            set
+            {
+                if (value > DisplayMax)
+                {
+                    DisplayMax = value;
+                }
+                _max = value;
+            }
+            get => _max;
+        }
+        protected float DisplayMin { private set; get; }
+        protected float DisplayMax { private set; get; }
+        float IPlot.Min { get => Min; }
+        float IPlot.Max { get => Max; }
+        float IPlot.DisplayMin { set => DisplayMin = value; get => DisplayMin; }
+        float IPlot.DisplayMax { set => DisplayMax = value; get => DisplayMax; }
 
         internal abstract void Render(Canvas canvas, Zone drawingZone);
 

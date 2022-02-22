@@ -1,5 +1,4 @@
-﻿using Avalonia.Layout;
-using Hparg.Drawable;
+﻿using Hparg.Drawable;
 using Hparg.Plot;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -40,11 +39,11 @@ namespace Hparg
             {
                 return;
             }
-            var dist = Max - Min;
+            var dist = DisplayMax - DisplayMin;
 
             float ToLocal(float value)
             {
-                return (value - Min) / (Max - Min);
+                return (value - Min) / (DisplayMax - DisplayMin);
             }
 
             var ordered = _data.OrderBy(x => x);
