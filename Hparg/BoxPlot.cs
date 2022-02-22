@@ -59,15 +59,17 @@ namespace Hparg
 
             var borderLeft = .5f - .25f;
             var borderRight = .5f + .25f;
+            var smallBorderLeft = .5f - .15f;
+            var smallBorderRight = .5f + .15f;
 
             // Draw horizonal lines for box plot along with text
 
             // .05
-            canvas.DrawLine(drawingZone, .35f, 1f - minQuartile, .65f, 1f - minQuartile, lineSize, Color.Black);
-            canvas.DrawText(drawingZone, .35f - textOffset, 1f - minQuartile, $"{Quantile(ordered, .05f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Right);
+            canvas.DrawLine(drawingZone, smallBorderLeft, 1f - minQuartile, smallBorderRight, 1f - minQuartile, lineSize, Color.Black);
+            canvas.DrawText(drawingZone, smallBorderLeft - textOffset, 1f - minQuartile, $"{Quantile(ordered, .05f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Right);
             // .95
-            canvas.DrawLine(drawingZone, .35f, 1f - maxQuartile, .65f, 1f - maxQuartile, lineSize, Color.Black);
-            canvas.DrawText(drawingZone, .35f - textOffset, 1f - maxQuartile, $"{Quantile(ordered, .95f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Right);
+            canvas.DrawLine(drawingZone, smallBorderLeft, 1f - maxQuartile, smallBorderRight, 1f - maxQuartile, lineSize, Color.Black);
+            canvas.DrawText(drawingZone, smallBorderLeft - textOffset, 1f - maxQuartile, $"{Quantile(ordered, .95f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Right);
 
             // First quartile
             canvas.DrawLine(drawingZone, borderLeft, 1f - firstQuartile, borderRight, 1f - firstQuartile, lineSize, Color.Black);
