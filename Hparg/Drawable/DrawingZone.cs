@@ -14,6 +14,8 @@ namespace Hparg.Drawable
 
         internal float Width => _w;
         internal float Height => _h;
+        internal float X => _x;
+        internal float Y => _y;
 
         private readonly float _x, _y, _w, _h;
     }

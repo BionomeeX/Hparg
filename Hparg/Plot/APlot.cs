@@ -101,7 +101,13 @@ namespace Hparg.Plot
 
             if (_metadata != null)
             {
-                cvs.DrawText((Zone)(drawingZone + 1), .5f, .5f, _metadata.Title, 16);
+                cvs.DrawText(
+                    zone: (Zone)(drawingZone + 1),
+                    x: .5f,
+                    y: cvs.GetOffset((Zone)(drawingZone + 1), Canvas.Direction.Bottom, 50),
+                    text: _metadata.Title,
+                    size: 16
+                );
             }
 
             return cvs;

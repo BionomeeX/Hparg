@@ -161,13 +161,12 @@ namespace Hparg.Drawable
         internal float GetOffset(Zone drawingZone, Direction direction, int pixelOffset)
         {
             var zone = _zones[drawingZone];
-            return 0f;
             return direction switch
             {
-              //  Direction.Left => ,
-                Direction.Right => (_maxWidth - pixelOffset) / _maxWidth,
-                Direction.Top => pixelOffset / _maxHeight,
-                Direction.Bottom => (_maxHeight - pixelOffset) / _maxHeight,
+                Direction.Left => zone.X - (float)pixelOffset / _maxWidth,
+                Direction.Right => zone.Width + (float)pixelOffset  / _maxWidth,
+                Direction.Bottom => zone.Y - (float)pixelOffset / _maxHeight,
+                Direction.Top => zone.Height + (float)pixelOffset / _maxHeight,
                 _ => throw new NotImplementedException()
             };
         }
