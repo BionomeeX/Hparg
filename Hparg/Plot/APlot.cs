@@ -116,7 +116,7 @@ namespace Hparg.Plot
         public MemoryStream GetRenderData(int width, int height)
         {
             var cvs = new Canvas(width, height, 75, 20, 20, 20);
-            cvs.DrawAxis(Min, Max);
+            cvs.DrawAxis(DisplayMin, DisplayMax);
             return GetRenderData(cvs, (int)Zone.Main).ToStream();
         }
 

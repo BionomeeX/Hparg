@@ -154,8 +154,22 @@ namespace Hparg.Drawable
         {
             DrawLine(Zone.LeftMargin, 1f, 0f, 1f, 1f, 2, Color.Black);
             DrawLine(Zone.LowerMarginFull, 0f, 0f, 1f, 0f, 2, Color.Black);
-            DrawText(Zone.LeftMargin, .8f, 1f, $"{min:0.00}", 16, HorizontalAlignment.Right);
-            DrawText(Zone.LeftMargin, .8f, 0f, $"{max:0.00}", 16, HorizontalAlignment.Right);
+            DrawText(Zone.LeftMargin, .9f, 1f, $"{min:0.00}", 14, HorizontalAlignment.Right);
+            DrawText(Zone.LeftMargin, .9f, 0f, $"{max:0.00}", 14, HorizontalAlignment.Right);
+        }
+
+        internal float GetOffset(Zone drawingZone, Direction direction, int pixelOffset)
+        {
+            var zone = _zones[drawingZone];
+            return 0f;
+            return direction switch
+            {
+              //  Direction.Left => ,
+                Direction.Right => (_maxWidth - pixelOffset) / _maxWidth,
+                Direction.Top => pixelOffset / _maxHeight,
+                Direction.Bottom => (_maxHeight - pixelOffset) / _maxHeight,
+                _ => throw new NotImplementedException()
+            };
         }
 
         internal MemoryStream ToStream()
@@ -169,5 +183,13 @@ namespace Hparg.Drawable
         public int _maxWidth, _maxHeight;
         private Dictionary<Zone, DrawingZone> _zones;
         private readonly Image _img;
+
+        internal enum Direction
+        {
+            Left,
+            Right,
+            Top,
+            Bottom
+        }
     }
 }

@@ -43,7 +43,7 @@ namespace Hparg
 
             float ToLocal(float value)
             {
-                return (value - Min) / (DisplayMax - DisplayMin);
+                return (value - DisplayMin) / (DisplayMax - DisplayMin);
             }
 
             var ordered = _data.OrderBy(x => x);
@@ -65,22 +65,17 @@ namespace Hparg
 
             // .05
             canvas.DrawLine(drawingZone, smallBorderLeft, 1f - minQuartile, smallBorderRight, 1f - minQuartile, lineSize, Color.Black);
-            canvas.DrawText(drawingZone, smallBorderLeft - textOffset, 1f - minQuartile, $"{Quantile(ordered, .05f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Right);
             // .95
             canvas.DrawLine(drawingZone, smallBorderLeft, 1f - maxQuartile, smallBorderRight, 1f - maxQuartile, lineSize, Color.Black);
-            canvas.DrawText(drawingZone, smallBorderLeft - textOffset, 1f - maxQuartile, $"{Quantile(ordered, .95f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Right);
 
             // First quartile
             canvas.DrawLine(drawingZone, borderLeft, 1f - firstQuartile, borderRight, 1f - firstQuartile, lineSize, Color.Black);
-            canvas.DrawText(drawingZone, borderRight + textOffset, 1f - firstQuartile, $"{Quantile(ordered, .25f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Left);
 
             // Third quartile
             canvas.DrawLine(drawingZone, borderLeft, 1f - thirdQuartile, borderRight, 1f - thirdQuartile, lineSize, Color.Black);
-            canvas.DrawText(drawingZone, borderRight + textOffset, 1f - thirdQuartile, $"{Quantile(ordered, .75f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Left);
 
             // Median
             canvas.DrawLine(drawingZone, borderLeft, 1f - median, borderRight, 1f - median, lineSize, Color.Black);
-            canvas.DrawText(drawingZone, borderLeft - textOffset, 1f - median, $"{Quantile(ordered, .5f):0.00}", textSize, SixLabors.Fonts.HorizontalAlignment.Right);
 
             // Vertical lines
             canvas.DrawLine(drawingZone, borderLeft, 1f - firstQuartile, borderLeft, 1f - thirdQuartile, lineSize, Color.Black);
