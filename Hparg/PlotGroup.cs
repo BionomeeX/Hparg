@@ -7,7 +7,7 @@ namespace Hparg
 {
     public class PlotGroup : IPlot
     {
-        public PlotGroup(IPlot[] plots, string title = null)
+        public PlotGroup(IPlot[] plots, string? title = null)
         {
             _plots = plots;
             _title = title;
@@ -66,6 +66,6 @@ namespace Hparg
         public float Min { get => _plots.Select(x => x.Min).Min(); set => throw new System.NotImplementedException(); }
         public float Max { get => _plots.Select(x => x.Max).Max(); set => throw new System.NotImplementedException(); }
 
-        private string _title;
+        private string? _title;
     }
 }

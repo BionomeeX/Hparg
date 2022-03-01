@@ -59,7 +59,7 @@ namespace Hparg
                     new BoxPlot(evens, metadata: new Metadata() { Title = "Evens" }),
                     new BoxPlot(odds, metadata: new Metadata() { Title = "Odds" })
                 },
-                Title = "Values"
+                title: "Values"
             );
         }
 

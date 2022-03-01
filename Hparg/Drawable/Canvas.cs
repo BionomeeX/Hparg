@@ -158,7 +158,7 @@ namespace Hparg.Drawable
             for (int i = 0; i <= 10; i++)
             {
                 var value = (relativeMax / 10f) * i + min;
-                DrawText(Zone.LeftMargin, .8f, 1f - i / 10f, $"{value:0.00}", 15, HorizontalAlignment.Right);
+                DrawText(Zone.LeftMargin, .9f, 1f - i / 10f, $"{value:0.00}", 15, HorizontalAlignment.Right);
             }
         }
 
