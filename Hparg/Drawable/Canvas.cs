@@ -154,8 +154,12 @@ namespace Hparg.Drawable
         {
             DrawLine(Zone.LeftMargin, 1f, 0f, 1f, 1f, 2, Color.Black);
             DrawLine(Zone.LowerMarginFull, 0f, 0f, 1f, 0f, 2, Color.Black);
-            DrawText(Zone.LeftMargin, .8f, 1f, $"{min:0.00}", 16, HorizontalAlignment.Right);
-            DrawText(Zone.LeftMargin, .8f, 0f, $"{max:0.00}", 16, HorizontalAlignment.Right);
+            var relativeMax = max - min;
+            for (int i = 0; i <= 10; i++)
+            {
+                var value = (relativeMax / 10f) * i + min;
+                DrawText(Zone.LeftMargin, .8f, 1f - i / 10f, $"{value:0.00}", 15, HorizontalAlignment.Right);
+            }
         }
 
         internal MemoryStream ToStream()
