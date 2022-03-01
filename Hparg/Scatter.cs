@@ -65,7 +65,7 @@ namespace Hparg
         private (float x, float y) GetCoordinate(float oX, float oY)
         {
             var dX = _xMax.Value - _xMin.Value;
-            var dY = Max - Min;
+            var dY = DisplayMax - DisplayMin;
             var x = dX == 0 ? 0f : (oX - _xMin.Value) / dX;
             var y = dY == 0 ? 0f : (1f - (oY - Min) / dY);
 

@@ -162,6 +162,19 @@ namespace Hparg.Drawable
             }
         }
 
+        internal float GetOffset(Zone drawingZone, Direction direction, int pixelOffset)
+        {
+            var zone = _zones[drawingZone];
+            return direction switch
+            {
+                Direction.Left => zone.X - (float)pixelOffset / _maxWidth,
+                Direction.Right => zone.Width + (float)pixelOffset  / _maxWidth,
+                Direction.Bottom => zone.Y - (float)pixelOffset / _maxHeight,
+                Direction.Top => zone.Height + (float)pixelOffset / _maxHeight,
+                _ => throw new NotImplementedException()
+            };
+        }
+
         internal MemoryStream ToStream()
         {
             var stream = new MemoryStream();
@@ -173,5 +186,13 @@ namespace Hparg.Drawable
         public int _maxWidth, _maxHeight;
         private Dictionary<Zone, DrawingZone> _zones;
         private readonly Image _img;
+
+        internal enum Direction
+        {
+            Left,
+            Right,
+            Top,
+            Bottom
+        }
     }
 }
