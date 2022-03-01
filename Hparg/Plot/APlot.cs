@@ -104,7 +104,7 @@ namespace Hparg.Plot
                 cvs.DrawText(
                     zone: (Zone)(drawingZone + 1),
                     x: .5f,
-                    y: cvs.GetOffset((Zone)(drawingZone + 1), Canvas.Direction.Bottom, 50),
+                    y: .5f,
                     text: _metadata.Title,
                     size: 16
                 );
