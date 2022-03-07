@@ -21,12 +21,12 @@ namespace Hparg.Plot
             _callback = callback;
         }
 
-        public void AddVerticalLine(int x, System.Drawing.Color color, int size = 2)
+        public void AddVerticalLine(float x, System.Drawing.Color color, int size = 2)
         {
             _lines.Add(new() { Position = x, Color = new Rgba32(color.R, color.G, color.B, color.A), Size = size, Orientation = Orientation.Vertical });
         }
 
-        public void AddHorizontalLine(int y, System.Drawing.Color color, int size = 2)
+        public void AddHorizontalLine(float y, System.Drawing.Color color, int size = 2)
         {
             _lines.Add(new() { Position = y, Color = new Rgba32(color.R, color.G, color.B, color.A), Size = size, Orientation = Orientation.Horizontal });
         }
@@ -67,6 +67,11 @@ namespace Hparg.Plot
         float IPlot.DisplayMax { set => DisplayMax = value; get => DisplayMax; }
 
         internal abstract void Render(Canvas canvas, Zone drawingZone);
+
+        public float ToLocal(float value)
+        {
+            return (value - DisplayMin) / (DisplayMax - DisplayMin);
+        }
 
         public Canvas GetRenderData(Canvas cvs, int drawingZone)
         {

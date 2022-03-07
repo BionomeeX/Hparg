@@ -38,17 +38,13 @@ namespace Hparg
             }
             var dist = DisplayMax - DisplayMin;
 
-            float ToLocal(float value)
-            {
-                return (value - DisplayMin) / (DisplayMax - DisplayMin);
-            }
-
             var ordered = _data.OrderBy(x => x);
             var median = ToLocal(Quantile(ordered, .5f));
             var firstQuartile = ToLocal(Quantile(ordered, .25f));
             var thirdQuartile = ToLocal(Quantile(ordered, .75f));
             var minQuartile = ToLocal(Quantile(ordered, .05f));
             var maxQuartile = ToLocal(Quantile(ordered, .95f));
+            var average = ToLocal(_data.Sum() / _data.Count());
 
             var textSize = 11;
             var textOffset = .02f;
@@ -59,6 +55,9 @@ namespace Hparg
             var smallBorderRight = .5f + .15f;
 
             // Draw horizonal lines for box plot along with text
+
+            // Average
+            canvas.DrawLine(drawingZone, borderLeft, 1f - average, borderRight, 1f - average, lineSize, Color.Blue);
 
             // .05
             canvas.DrawLine(drawingZone, smallBorderLeft, 1f - minQuartile, smallBorderRight, 1f - minQuartile, lineSize, Color.Black);
