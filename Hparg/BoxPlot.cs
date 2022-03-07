@@ -39,15 +39,12 @@ namespace Hparg
             var dist = DisplayMax - DisplayMin;
 
             var ordered = _data.OrderBy(x => x);
-            var median = ToLocal(Quantile(ordered, .5f));
-            var firstQuartile = ToLocal(Quantile(ordered, .25f));
-            var thirdQuartile = ToLocal(Quantile(ordered, .75f));
-            var minQuartile = ToLocal(Quantile(ordered, .05f));
-            var maxQuartile = ToLocal(Quantile(ordered, .95f));
-            var average = ToLocal(_data.Sum() / _data.Count());
-
-            var textSize = 11;
-            var textOffset = .02f;
+            var median = ToRelativeSpace(0f, Quantile(ordered, .5f)).Y;
+            var firstQuartile = ToRelativeSpace(0f, Quantile(ordered, .25f)).Y;
+            var thirdQuartile = ToRelativeSpace(0f, Quantile(ordered, .75f)).Y;
+            var minQuartile = ToRelativeSpace(0f, Quantile(ordered, .05f)).Y;
+            var maxQuartile = ToRelativeSpace(0f, Quantile(ordered, .95f)).Y;
+            var average = ToRelativeSpace(0f, _data.Sum() / _data.Count()).Y;
 
             var borderLeft = .5f - .25f;
             var borderRight = .5f + .25f;
@@ -57,36 +54,36 @@ namespace Hparg
             // Draw horizonal lines for box plot along with text
 
             // Average
-            canvas.DrawLine(drawingZone, borderLeft, 1f - average, borderRight, 1f - average, lineSize, Color.Blue);
+            canvas.DrawLine(drawingZone, borderLeft, average, borderRight, average, lineSize, Color.Blue);
 
             // .05
-            canvas.DrawLine(drawingZone, smallBorderLeft, 1f - minQuartile, smallBorderRight, 1f - minQuartile, lineSize, Color.Black);
+            canvas.DrawLine(drawingZone, smallBorderLeft, minQuartile, smallBorderRight, minQuartile, lineSize, Color.Black);
             // .95
-            canvas.DrawLine(drawingZone, smallBorderLeft, 1f - maxQuartile, smallBorderRight, 1f - maxQuartile, lineSize, Color.Black);
+            canvas.DrawLine(drawingZone, smallBorderLeft, maxQuartile, smallBorderRight, maxQuartile, lineSize, Color.Black);
 
             // First quartile
-            canvas.DrawLine(drawingZone, borderLeft, 1f - firstQuartile, borderRight, 1f - firstQuartile, lineSize, Color.Black);
+            canvas.DrawLine(drawingZone, borderLeft, firstQuartile, borderRight, firstQuartile, lineSize, Color.Black);
 
             // Third quartile
-            canvas.DrawLine(drawingZone, borderLeft, 1f - thirdQuartile, borderRight, 1f - thirdQuartile, lineSize, Color.Black);
+            canvas.DrawLine(drawingZone, borderLeft, thirdQuartile, borderRight, thirdQuartile, lineSize, Color.Black);
 
             // Median
-            canvas.DrawLine(drawingZone, borderLeft, 1f - median, borderRight, 1f - median, lineSize, Color.Black);
+            canvas.DrawLine(drawingZone, borderLeft, median, borderRight, median, lineSize, Color.Black);
 
             // Vertical lines
-            canvas.DrawLine(drawingZone, borderLeft, 1f - firstQuartile, borderLeft, 1f - thirdQuartile, lineSize, Color.Black);
-            canvas.DrawLine(drawingZone, borderRight, 1f - firstQuartile, borderRight, 1f - thirdQuartile, lineSize, Color.Black);
-            canvas.DrawLine(drawingZone, .5f, 1f - minQuartile, .5f, 1f - maxQuartile, lineSize, Color.Black);
+            canvas.DrawLine(drawingZone, borderLeft, firstQuartile, borderLeft, thirdQuartile, lineSize, Color.Black);
+            canvas.DrawLine(drawingZone, borderRight, firstQuartile, borderRight, thirdQuartile, lineSize, Color.Black);
+            canvas.DrawLine(drawingZone, .5f, minQuartile, .5f, maxQuartile, lineSize, Color.Black);
 
             foreach (var point in _data)
             {
-                canvas.DrawPoint(drawingZone, (float)_rand.NextDouble() / 10f + .5f - .05f, 1f - ToLocal(point), 3, Shape.Circle, new Color(new Rgba32(255, 0, 0, 150)));
+                canvas.DrawPoint(drawingZone, (float)_rand.NextDouble() / 10f + .5f - .05f, ToRelativeSpace(0f, point).Y, 3, Shape.Circle, new Color(new Rgba32(255, 0, 0, 150)));
             }
         }
 
-        internal override (float X, float Y) ToRelativeSpace(float x, float y)
+        public override (float X, float Y) ToRelativeSpace(float x, float y)
         {
-            throw new NotImplementedException();
+            return (float.NaN, 1f - (y - DisplayMin) / (DisplayMax - DisplayMin));
         }
 
         private const int lineSize = 3;

@@ -136,7 +136,7 @@ namespace Hparg
             }
         }
 
-        internal override (float X, float Y) ToRelativeSpace(float x, float y)
+        public override (float X, float Y) ToRelativeSpace(float x, float y)
         {
             throw new NotImplementedException(); // TODO
         }

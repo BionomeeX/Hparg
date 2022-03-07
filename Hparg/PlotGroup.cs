@@ -32,7 +32,7 @@ namespace Hparg
             {
                 foreach (var line in _lines)
                 {
-                    var y = ToLocal(line.Position);
+                    var y = _plots[i].ToRelativeSpace(0f, line.Position).Y;
                     cvs.DrawLine((Zone)((i * 3) + 1), 0f, y, 1f, y, line.Size, line.Color);
                 }
             }
@@ -71,9 +71,9 @@ namespace Hparg
             _lines.Add(new() { Position = y, Color = new Rgba32(color.R, color.G, color.B, color.A), Size = size, Orientation = Orientation.Horizontal });
         }
 
-        public float ToLocal(float value)
+        public (float X, float Y) ToRelativeSpace(float x, float y)
         {
-            return (value - DisplayMin) / (DisplayMax - DisplayMin);
+            throw new NotImplementedException();
         }
 
         private readonly List<Line> _lines = new();

@@ -31,7 +31,7 @@ namespace Hparg.Plot
             _lines.Add(new() { Position = y, Color = new Rgba32(color.R, color.G, color.B, color.A), Size = size, Orientation = Orientation.Horizontal });
         }
 
-        internal abstract (float X, float Y) ToRelativeSpace(float x, float y);
+        public abstract (float X, float Y) ToRelativeSpace(float x, float y);
         internal abstract IEnumerable<T> GetPointsInRectangle(float x, float y, float w, float h);
         private float _min = float.MaxValue;
         private float _max = float.MinValue;
@@ -67,11 +67,6 @@ namespace Hparg.Plot
         float IPlot.DisplayMax { set => DisplayMax = value; get => DisplayMax; }
 
         internal abstract void Render(Canvas canvas, Zone drawingZone);
-
-        public float ToLocal(float value)
-        {
-            return (value - DisplayMin) / (DisplayMax - DisplayMin);
-        }
 
         public Canvas GetRenderData(Canvas cvs, int drawingZone)
         {

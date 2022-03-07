@@ -12,7 +12,7 @@ namespace Hparg.Plot
         public MemoryStream GetRenderData(int width, int height);
         public void AddVerticalLine(float x, Color color, int size = 2);
         public void AddHorizontalLine(float y, Color color, int size = 2);
-        public float ToLocal(float value);
+        public (float X, float Y) ToRelativeSpace(float x, float y);
         public float Min { get; }
         public float Max { get; }
         public float DisplayMin { set; get; }
