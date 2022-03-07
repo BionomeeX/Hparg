@@ -1,7 +1,5 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
-using System.IO;
-using System.Linq;
 
 namespace Hparg
 {
