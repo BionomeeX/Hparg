@@ -13,8 +13,9 @@ namespace Hparg
 #if DEBUG
             this.AttachDevTools();
 #endif
-            _data = Enumerable.Range(0, 10).Select(_ => (float)_rand.NextDouble() * 10f).ToList();
+            _data = Enumerable.Range(0, 20).Select(_ => (float)_rand.NextDouble() * 10f).ToList();
             RenderGraph();
+
             Task.Run(async () =>
             {
                 while (true)
@@ -48,7 +49,7 @@ namespace Hparg
                     odds.Add(_data[i]);
                 }
             }
-            this.FindControl<Graph>("DemoGraph2").Plot = new PlotGroup(
+            var pg = new PlotGroup(
                 new[]
                 {
                     new BoxPlot(evens, metadata: new Metadata() { Title = "Evens" }),
@@ -56,6 +57,8 @@ namespace Hparg
                 },
                 title: "Values"
             );
+            pg.AddHorizontalLine(_data.Sum() / _data.Count, System.Drawing.Color.Blue);
+            this.FindControl<Graph>("DemoGraph2").Plot = pg;
         }
 
         private Random _rand = new();

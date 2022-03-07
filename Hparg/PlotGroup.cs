@@ -28,10 +28,13 @@ namespace Hparg
                 _plots[i].GetRenderData(cvs, (i * 3) + 1);
             }
 
-            foreach (var line in _lines)
+            for (int i = 0; i < _plots.Length; i++)
             {
-                var y = ToLocal(line.Position);
-                cvs.DrawLine(Zone.Main, 0f, y, 1f, y, line.Size, line.Color);
+                foreach (var line in _lines)
+                {
+                    var y = ToLocal(line.Position);
+                    cvs.DrawLine((Zone)((i * 3) + 1), 0f, y, 1f, y, line.Size, line.Color);
+                }
             }
 
             cvs.DrawAxis(DisplayMin, DisplayMax);
