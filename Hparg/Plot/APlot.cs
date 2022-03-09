@@ -70,6 +70,8 @@ namespace Hparg.Plot
 
         public Canvas GetRenderData(Canvas cvs, int drawingZone)
         {
+            _lastCanvas = cvs;
+
             var zone = (Zone)drawingZone;
             Render(cvs, zone);
 
@@ -89,11 +91,8 @@ namespace Hparg.Plot
 
             if (_dragAndDropSelection.HasValue)
             {
-                var xMin = (float)Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
-                var yMin = (float)Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-                var xMax = (float)Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
-                var yMax = (float)Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-                cvs.DrawRectangle(Zone.Main, xMin, yMin, xMax - xMin, yMax - yMin, 1, Color.Red);
+                (float XMin, float YMin, float XMax, float YMax) = ToLocalRect(cvs);
+                cvs.DrawRectangle(Zone.Main, XMin, YMin, XMax - XMin, YMax - YMin, 1, Color.Red);
             }
 
             if (_metadata != null)
@@ -108,6 +107,25 @@ namespace Hparg.Plot
             }
 
             return cvs;
+        }
+
+        private (float XMin, float YMin, float XMax, float YMax) ToLocalRect(Canvas cvs)
+        {
+            var width = cvs.GetWidth(Zone.Main);
+            var leftWidth = cvs.GetWidth(Zone.LeftMargin);
+            var height = cvs.GetHeight(Zone.Main);
+            var topHeight = cvs.GetHeight(Zone.UpperMargin);
+            var xMin = (float)Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
+            var yMin = (float)Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
+            var xMax = (float)Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
+            var yMax = (float)Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
+
+            xMin = (xMin - leftWidth) / width;
+            xMax = (xMax - leftWidth) / width;
+            yMin = (yMin - topHeight) / height;
+            yMax = (yMax - topHeight) / height;
+
+            return (xMin, yMin, xMax, yMax);
         }
 
         /// <summary>
@@ -135,15 +153,14 @@ namespace Hparg.Plot
 
         public void EndDragAndDrop()
         {
-            var xMin = Math.Min(_dragAndDropSelection!.Value.start.X, _dragAndDropSelection.Value.end.X);
-            var yMin = Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-            var xMax = Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
-            var yMax = Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-            var points = GetPointsInRectangle(xMin, yMin, xMax - xMin, yMax - yMin);
+            (float XMin, float YMin, float XMax, float YMax) = ToLocalRect(_lastCanvas);
+            var points = GetPointsInRectangle(XMin, YMin, XMax - XMin, YMax - YMin);
             _callback?.Invoke(points);
 
             _dragAndDropSelection = null;
         }
+
+        private Canvas _lastCanvas;
 
         /// <summary>
         /// List of all points to display

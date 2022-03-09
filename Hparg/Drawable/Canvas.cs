@@ -17,6 +17,11 @@ namespace Hparg.Drawable
         private float GetOffset(int o, int max)
             => (float)o / max;
 
+        internal float GetWidth(Zone zone)
+            => _zones[zone].Width;
+        internal float GetHeight(Zone zone)
+            => _zones[zone].Height;
+
         internal Canvas(int width, int height, int leftOffset, int rightOffset, int upOffset, int downOffset, int mainSurfaceCount = 1)
         {
             _maxWidth = width;
@@ -102,6 +107,12 @@ namespace Hparg.Drawable
         {
             var l = _zones[zone].ToLocal(x, y);
             return new PointF(l.X * _maxWidth, l.Y * _maxHeight);
+        }
+
+        internal PointF GetSize(Zone zone, float globalWidth, float globalHeight)
+        {
+            var z = _zones[zone];
+            return new PointF(z.Width * globalWidth, z.Height * globalHeight);
         }
 
         internal void DrawPoint(Zone zone, float x, float y, int size, Shape shape, Color color)
