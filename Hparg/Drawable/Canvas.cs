@@ -5,6 +5,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System.Globalization;
 
 namespace Hparg.Drawable
 {
@@ -143,7 +144,8 @@ namespace Hparg.Drawable
             HorizontalAlignment horAlignment = HorizontalAlignment.Center,
             VerticalAlignment verAlignment = VerticalAlignment.Center)
         {
-            _img.Mutate(i => i.DrawText(new TextOptions(SystemFonts.CreateFont("Arial", size, FontStyle.Regular))
+            string font = SystemFonts.Families.Contains(SystemFonts.Get("Arial", CultureInfo.InvariantCulture)) ? "Arial" : SystemFonts.Families.First().Name;
+            _img.Mutate(i => i.DrawText(new TextOptions(SystemFonts.CreateFont(font, size, FontStyle.Regular))
             {
                 HorizontalAlignment = horAlignment,
                 VerticalAlignment = verAlignment,
