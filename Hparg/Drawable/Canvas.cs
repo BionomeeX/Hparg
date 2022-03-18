@@ -144,8 +144,11 @@ namespace Hparg.Drawable
             HorizontalAlignment horAlignment = HorizontalAlignment.Center,
             VerticalAlignment verAlignment = VerticalAlignment.Center)
         {
-            string font = SystemFonts.Families.Contains(SystemFonts.Get("Arial", CultureInfo.InvariantCulture)) ? "Arial" : SystemFonts.Families.First().Name;
-            _img.Mutate(i => i.DrawText(new TextOptions(SystemFonts.CreateFont(font, size, FontStyle.Regular))
+            if (!SystemFonts.TryGet("Arial", out FontFamily font))
+            {
+                font = SystemFonts.Families.First();
+            }
+            _img.Mutate(i => i.DrawText(new TextOptions(font.CreateFont(size, FontStyle.Regular))
             {
                 HorizontalAlignment = horAlignment,
                 VerticalAlignment = verAlignment,
