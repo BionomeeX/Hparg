@@ -18,8 +18,8 @@ namespace Hparg
                 additionalPoints = Array.Empty<Point<uint, float>>();
             }
             _points = ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints);
-            Min = _points.Min(p => p.Y);
-            Max = _points.Max(p => p.Y);
+            Min = y.Min();
+            Max = y.Max();
             _chpos = chpos;
         }
 
