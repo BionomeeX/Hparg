@@ -4,8 +4,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Hparg.Plot;
-using System.Drawing.Imaging;
-using System.IO;
 
 namespace Hparg
 {
@@ -60,10 +58,7 @@ namespace Hparg
 
             var data = Plot.GetRenderData(width, height);
 
-            using MemoryStream stream = new();
-            data.Save(stream, ImageFormat.Png);
-            stream.Position = 0;
-            Bitmap bmp = new(stream);
+            Bitmap bmp = new(data);
             context?.DrawImage(bmp, new Rect(0, 0, width, height));
             data.Dispose();
         }

@@ -1,67 +1,87 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
-using System.Drawing;
-using System.Linq;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Hparg
 {
     public class PlotGroup : IPlot
     {
-        public PlotGroup(params IPlot[] plots)
+        public PlotGroup(IPlot[] plots, string? title = null)
         {
             _plots = plots;
+            _title = title;
         }
 
         private IPlot[] _plots;
-        public Bitmap GetRenderData(int width, int height)
+        public MemoryStream GetRenderData(int width, int height)
         {
-            Canvas cvs = new(width, height, 20);
             var min = _plots.Select(x => x.Min).Min();
             var max = _plots.Select(x => x.Max).Max();
+            var diff = (max - min);
+            min -= diff * .1f;
+            max += diff * .1f;
+            var cvs = new Canvas(width, height, 75, 20, 20, 50, _plots.Length);
             for (int i = 0; i < _plots.Length; i++)
             {
-                _plots[i].Min = min;
-                _plots[i].Max = max;
-                cvs.SetDrawingZone(i / (float)_plots.Length, (i + 1) / (float)_plots.Length, 0f, 1f);
-                _plots[i].GetRenderData(cvs);
+                _plots[i].DisplayMin = min;
+                _plots[i].DisplayMax = max;
+                _plots[i].GetRenderData(cvs, (i * 3) + 1);
             }
 
-            cvs.DrawAxis(Min, Max);
+            for (int i = 0; i < _plots.Length; i++)
+            {
+                foreach (var line in _lines)
+                {
+                    var y = _plots[i].ToRelativeSpace(0f, line.Position).Y;
+                    cvs.DrawLine((Zone)((i * 3) + 1), 0f, y, 1f, y, line.Size, line.Color);
+                }
+            }
 
-            return cvs.GetBitmap();
+            cvs.DrawAxis(DisplayMin, DisplayMax);
+
+            if (_title != null)
+            {
+                cvs.DrawText(Zone.UpperMarginFull, .5f, .5f, _title, 20);
+            }
+
+            return cvs.ToStream();
         }
 
         public void BeginDragAndDrop(float x, float y)
-        {
-            throw new System.NotImplementedException();
-        }
+        { }
 
         public void DragAndDrop(float x, float y)
-        {
-            throw new System.NotImplementedException();
-        }
+        { }
 
         public void EndDragAndDrop()
+        { }
+
+        public Canvas GetRenderData(Canvas cvs, int drawingZone)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public Canvas GetRenderData(Canvas cvs)
+        public void AddVerticalLine(float x, System.Drawing.Color color, int size = 2)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public void AddVerticalLine(int x, Color color, int size = 2)
+        public void AddHorizontalLine(float y, System.Drawing.Color color, int size = 2)
         {
-            throw new System.NotImplementedException();
+            _lines.Add(new() { Position = y, Color = new Rgba32(color.R, color.G, color.B, color.A), Size = size, Orientation = Orientation.Horizontal });
         }
 
-        public void AddHorizontalLine(int y, Color color, int size = 2)
+        public (float X, float Y) ToRelativeSpace(float x, float y)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public float Min { get => _plots.Select(x => x.Min).Min(); set => throw new System.NotImplementedException(); }
-        public float Max { get => _plots.Select(x => x.Max).Max(); set => throw new System.NotImplementedException(); }
+        private readonly List<Line> _lines = new();
+        public float Min { get => _plots.Select(x => x.Min).Min(); }
+        public float Max { get => _plots.Select(x => x.Max).Max(); }
+        public float DisplayMin { get => _plots.Select(x => x.DisplayMin).Min(); set => throw new NotImplementedException(); }
+        public float DisplayMax { get => _plots.Select(x => x.DisplayMax).Max(); set => throw new NotImplementedException(); }
+
+        private string? _title;
     }
 }

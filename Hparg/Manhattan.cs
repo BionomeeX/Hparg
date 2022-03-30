@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using Hparg.Drawable;
 using Hparg.Plot;
-
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Hparg
 {
@@ -14,20 +10,20 @@ namespace Hparg
         private List<Point<float, float>> _points;
         private uint[] _chpos;
 
-        public Manhattan(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<uint>> callback = null, Point<uint, float>[] additionalPoints = null) :
-        base(callback)
+        public Manhattan(uint[] chpos, float[] y, IEnumerable<System.Drawing.Color> chcolors, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<uint>> callback = null, Point<uint, float>[] additionalPoints = null) :
+        base(null, callback)
         {
             if (additionalPoints == null)
             {
                 additionalPoints = Array.Empty<Point<uint, float>>();
             }
             _points = ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints);
-            Min = _points.Min(p => p.Y);
-            Max = _points.Max(p => p.Y);
+            Min = y.Min();
+            Max = y.Max();
             _chpos = chpos;
         }
 
-        internal static List<Point<float, float>> ComputePointsNormalization(uint[] chpos, float[] y, IEnumerable<Color> chcolors, Shape shape, int size, Plot.Point<uint, float>[] additionalPoints)
+        internal static List<Point<float, float>> ComputePointsNormalization(uint[] chpos, float[] y, IEnumerable<System.Drawing.Color> chcolors, Shape shape, int size, Plot.Point<uint, float>[] additionalPoints)
         {
             Dictionary<int, (int min, int max)> _chInfo = new();
             double pjumps = 0.05; // <- à modifier via les paramètres
@@ -87,12 +83,13 @@ namespace Hparg
                     }
                 }
 
+                var color = chcolors.ElementAt((chromosome - 1) % chcolors.Count());
                 result.Add(
                     new Point<float, float>
                     {
                         X = (float)pi,
                         Y = 1f - (y[i] - ymin) / (ymax - ymin),
-                        Color = chcolors.ElementAt((chromosome - 1) % chcolors.Count()),
+                        Color = color,
                         Shape = shape,
                         Size = size
                     }
@@ -129,17 +126,17 @@ namespace Hparg
             return result;
         }
 
-        internal override void Render(Canvas canvas)
+        internal override void Render(Canvas canvas, Zone drawingZone)
         {
             for (int i = 0; i < _points.Count; i++)
             {
                 var point = _points[i];
 
-                canvas.DrawPoint(point.X, point.Y, point.Size, point.Shape, point.Color);
+                canvas.DrawPoint(drawingZone, point.X, point.Y, point.Size, point.Shape, new Rgba32(point.Color.R, point.Color.G, point.Color.B, point.Color.A));
             }
         }
 
-        internal override (float X, float Y) ToRelativeSpace(float x, float y)
+        public override (float X, float Y) ToRelativeSpace(float x, float y)
         {
             throw new NotImplementedException(); // TODO
         }

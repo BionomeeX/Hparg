@@ -1,8 +1,6 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using SixLabors.ImageSharp.PixelFormats;
 using System.Numerics;
 
 namespace Hparg
@@ -11,7 +9,7 @@ namespace Hparg
     {
         public Scatter(float[] x, float[] y, System.Drawing.Color color, float? xMin = null, float? xMax = null, float? yMin = null, float? yMax = null,
             Shape shape = Shape.Circle, int size = 2, int lineSize = 2, Action<IEnumerable<Vector2>> callback = null)
-            : base(callback)
+            : base(null, callback)
         {
             _points = Enumerable.Range(0, x.Length).Select(i =>
             {
@@ -64,32 +62,32 @@ namespace Hparg
         private (float x, float y) GetCoordinate(float oX, float oY)
         {
             var dX = _xMax.Value - _xMin.Value;
-            var dY = Max - Min;
+            var dY = DisplayMax - DisplayMin;
             var x = dX == 0 ? 0f : (oX - _xMin.Value) / dX;
             var y = dY == 0 ? 0f : (1f - (oY - Min) / dY);
 
             return (x, y);
         }
 
-        internal override void Render(Canvas canvas)
+        internal override void Render(Canvas canvas, Zone drawingZone)
         {
             for (int i = 0; i < _points.Count; i++)
             {
                 var point = _points[i];
 
                 (float x, float y) = GetCoordinate(point.X, point.Y);
-                canvas.DrawPoint(x, y, point.Size, point.Shape, point.Color);
+                canvas.DrawPoint(drawingZone, x, y, point.Size, point.Shape, new Rgba32(point.Color.R, point.Color.G, point.Color.B, point.Color.A));
 
                 if (i < _points.Count - 1)
                 {
                     var next = _points[i + 1];
                     (float nX, float nY) = GetCoordinate(next.X, next.Y);
-                    canvas.DrawLine(x, y, nX, nY, point.Size, point.Color);
+                    canvas.DrawLine(drawingZone, x, y, nX, nY, point.Size, new Rgba32(point.Color.R, point.Color.G, point.Color.B, point.Color.A));
                 }
             }
         }
 
-        internal override (float X, float Y) ToRelativeSpace(float x, float y)
+        public override (float X, float Y) ToRelativeSpace(float x, float y)
         {
             return GetCoordinate(x, y);
         }

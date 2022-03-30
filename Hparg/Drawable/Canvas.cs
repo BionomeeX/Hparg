@@ -1,119 +1,211 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+﻿using SixLabors.Fonts;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using System.Globalization;
 
 namespace Hparg.Drawable
 {
     public class Canvas // TODO: Dispose?
     {
-        internal Canvas(int width, int height, int offset)
-        {
-            _offset = offset;
-            _maxWidth = width - 2 * _offset;
-            _maxHeight = height - 2 * _offset;
-            SetDrawingZone(0f, 1f, 0f, 1f);
+        internal Canvas(int width, int height, int offset, int mainSurfaceCount = 1)
+            : this(width, height, offset, offset, offset, offset, mainSurfaceCount)
+        { }
 
-            _bmp = new(width, height);
-            _grf = Graphics.FromImage(_bmp);
-            _grf.SmoothingMode = SmoothingMode.HighQuality;
-            _grf.InterpolationMode = InterpolationMode.HighQualityBicubic;
-        }
+        private float GetOffset(int o, int max)
+            => (float)o / max;
 
-        internal void SetDrawingZone(float xStart, float xStop, float yStart, float yStop)
-        {
-            var x = _maxWidth;
-            var y = _maxHeight;
-            _drawingZone = new(
-                x: (int)(x * xStart) + _offset,
-                y: (int)(y * yStart) + _offset,
-                width: (int)(x * (xStop - xStart)) - _offset,
-                height: (int)(y * (yStop - yStart)) - _offset
-            );
-        }
+        internal float GetWidth(Zone zone)
+            => _zones[zone].Width;
+        internal float GetHeight(Zone zone)
+            => _zones[zone].Height;
 
-        internal void DrawPoint(float x, float y, int size, Shape shape, Color color)
+        internal Canvas(int width, int height, int leftOffset, int rightOffset, int upOffset, int downOffset, int mainSurfaceCount = 1)
         {
-            var brush = GetBrush(color);
-            switch (shape)
+            _maxWidth = width;
+            _maxHeight = height;
+            _zones = new()
             {
-                case Shape.Circle:
-                    _grf.FillEllipse(brush,
-                        _drawingZone.X + _drawingZone.Width * x - size / 2,
-                        _drawingZone.Y + _drawingZone.Height * y - size / 2,
-                        size, size);
-                    break;
+                {
+                    Zone.LeftMargin,
+                    new(
+                        0f,
+                        GetOffset(upOffset, _maxHeight),
+                        GetOffset(leftOffset, _maxWidth),
+                        1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
+                    )
+                },
+                {
+                    Zone.RightMargin,
+                    new(
+                        1f - GetOffset(rightOffset, _maxWidth),
+                        GetOffset(upOffset, _maxHeight),
+                        GetOffset(rightOffset, _maxWidth),
+                        1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
+                    )
+                },
+                {
+                    Zone.UpperMarginFull,
+                    new(
+                        GetOffset(leftOffset, _maxWidth),
+                        0f,
+                        1f - (GetOffset(leftOffset, _maxHeight) + GetOffset(rightOffset, _maxWidth)),
+                        GetOffset(upOffset, _maxHeight)
+                    )
+                },
+                {
+                    Zone.LowerMarginFull,
+                    new(
+                        GetOffset(leftOffset, _maxWidth),
+                        1f - GetOffset(downOffset, _maxHeight),
+                        1f - (GetOffset(leftOffset, _maxHeight) + GetOffset(rightOffset, _maxWidth)),
+                        GetOffset(downOffset, _maxHeight)
+                    )
+                }
+            };
 
-                case Shape.Diamond:
-                    _grf.FillRectangle(brush,
-                        _drawingZone.X + _drawingZone.Width * x - size / 2,
-                        _drawingZone.Y + _drawingZone.Height * y - size / 2,
-                        size, size);
-                    break;
+            var mx = (1f - (GetOffset(leftOffset, _maxHeight) + GetOffset(rightOffset, _maxWidth))) / mainSurfaceCount;
+            for (int i = 0; i < mainSurfaceCount * 3; i += 3)
+            {
+                // Main zone
+                _zones.Add((Zone)(i + 1),
+                    new(
+                        x: GetOffset(leftOffset, _maxWidth) + mx * (i / 3),
+                        y: GetOffset(upOffset, _maxHeight),
+                        w: mx,
+                        h: 1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
+                    )
+                );
 
-                default:
-                    throw new NotImplementedException();
+                // Margins
+                _zones.Add(
+                    (Zone)i,
+                    new(
+                        GetOffset(leftOffset, _maxWidth) + mx * (i / 3),
+                        0f,
+                        mx,
+                        GetOffset(upOffset, _maxHeight)
+                    )
+                );
+                _zones.Add(
+                    (Zone)(i + 2),
+                    new(
+                        GetOffset(leftOffset, _maxWidth) + mx * (i / 3),
+                        1f - GetOffset(downOffset, _maxHeight),
+                        mx,
+                        GetOffset(downOffset, _maxHeight)
+                    )
+                );
             }
+
+            _img = new Image<Rgba32>(width, height);
         }
 
-        internal void DrawLine(float x1, float y1, float x2, float y2, int size, Color color)
+        private PointF Tr(Zone zone, float x, float y)
         {
-            _grf.DrawLine(new Pen(GetBrush(color), size),
-                new Point((int)(_drawingZone.X + _drawingZone.Width * x1), (int)(_drawingZone.Y + _drawingZone.Height * y1)),
-                new Point((int)(_drawingZone.X + _drawingZone.Width * x2), (int)(_drawingZone.Y + _drawingZone.Height * y2)));
+            var l = _zones[zone].ToLocal(x, y);
+            return new PointF(l.X * _maxWidth, l.Y * _maxHeight);
         }
 
-        internal void DrawText(float x, float y, string text)
+        internal PointF GetSize(Zone zone, float globalWidth, float globalHeight)
         {
-            _grf.DrawString(text, new Font("Arial", 10), GetBrush(Color.Black),
-                new Rectangle((int)(_drawingZone.X + _drawingZone.Width * x), (int)(_drawingZone.Y + _drawingZone.Height * y), 100, 100));
+            var z = _zones[zone];
+            return new PointF(z.Width * globalWidth, z.Height * globalHeight);
         }
 
-        internal void DrawRectangle(float x, float y, float w, float h, int size, Color color)
+        internal void DrawPoint(Zone zone, float x, float y, int size, Shape shape, Color color)
         {
-            _grf.DrawRectangle(new(GetBrush(color), size),
-                new(
-                    (int)(_drawingZone.X + _drawingZone.Width * x),
-                    (int)(_drawingZone.Y + _drawingZone.Height * y),
-                    (int)(_drawingZone.Width * w),
-                    (int)(_drawingZone.Height * h)
-                )
-            );
+            RegularPolygon point = shape switch
+            {
+                Shape.Circle => new RegularPolygon(
+                    Tr(zone, x, y),
+                    50,
+                    size),
+                Shape.Diamond => new RegularPolygon(
+                    Tr(zone, x, y),
+                    4,
+                    size),
+                _ => throw new NotImplementedException(),
+            };
+            _img.Mutate(x => x.Fill(color, point));
+        }
+
+        internal void DrawLine(Zone zone, float x1, float y1, float x2, float y2, int size, Color color)
+        {
+            PathBuilder path = new();
+            path.AddLine(Tr(zone, x1, y1), Tr(zone, x2, y2));
+            _img.Mutate(x => x.Draw(new Pen(color, size), path.Build()));
+        }
+
+        internal void DrawText(Zone zone, float x, float y, string text, int size,
+            HorizontalAlignment horAlignment = HorizontalAlignment.Center,
+            VerticalAlignment verAlignment = VerticalAlignment.Center)
+        {
+            if (!SystemFonts.TryGet("Arial", out FontFamily font))
+            {
+                font = SystemFonts.Families.First();
+            }
+            _img.Mutate(i => i.DrawText(new TextOptions(font.CreateFont(size, FontStyle.Regular))
+            {
+                HorizontalAlignment = horAlignment,
+                VerticalAlignment = verAlignment,
+                Origin = Tr(zone, x, y)
+            }, text, Color.Black));
+        }
+
+        internal void DrawRectangle(Zone zone, float x, float y, float w, float h, int size, Color color)
+        {
+            var n = Tr(zone, x + w, y + h) - Tr(zone, x, y);
+            var rect = new RectangleF(Tr(zone, x, y), new SizeF(n.X, n.Y));
+            _img.Mutate(x => x.Draw(new Pen(color, size), rect));
         }
 
         internal void DrawAxis(float min, float max)
         {
-            SetDrawingZone(0f, 1f, 0f, 1f);
-            DrawLine(0f, 1f, 1f, 1f, 2, Color.Black);
-            DrawLine(0f, 0f, 0f, 1f, 2, Color.Black);
-            DrawText(0f, 1f, $"{min}");
-            DrawText(0f, 0f, $"{max}");
-        }
-
-        /// <summary>
-        /// Get the current brush given a point
-        /// Allow to store brushes so we don't recreate them everytimes
-        /// </summary>
-        private Brush GetBrush(Color color)
-        {
-            if (!brushes.ContainsKey(color))
+            DrawLine(Zone.LeftMargin, 1f, 0f, 1f, 1f, 2, Color.Black);
+            DrawLine(Zone.LowerMarginFull, 0f, 0f, 1f, 0f, 2, Color.Black);
+            var relativeMax = max - min;
+            for (int i = 0; i <= 10; i++)
             {
-                var brush = new SolidBrush(color);
-                brushes.Add(color, brush);
-                return brush;
+                var value = (relativeMax / 10f) * i + min;
+                DrawText(Zone.LeftMargin, .9f, 1f - i / 10f, $"{value:0.00}", 15, HorizontalAlignment.Right);
             }
-            return brushes[color];
         }
 
-        internal Bitmap GetBitmap()
-            => _bmp;
+        internal float GetOffset(Zone drawingZone, Direction direction, int pixelOffset)
+        {
+            var zone = _zones[drawingZone];
+            return direction switch
+            {
+                Direction.Left => zone.X - (float)pixelOffset / _maxWidth,
+                Direction.Right => zone.Width + (float)pixelOffset  / _maxWidth,
+                Direction.Bottom => zone.Y - (float)pixelOffset / _maxHeight,
+                Direction.Top => zone.Height + (float)pixelOffset / _maxHeight,
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        internal MemoryStream ToStream()
+        {
+            var stream = new MemoryStream();
+            _img.Save(stream, new PngEncoder());
+            stream.Position = 0;
+            return stream;
+        }
 
         public int _maxWidth, _maxHeight;
-        public Rectangle _drawingZone;
-        private int _offset;
-        private readonly Bitmap _bmp;
-        private readonly Graphics _grf;
+        private Dictionary<Zone, DrawingZone> _zones;
+        private readonly Image _img;
 
-        private readonly Dictionary<Color, Brush> brushes = new();
+        internal enum Direction
+        {
+            Left,
+            Right,
+            Top,
+            Bottom
+        }
     }
 }

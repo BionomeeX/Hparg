@@ -8,11 +8,14 @@ namespace Hparg.Plot
         public void BeginDragAndDrop(float x, float y);
         public void DragAndDrop(float x, float y);
         public void EndDragAndDrop();
-        public Canvas GetRenderData(Canvas cvs);
-        public Bitmap GetRenderData(int width, int height);
-        public void AddVerticalLine(int x, Color color, int size = 2);
-        public void AddHorizontalLine(int y, Color color, int size = 2);
-        public float Min { set; get; }
-        public float Max { set; get; }
+        public Canvas GetRenderData(Canvas cvs, int drawingZone);
+        public MemoryStream GetRenderData(int width, int height);
+        public void AddVerticalLine(float x, Color color, int size = 2);
+        public void AddHorizontalLine(float y, Color color, int size = 2);
+        public (float X, float Y) ToRelativeSpace(float x, float y);
+        public float Min { get; }
+        public float Max { get; }
+        public float DisplayMin { set; get; }
+        public float DisplayMax { set; get; }
     }
 }

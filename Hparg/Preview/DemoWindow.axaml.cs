@@ -2,11 +2,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Hparg
 {
@@ -18,8 +13,9 @@ namespace Hparg
 #if DEBUG
             this.AttachDevTools();
 #endif
-            _data = Enumerable.Range(0, 10).Select(_ => (float)_rand.NextDouble() * 10f).ToList();
+            _data = Enumerable.Range(0, 20).Select(_ => (float)_rand.NextDouble() * 10f).ToList();
             RenderGraph();
+
             Task.Run(async () =>
             {
                 while (true)
@@ -39,7 +35,7 @@ namespace Hparg
             this.FindControl<Graph>("DemoGraph").Plot = new Scatter(
                 x: Enumerable.Range(0, _data.Count).Select(x => (float)x).ToArray(),
                 y: _data.ToArray(),
-                color: Color.Black
+                color: System.Drawing.Color.Black
             );
             List<float> odds = new(), evens = new();
             for (int i = 0; i < _data.Count; i++)
@@ -53,13 +49,16 @@ namespace Hparg
                     odds.Add(_data[i]);
                 }
             }
-            this.FindControl<Graph>("DemoGraph2").Plot = new PlotGroup(
+            var pg = new PlotGroup(
                 new[]
                 {
-                    new BoxPlot(evens),
-                    new BoxPlot(odds)
-                }
+                    new BoxPlot(evens, metadata: new Metadata() { Title = "Evens" }),
+                    new BoxPlot(odds, metadata: new Metadata() { Title = "Odds" })
+                },
+                title: "Values"
             );
+            pg.AddHorizontalLine(_data.Sum() / _data.Count, System.Drawing.Color.Blue);
+            this.FindControl<Graph>("DemoGraph2").Plot = pg;
         }
 
         private Random _rand = new();

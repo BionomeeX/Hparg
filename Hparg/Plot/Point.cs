@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using SixLabors.ImageSharp;
 
 namespace Hparg.Plot
 {
@@ -6,7 +6,7 @@ namespace Hparg.Plot
     {
         public Tx X { init; get; }
         public Ty Y { init; get; }
-        public Color Color { init; get; }
+        public System.Drawing.Color Color { init; get; }
         public Shape Shape { init; get; }
         public int Size { init; get; }
 

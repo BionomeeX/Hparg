@@ -1,7 +1,6 @@
 ﻿using Hparg.Drawable;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Hparg.Plot
 {
@@ -16,58 +15,117 @@ namespace Hparg.Plot
         /// <param name="offset">Offset for the start/end points</param>
         /// <param name="shape">Shape of the points</param>
         /// <param name="size">Size of the points</param>
-        private protected APlot(Action<IEnumerable<T>> callback)
+        private protected APlot(Metadata? metadata, Action<IEnumerable<T>> callback)
         {
+            _metadata = metadata;
             _callback = callback;
         }
 
-        public void AddVerticalLine(int x, Color color, int size = 2)
+        public void AddVerticalLine(float x, System.Drawing.Color color, int size = 2)
         {
-            _lines.Add(new() { Position = x, Color = color, Size = size, Orientation = Orientation.Vertical });
+            _lines.Add(new() { Position = x, Color = new Rgba32(color.R, color.G, color.B, color.A), Size = size, Orientation = Orientation.Vertical });
         }
 
-        public void AddHorizontalLine(int y, Color color, int size = 2)
+        public void AddHorizontalLine(float y, System.Drawing.Color color, int size = 2)
         {
-            _lines.Add(new() { Position = y, Color = color, Size = size, Orientation = Orientation.Horizontal });
+            _lines.Add(new() { Position = y, Color = new Rgba32(color.R, color.G, color.B, color.A), Size = size, Orientation = Orientation.Horizontal });
         }
 
-        internal abstract (float X, float Y) ToRelativeSpace(float x, float y);
+        public abstract (float X, float Y) ToRelativeSpace(float x, float y);
         internal abstract IEnumerable<T> GetPointsInRectangle(float x, float y, float w, float h);
-        protected float Min { set; get; }
-        protected float Max { set; get; }
-        float IPlot.Min { set => Min = value; get => Min; }
-        float IPlot.Max { set => Max = value; get => Max; }
-
-        internal abstract void Render(Canvas canvas);
-
-        public Canvas GetRenderData(Canvas cvs)
+        private float _min = float.MaxValue;
+        private float _max = float.MinValue;
+        protected float Min
         {
-            Render(cvs);
+            set
+            {
+                if (value < DisplayMin)
+                {
+                    DisplayMin = value;
+                }
+                _min = value;
+            }
+            get => _min;
+        }
+        protected float Max
+        {
+            set
+            {
+                if (value > DisplayMax)
+                {
+                    DisplayMax = value;
+                }
+                _max = value;
+            }
+            get => _max;
+        }
+        protected float DisplayMin { private set; get; }
+        protected float DisplayMax { private set; get; }
+        float IPlot.Min { get => Min; }
+        float IPlot.Max { get => Max; }
+        float IPlot.DisplayMin { set => DisplayMin = value; get => DisplayMin; }
+        float IPlot.DisplayMax { set => DisplayMax = value; get => DisplayMax; }
+
+        internal abstract void Render(Canvas canvas, Zone drawingZone);
+
+        public Canvas GetRenderData(Canvas cvs, int drawingZone)
+        {
+            _lastCanvas = cvs;
+
+            var zone = (Zone)drawingZone;
+            Render(cvs, zone);
 
             foreach (var line in _lines)
             {
                 if (line.Orientation == Orientation.Vertical)
                 {
                     var (X, _) = ToRelativeSpace(line.Position, 0);
-                    cvs.DrawLine(X, 0f, X, 1f, line.Size, line.Color);
+                    cvs.DrawLine(zone, X, 0f, X, 1f, line.Size, line.Color);
                 }
                 else
                 {
                     var (_, Y) = ToRelativeSpace(0, line.Position);
-                    cvs.DrawLine(0f, Y, 1f, Y, line.Size, line.Color);
+                    cvs.DrawLine(zone, 0f, Y, 1f, Y, line.Size, line.Color);
                 }
             }
 
             if (_dragAndDropSelection.HasValue)
             {
-                var xMin = (float)Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
-                var yMin = (float)Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-                var xMax = (float)Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
-                var yMax = (float)Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-                cvs.DrawRectangle(xMin, yMin, xMax - xMin, yMax - yMin, 1, Color.Red);
+                (float XMin, float YMin, float XMax, float YMax) = ToLocalRect(cvs);
+                cvs.DrawRectangle(Zone.Main, XMin, YMin, XMax - XMin, YMax - YMin, 1, Color.Red);
+            }
+
+            if (_metadata != null)
+            {
+                cvs.DrawText(
+                    zone: (Zone)(drawingZone + 1),
+                    x: .5f,
+                    y: .5f,
+                    text: _metadata.Title,
+                    size: 16
+                );
             }
 
             return cvs;
+        }
+
+        private (float XMin, float YMin, float XMax, float YMax) ToLocalRect(Canvas cvs)
+        {
+            var width = cvs.GetWidth(Zone.Main);
+            var leftWidth = cvs.GetWidth(Zone.LeftMargin);
+            var height = cvs.GetHeight(Zone.Main);
+            var topHeight = cvs.GetHeight(Zone.UpperMargin);
+            var xMin = (float)Math.Min(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
+            var yMin = (float)Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
+            var xMax = (float)Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
+            var yMax = (float)Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
+
+            xMin = (xMin - leftWidth) / width;
+            xMax = (xMax - leftWidth) / width;
+            yMin = (yMin - topHeight) / height;
+            yMax = (yMax - topHeight) / height;
+
+            return (xMin, yMin, xMax, yMax);
         }
 
         /// <summary>
@@ -76,11 +134,11 @@ namespace Hparg.Plot
         /// <param name="width">Width of the window</param>
         /// <param name="height">Height of the window</param>
         /// <returns>Bitmap containing the points to render</returns>
-        public Bitmap GetRenderData(int width, int height)
+        public MemoryStream GetRenderData(int width, int height)
         {
-            var cvs = new Canvas(width, height, 20);
-            cvs.DrawAxis(Min, Max);
-            return GetRenderData(cvs).GetBitmap();
+            var cvs = new Canvas(width, height, 75, 20, 20, 20);
+            cvs.DrawAxis(DisplayMin, DisplayMax);
+            return GetRenderData(cvs, (int)Zone.Main).ToStream();
         }
 
         public void BeginDragAndDrop(float x, float y)
@@ -95,15 +153,14 @@ namespace Hparg.Plot
 
         public void EndDragAndDrop()
         {
-            var xMin = Math.Min(_dragAndDropSelection!.Value.start.X, _dragAndDropSelection.Value.end.X);
-            var yMin = Math.Min(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-            var xMax = Math.Max(_dragAndDropSelection.Value.start.X, _dragAndDropSelection.Value.end.X);
-            var yMax = Math.Max(_dragAndDropSelection.Value.start.Y, _dragAndDropSelection.Value.end.Y);
-            var points = GetPointsInRectangle(xMin, yMin, xMax - xMin, yMax - yMin);
+            (float XMin, float YMin, float XMax, float YMax) = ToLocalRect(_lastCanvas);
+            var points = GetPointsInRectangle(XMin, YMin, XMax - XMin, YMax - YMin);
             _callback?.Invoke(points);
 
             _dragAndDropSelection = null;
         }
+
+        private Canvas _lastCanvas;
 
         /// <summary>
         /// List of all points to display
@@ -114,5 +171,7 @@ namespace Hparg.Plot
         private ((float X, float Y) start, (float X, float Y) end)? _dragAndDropSelection;
 
         private readonly Action<IEnumerable<T>> _callback;
+
+        protected Metadata? _metadata;
     }
 }
