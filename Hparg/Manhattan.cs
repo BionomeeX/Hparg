@@ -4,18 +4,18 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace Hparg
 {
-    public class Manhattan : APlot<uint>
+    public class Manhattan : APlot<long>
     {
 
         private List<Point<float, float>> _points;
-        private uint[] _chpos;
+        private long[] _chpos;
 
-        public Manhattan(uint[] chpos, float[] y, IEnumerable<System.Drawing.Color> chcolors, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<uint>> callback = null, Point<uint, float>[] additionalPoints = null) :
+        public Manhattan(long[] chpos, float[] y, IEnumerable<System.Drawing.Color> chcolors, Shape shape = Shape.Circle, int size = 2, Action<IEnumerable<long>> callback = null, Point<long, float>[] additionalPoints = null) :
         base(null, callback)
         {
             if (additionalPoints == null)
             {
-                additionalPoints = Array.Empty<Point<uint, float>>();
+                additionalPoints = Array.Empty<Point<long, float>>();
             }
             _points = ComputePointsNormalization(chpos, y, chcolors, shape, size, additionalPoints);
             Min = y.Min();
@@ -23,7 +23,7 @@ namespace Hparg
             _chpos = chpos;
         }
 
-        internal static List<Point<float, float>> ComputePointsNormalization(uint[] chpos, float[] y, IEnumerable<System.Drawing.Color> chcolors, Shape shape, int size, Plot.Point<uint, float>[] additionalPoints)
+        internal static List<Point<float, float>> ComputePointsNormalization(long[] chpos, float[] y, IEnumerable<System.Drawing.Color> chcolors, Shape shape, int size, Plot.Point<long, float>[] additionalPoints)
         {
             Dictionary<int, (int min, int max)> _chInfo = new();
             double pjumps = 0.05; // <- à modifier via les paramètres
@@ -141,7 +141,7 @@ namespace Hparg
             throw new NotImplementedException(); // TODO
         }
 
-        internal override IEnumerable<uint> GetPointsInRectangle(float x, float y, float w, float h)
+        internal override IEnumerable<long> GetPointsInRectangle(float x, float y, float w, float h)
         {
             return _chpos.Where((_, i) => _points[i].X >= x && _points[i].X <= x + w && _points[i].Y >= y && _points[i].Y <= y + h);
         }
