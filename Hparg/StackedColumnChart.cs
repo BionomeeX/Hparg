@@ -11,7 +11,7 @@ namespace Hparg
         {
             _data = data;
             Min = 0f;
-            Max = 1f;
+            Max = _data.Select(x => x.Sum()).OrderByDescending(x => x).First();
         }
 
         public override (float X, float Y) ToRelativeSpace(float x, float y)
@@ -26,25 +26,24 @@ namespace Hparg
 
         internal override void Render(Canvas canvas, Zone drawingZone)
         {
+            var sum = Max;
             for (int x = 0; x < _data.Length; x++)
             {
-                var sum = _data[x].Sum();
-                var last = 0f;
+                var last = 1f;
                 for (int y = 0; y < _data[x].Length; y++)
                 {
                     var curr = _data[x][y] / sum;
                     canvas.DrawRectangle(drawingZone,
                         x: (float)x / _data.Length + .1f,
-                        y: last,
+                        y: last - curr,
                         w: 1f / _data.Length - .1f,
                         h: curr,
                         2,
                         _colors[y % _colors.Length],
                         doesFill: true
                     );
-                    last += curr;
+                    last -= curr;
                 }
-                ;
             }
         }
 
