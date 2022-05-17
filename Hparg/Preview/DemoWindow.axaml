@@ -2,13 +2,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Width="600" Height="600"
+        Width="600" Height="800"
         x:Class="Hparg.DemoWindow"
         xmlns:graph="using:Hparg"
         Title="Hparg"
 		CanResize="False">
   <StackPanel>
     <graph:Graph Name="DemoGraph" Width="600" Height="200"></graph:Graph>
-    <graph:Graph Name="DemoGraph2" Width="600" Height="400"></graph:Graph>
+    <graph:Graph Name="DemoGraph2" Width="600" Height="300"></graph:Graph>
+	<graph:Graph Name="DemoGraph3" Width="600" Height="300"></graph:Graph>
   </StackPanel>
 </Window>

@@ -5,7 +5,6 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using System.Globalization;
 
 namespace Hparg.Drawable
 {
@@ -156,11 +155,18 @@ namespace Hparg.Drawable
             }, text, Color.Black));
         }
 
-        internal void DrawRectangle(Zone zone, float x, float y, float w, float h, int size, Color color)
+        internal void DrawRectangle(Zone zone, float x, float y, float w, float h, int size, Color color, bool doesFill)
         {
             var n = Tr(zone, x + w, y + h) - Tr(zone, x, y);
             var rect = new RectangleF(Tr(zone, x, y), new SizeF(n.X, n.Y));
-            _img.Mutate(x => x.Draw(new Pen(color, size), rect));
+            if (doesFill)
+            {
+                _img.Mutate(x => x.Fill(color, rect));
+            }
+            else
+            {
+                _img.Mutate(x => x.Draw(new Pen(color, size), rect));
+            }
         }
 
         internal void DrawAxis(float min, float max)

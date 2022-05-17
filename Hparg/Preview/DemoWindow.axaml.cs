@@ -59,6 +59,7 @@ namespace Hparg
             );
             pg.AddHorizontalLine(_data.Sum() / _data.Count, System.Drawing.Color.Blue);
             this.FindControl<Graph>("DemoGraph2").Plot = pg;
+            this.FindControl<Graph>("DemoGraph3").Plot = new StackedColumnChart(new[] { evens.ToArray(), odds.ToArray() });
         }
 
         private Random _rand = new();
