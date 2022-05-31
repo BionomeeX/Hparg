@@ -7,16 +7,16 @@ namespace Hparg
 {
     public class StackedColumnChart : APlot<Vector2>
     {
-        public StackedColumnChart(float[][] data, Metadata? metadata = null, Action<IEnumerable<Vector2>> callback = null) : base(metadata, callback)
+        public StackedColumnChart(int[] data, Metadata? metadata = null, Action<IEnumerable<Vector2>> callback = null) : base(metadata, callback)
         {
             _data = data;
             Min = 0f;
-            Max = _data.Select(x => x.Sum()).OrderByDescending(x => x).First();
+            Max = data.Length;
         }
 
         public override (float X, float Y) ToRelativeSpace(float x, float y)
         {
-            throw new NotImplementedException();
+            return (float.NaN, 1f - (y - DisplayMin) / (DisplayMax - DisplayMin));
         }
 
         internal override IEnumerable<Vector2> GetPointsInRectangle(float x, float y, float w, float h)
@@ -26,24 +26,24 @@ namespace Hparg
 
         internal override void Render(Canvas canvas, Zone drawingZone)
         {
-            var sum = Max;
-            for (int x = 0; x < _data.Length; x++)
+            var categories = _data.Distinct().OrderBy(x => x);
+
+            var curr = ToRelativeSpace(0f, 0f).Y;
+            int index = 0;
+            foreach (var c in categories)
             {
-                var last = 1f;
-                for (int y = 0; y < _data[x].Length; y++)
-                {
-                    var curr = _data[x][y] / sum;
-                    canvas.DrawRectangle(drawingZone,
-                        x: (float)x / _data.Length + .1f,
-                        y: last - curr,
-                        w: 1f / _data.Length - .1f,
-                        h: curr,
+                var height = _data.Count(x => x == c);
+                canvas.DrawRectangle(drawingZone,
+                        x: .2f,
+                        y: curr - ToRelativeSpace(0f, height).Y,
+                        w: .8f,
+                        h: ToRelativeSpace(0f, height).Y,
                         2,
-                        _colors[y % _colors.Length],
+                        _colors[index % _colors.Length],
                         doesFill: true
                     );
-                    last -= curr;
-                }
+                curr -= ToRelativeSpace(0f, height).Y;
+                index++;
             }
         }
 
@@ -51,6 +51,6 @@ namespace Hparg
         {
             Color.Red, Color.Blue, Color.Green, Color.Magenta, Color.Cyan, Color.Yellow
         };
-        private float[][] _data;
+        private int[] _data;
     }
 }
