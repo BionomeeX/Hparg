@@ -16,7 +16,7 @@ namespace Hparg
 
         public override (float X, float Y) ToRelativeSpace(float x, float y)
         {
-            return (float.NaN, 1f - (y - DisplayMin) / (DisplayMax - DisplayMin));
+            return (float.NaN, (y - DisplayMin) / (DisplayMax - DisplayMin));
         }
 
         internal override IEnumerable<Vector2> GetPointsInRectangle(float x, float y, float w, float h)
@@ -28,21 +28,22 @@ namespace Hparg
         {
             var categories = _data.Distinct().OrderBy(x => x);
 
-            var curr = ToRelativeSpace(0f, 0f).Y;
+            var curr = DisplayMax * 0.8f;
             int index = 0;
+
             foreach (var c in categories)
             {
-                var height = _data.Count(x => x == c);
+                var height = _data.Count(x => x == c) * 0.9f;
                 canvas.DrawRectangle(drawingZone,
                         x: .2f,
-                        y: curr - ToRelativeSpace(0f, height).Y,
+                        y: ToRelativeSpace(0f, curr - height).Y,
                         w: .8f,
                         h: ToRelativeSpace(0f, height).Y,
                         2,
                         _colors[index % _colors.Length],
                         doesFill: true
                     );
-                curr -= ToRelativeSpace(0f, height).Y;
+                curr -= height;
                 index++;
             }
         }
