@@ -76,6 +76,11 @@ namespace Hparg
             throw new NotImplementedException();
         }
 
+        public Canvas DrawSelectionRect(Canvas cvs)
+        {
+            return cvs;
+        }
+
         private readonly List<Line> _lines = new();
         public float Min { get => _plots.Select(x => x.Min).Min(); }
         public float Max { get => _plots.Select(x => x.Max).Max(); }

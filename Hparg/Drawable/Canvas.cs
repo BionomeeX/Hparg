@@ -8,10 +8,13 @@ using SixLabors.ImageSharp.Processing;
 
 namespace Hparg.Drawable
 {
-    public class Canvas // TODO: Dispose?
+    public class Canvas : ICloneable // TODO: Dispose?
     {
         internal Canvas(int width, int height, int offset, int mainSurfaceCount = 1)
             : this(width, height, offset, offset, offset, offset, mainSurfaceCount)
+        { }
+
+        private Canvas()
         { }
 
         private float GetOffset(int o, int max)
@@ -24,58 +27,58 @@ namespace Hparg.Drawable
 
         internal Canvas(int width, int height, int leftOffset, int rightOffset, int upOffset, int downOffset, int mainSurfaceCount = 1)
         {
-            _maxWidth = width;
-            _maxHeight = height;
+            MaxWidth = width;
+            MaxHeight = height;
             _zones = new()
             {
                 {
                     Zone.LeftMargin,
                     new(
                         0f,
-                        GetOffset(upOffset, _maxHeight),
-                        GetOffset(leftOffset, _maxWidth),
-                        1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
+                        GetOffset(upOffset, MaxHeight),
+                        GetOffset(leftOffset, MaxWidth),
+                        1f - (GetOffset(upOffset, MaxHeight) + GetOffset(downOffset, MaxHeight))
                     )
                 },
                 {
                     Zone.RightMargin,
                     new(
-                        1f - GetOffset(rightOffset, _maxWidth),
-                        GetOffset(upOffset, _maxHeight),
-                        GetOffset(rightOffset, _maxWidth),
-                        1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
+                        1f - GetOffset(rightOffset, MaxWidth),
+                        GetOffset(upOffset, MaxHeight),
+                        GetOffset(rightOffset, MaxWidth),
+                        1f - (GetOffset(upOffset, MaxHeight) + GetOffset(downOffset, MaxHeight))
                     )
                 },
                 {
                     Zone.UpperMarginFull,
                     new(
-                        GetOffset(leftOffset, _maxWidth),
+                        GetOffset(leftOffset, MaxWidth),
                         0f,
-                        1f - (GetOffset(leftOffset, _maxHeight) + GetOffset(rightOffset, _maxWidth)),
-                        GetOffset(upOffset, _maxHeight)
+                        1f - (GetOffset(leftOffset, MaxHeight) + GetOffset(rightOffset, MaxWidth)),
+                        GetOffset(upOffset, MaxHeight)
                     )
                 },
                 {
                     Zone.LowerMarginFull,
                     new(
-                        GetOffset(leftOffset, _maxWidth),
-                        1f - GetOffset(downOffset, _maxHeight),
-                        1f - (GetOffset(leftOffset, _maxHeight) + GetOffset(rightOffset, _maxWidth)),
-                        GetOffset(downOffset, _maxHeight)
+                        GetOffset(leftOffset, MaxWidth),
+                        1f - GetOffset(downOffset, MaxHeight),
+                        1f - (GetOffset(leftOffset, MaxHeight) + GetOffset(rightOffset, MaxWidth)),
+                        GetOffset(downOffset, MaxHeight)
                     )
                 }
             };
 
-            var mx = (1f - (GetOffset(leftOffset, _maxHeight) + GetOffset(rightOffset, _maxWidth))) / mainSurfaceCount;
+            var mx = (1f - (GetOffset(leftOffset, MaxHeight) + GetOffset(rightOffset, MaxWidth))) / mainSurfaceCount;
             for (int i = 0; i < mainSurfaceCount * 3; i += 3)
             {
                 // Main zone
                 _zones.Add((Zone)(i + 1),
                     new(
-                        x: GetOffset(leftOffset, _maxWidth) + mx * (i / 3),
-                        y: GetOffset(upOffset, _maxHeight),
+                        x: GetOffset(leftOffset, MaxWidth) + mx * (i / 3),
+                        y: GetOffset(upOffset, MaxHeight),
                         w: mx,
-                        h: 1f - (GetOffset(upOffset, _maxHeight) + GetOffset(downOffset, _maxHeight))
+                        h: 1f - (GetOffset(upOffset, MaxHeight) + GetOffset(downOffset, MaxHeight))
                     )
                 );
 
@@ -83,19 +86,19 @@ namespace Hparg.Drawable
                 _zones.Add(
                     (Zone)i,
                     new(
-                        GetOffset(leftOffset, _maxWidth) + mx * (i / 3),
+                        GetOffset(leftOffset, MaxWidth) + mx * (i / 3),
                         0f,
                         mx,
-                        GetOffset(upOffset, _maxHeight)
+                        GetOffset(upOffset, MaxHeight)
                     )
                 );
                 _zones.Add(
                     (Zone)(i + 2),
                     new(
-                        GetOffset(leftOffset, _maxWidth) + mx * (i / 3),
-                        1f - GetOffset(downOffset, _maxHeight),
+                        GetOffset(leftOffset, MaxWidth) + mx * (i / 3),
+                        1f - GetOffset(downOffset, MaxHeight),
                         mx,
-                        GetOffset(downOffset, _maxHeight)
+                        GetOffset(downOffset, MaxHeight)
                     )
                 );
             }
@@ -106,7 +109,7 @@ namespace Hparg.Drawable
         private PointF Tr(Zone zone, float x, float y)
         {
             var l = _zones[zone].ToLocal(x, y);
-            return new PointF(l.X * _maxWidth, l.Y * _maxHeight);
+            return new PointF(l.X * MaxWidth, l.Y * MaxHeight);
         }
 
         internal PointF GetSize(Zone zone, float globalWidth, float globalHeight)
@@ -186,10 +189,10 @@ namespace Hparg.Drawable
             var zone = _zones[drawingZone];
             return direction switch
             {
-                Direction.Left => zone.X - (float)pixelOffset / _maxWidth,
-                Direction.Right => zone.Width + (float)pixelOffset  / _maxWidth,
-                Direction.Bottom => zone.Y - (float)pixelOffset / _maxHeight,
-                Direction.Top => zone.Height + (float)pixelOffset / _maxHeight,
+                Direction.Left => zone.X - (float)pixelOffset / MaxWidth,
+                Direction.Right => zone.Width + (float)pixelOffset  / MaxWidth,
+                Direction.Bottom => zone.Y - (float)pixelOffset / MaxHeight,
+                Direction.Top => zone.Height + (float)pixelOffset / MaxHeight,
                 _ => throw new NotImplementedException()
             };
         }
@@ -202,9 +205,22 @@ namespace Hparg.Drawable
             return stream;
         }
 
-        public int _maxWidth, _maxHeight;
+        public object Clone()
+        {
+            var cvs = new Canvas
+            {
+                MaxHeight = MaxHeight,
+                MaxWidth = MaxWidth,
+                _zones = new(_zones),
+                _img = _img.Clone((_) => { })
+            };
+            return cvs;
+        }
+
+        public int MaxWidth { private set; get; }
+        public int MaxHeight { private set; get; }
         private Dictionary<Zone, DrawingZone> _zones;
-        private readonly Image _img;
+        private Image _img;
 
         internal enum Direction
         {

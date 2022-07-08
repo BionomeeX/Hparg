@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Hparg.Drawable;
 using Hparg.Plot;
 
 namespace Hparg
@@ -46,6 +47,8 @@ namespace Hparg
             AvaloniaXamlLoader.Load(this);
         }
 
+        private Drawable.Canvas _oldCanvas;
+
         public override void Render(DrawingContext context)
         {
             if (Plot == null)
@@ -56,11 +59,15 @@ namespace Hparg
             int width = (int)Bounds.Width;
             int height = (int)Bounds.Height;
 
-            var data = Plot.GetRenderData(width, height);
-
-            Bitmap bmp = new(data);
-            context?.DrawImage(bmp, new Rect(0, 0, width, height));
-            data.Dispose();
+            if (_oldCanvas == null || _oldCanvas.MaxWidth != width || _oldCanvas.MaxHeight != height)
+            {
+                var cvs = new Drawable.Canvas(width, height, 75, 20, 20, 20);
+                cvs.DrawAxis(Plot.DisplayMin, Plot.DisplayMax);
+                _oldCanvas = Plot.GetRenderData(cvs, (int)Zone.Main);
+            }
+            Drawable.Canvas newCvs = (Drawable.Canvas)_oldCanvas.Clone();
+            Plot.DrawSelectionRect(newCvs);
+            context?.DrawImage(new Bitmap(newCvs.ToStream()), new Rect(0, 0, width, height));
         }
         private IPlot _plot;
         public IPlot Plot
