@@ -89,12 +89,6 @@ namespace Hparg.Plot
                 }
             }
 
-            if (_dragAndDropSelection.HasValue)
-            {
-                (float XMin, float YMin, float XMax, float YMax) = ToLocalRect(cvs);
-                cvs.DrawRectangle(Zone.Main, XMin, YMin, XMax - XMin, YMax - YMin, 1, Color.Red, false);
-            }
-
             if (_metadata != null)
             {
                 cvs.DrawText(
@@ -107,6 +101,15 @@ namespace Hparg.Plot
             }
 
             return cvs;
+        }
+
+        public void DrawSelection(Canvas cvs)
+        {
+            if (_dragAndDropSelection.HasValue)
+            {
+                (float XMin, float YMin, float XMax, float YMax) = ToLocalRect(cvs);
+                cvs.DrawRectangle(Zone.Main, XMin, YMin, XMax - XMin, YMax - YMin, 1, Color.Red, false);
+            }
         }
 
         private (float XMin, float YMin, float XMax, float YMax) ToLocalRect(Canvas cvs)

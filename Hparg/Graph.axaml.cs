@@ -57,14 +57,27 @@ namespace Hparg
             int width = (int)Bounds.Width;
             int height = (int)Bounds.Height;
 
-            var cvs = new Drawable.Canvas(width, height, 75, 20, 20, 20);
-            cvs.DrawAxis(_plot.DisplayMin, _plot.DisplayMax);
-            var data = _plot.GetRenderData(cvs, (int)Zone.Main).ToStream();
+            if (_canvas == null || _canvas._maxWidth != width || _canvas._maxHeight != height)
+            {
+                UpdateCanvas(width, height);
+            }
+
+            var tmpCvs = new Drawable.Canvas(_canvas);
+            _plot.DrawSelection(tmpCvs);
+            var data = tmpCvs.ToStream();
 
             Bitmap bmp = new(data);
             context?.DrawImage(bmp, new Rect(0, 0, width, height));
             data.Dispose();
         }
+
+        private void UpdateCanvas(int width, int height)
+        {
+            var cvs = new Drawable.Canvas(width, height, 75, 20, 20, 20);
+            cvs.DrawAxis(_plot.DisplayMin, _plot.DisplayMax);
+            _canvas = _plot.GetRenderData(cvs, (int)Zone.Main);
+        }
+
         private IPlot _plot;
         public IPlot Plot
         {
@@ -75,5 +88,7 @@ namespace Hparg
                 InvalidateVisual();
             }
         }
+
+        private Drawable.Canvas _canvas = null;
     }
 }

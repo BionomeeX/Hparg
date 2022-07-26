@@ -47,6 +47,9 @@ namespace Hparg
             return cvs.ToStream();
         }
 
+        public void DrawSelection(Canvas cvs)
+        {}
+
         public void BeginDragAndDrop(float x, float y)
         { }
 
