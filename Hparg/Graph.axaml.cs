@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Hparg.Drawable;
 using Hparg.Plot;
 
 namespace Hparg
@@ -56,7 +57,9 @@ namespace Hparg
             int width = (int)Bounds.Width;
             int height = (int)Bounds.Height;
 
-            var data = Plot.GetRenderData(width, height);
+            var cvs = new Drawable.Canvas(width, height, 75, 20, 20, 20);
+            cvs.DrawAxis(_plot.DisplayMin, _plot.DisplayMax);
+            var data = _plot.GetRenderData(cvs, (int)Zone.Main).ToStream();
 
             Bitmap bmp = new(data);
             context?.DrawImage(bmp, new Rect(0, 0, width, height));
