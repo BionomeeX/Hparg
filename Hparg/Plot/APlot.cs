@@ -112,6 +112,19 @@ namespace Hparg.Plot
             }
         }
 
+        /// <summary>
+        /// Get all the data to render on screen
+        /// </summary>
+        /// <param name="width">Width of the window</param>
+        /// <param name="height">Height of the window</param>
+        /// <returns>Bitmap containing the points to render</returns>
+        public Canvas GetRenderData(int width, int height)
+        {
+            var cvs = new Canvas(width, height, 75, 20, 20, 20);
+            cvs.DrawAxis(DisplayMin, DisplayMax);
+            return GetRenderData(cvs, (int)Zone.Main);
+        }
+
         private (float XMin, float YMin, float XMax, float YMax) ToLocalRect(Canvas cvs)
         {
             var width = cvs.GetWidth(Zone.Main);

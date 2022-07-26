@@ -9,6 +9,7 @@ namespace Hparg.Plot
         public void DragAndDrop(float x, float y);
         public void EndDragAndDrop();
         public Canvas GetRenderData(Canvas cvs, int drawingZone);
+        public Canvas GetRenderData(int width, int height);
         public void DrawSelection(Canvas cvs);
         public void AddVerticalLine(float x, Color color, int size = 2);
         public void AddHorizontalLine(float y, Color color, int size = 2);

@@ -73,9 +73,7 @@ namespace Hparg
 
         private void UpdateCanvas(int width, int height)
         {
-            var cvs = new Drawable.Canvas(width, height, 75, 20, 20, 20);
-            cvs.DrawAxis(_plot.DisplayMin, _plot.DisplayMax);
-            _canvas = _plot.GetRenderData(cvs, (int)Zone.Main);
+            _canvas = Plot.GetRenderData(width, height);
         }
 
         private IPlot _plot;
@@ -89,6 +87,6 @@ namespace Hparg
             }
         }
 
-        private Drawable.Canvas _canvas = null;
+        private Drawable.Canvas _canvas;
     }
 }
