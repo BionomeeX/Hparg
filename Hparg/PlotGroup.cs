@@ -13,7 +13,7 @@ namespace Hparg
         }
 
         private IPlot[] _plots;
-        public MemoryStream GetRenderData(int width, int height)
+        public Canvas GetRenderData(int width, int height)
         {
             var min = _plots.Select(x => x.Min).Min();
             var max = _plots.Select(x => x.Max).Max();
@@ -44,8 +44,11 @@ namespace Hparg
                 cvs.DrawText(Zone.UpperMarginFull, .5f, .5f, _title, 20);
             }
 
-            return cvs.ToStream();
+            return cvs;
         }
+
+        public void DrawSelection(Canvas cvs)
+        {}
 
         public void BeginDragAndDrop(float x, float y)
         { }

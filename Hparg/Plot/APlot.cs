@@ -89,12 +89,6 @@ namespace Hparg.Plot
                 }
             }
 
-            if (_dragAndDropSelection.HasValue)
-            {
-                (float XMin, float YMin, float XMax, float YMax) = ToLocalRect(cvs);
-                cvs.DrawRectangle(Zone.Main, XMin, YMin, XMax - XMin, YMax - YMin, 1, Color.Red, false);
-            }
-
             if (_metadata != null)
             {
                 cvs.DrawText(
@@ -107,6 +101,28 @@ namespace Hparg.Plot
             }
 
             return cvs;
+        }
+
+        public void DrawSelection(Canvas cvs)
+        {
+            if (_dragAndDropSelection.HasValue)
+            {
+                (float XMin, float YMin, float XMax, float YMax) = ToLocalRect(cvs);
+                cvs.DrawRectangle(Zone.Main, XMin, YMin, XMax - XMin, YMax - YMin, 1, Color.Red, false);
+            }
+        }
+
+        /// <summary>
+        /// Get all the data to render on screen
+        /// </summary>
+        /// <param name="width">Width of the window</param>
+        /// <param name="height">Height of the window</param>
+        /// <returns>Bitmap containing the points to render</returns>
+        public Canvas GetRenderData(int width, int height)
+        {
+            var cvs = new Canvas(width, height, 75, 20, 20, 20);
+            cvs.DrawAxis(DisplayMin, DisplayMax);
+            return GetRenderData(cvs, (int)Zone.Main);
         }
 
         private (float XMin, float YMin, float XMax, float YMax) ToLocalRect(Canvas cvs)
@@ -126,19 +142,6 @@ namespace Hparg.Plot
             yMax = (yMax - topHeight) / height;
 
             return (xMin, yMin, xMax, yMax);
-        }
-
-        /// <summary>
-        /// Get all the data to render on screen
-        /// </summary>
-        /// <param name="width">Width of the window</param>
-        /// <param name="height">Height of the window</param>
-        /// <returns>Bitmap containing the points to render</returns>
-        public MemoryStream GetRenderData(int width, int height)
-        {
-            var cvs = new Canvas(width, height, 75, 20, 20, 20);
-            cvs.DrawAxis(DisplayMin, DisplayMax);
-            return GetRenderData(cvs, (int)Zone.Main).ToStream();
         }
 
         public void BeginDragAndDrop(float x, float y)

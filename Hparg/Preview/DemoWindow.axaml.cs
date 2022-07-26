@@ -7,6 +7,7 @@ namespace Hparg
 {
     public partial class DemoWindow : Window
     {
+        private const float max = 3f;
         public DemoWindow()
         {
             AvaloniaXamlLoader.Load(this);
@@ -21,7 +22,7 @@ namespace Hparg
                 while (true)
                 {
                     await Task.Delay(3000);
-                    _data.Add((float)_rand.NextDouble() * 10f);
+                    _data.Add((float)_rand.NextDouble() * 2f);
                     Dispatcher.UIThread.Post(() =>
                     {
                         RenderGraph();
@@ -59,7 +60,11 @@ namespace Hparg
             );
             pg.AddHorizontalLine(_data.Sum() / _data.Count, System.Drawing.Color.Blue);
             this.FindControl<Graph>("DemoGraph2").Plot = pg;
-            this.FindControl<Graph>("DemoGraph3").Plot = new StackedColumnChart(new[] { evens.ToArray(), odds.ToArray() });
+            this.FindControl<Graph>("DemoGraph3").Plot = new PlotGroup(new Plot.IPlot[]
+            {
+                new StackedColumnChart(evens.Select(x => (int)MathF.Round(x)).ToArray()),
+                new StackedColumnChart(odds.Select(x => (int)MathF.Round(x)).ToArray())
+            });
         }
 
         private Random _rand = new();

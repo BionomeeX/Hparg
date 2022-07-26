@@ -14,6 +14,14 @@ namespace Hparg.Drawable
             : this(width, height, offset, offset, offset, offset, mainSurfaceCount)
         { }
 
+        internal Canvas(Canvas cvs)
+        {
+            _maxWidth = cvs._maxWidth;
+            _maxHeight = cvs._maxHeight;
+            _zones = new(cvs._zones);
+            _img = cvs._img.Clone((_) => { });
+        }
+
         private float GetOffset(int o, int max)
             => (float)o / max;
 
