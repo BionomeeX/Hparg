@@ -83,10 +83,11 @@ namespace Hparg
             set
             {
                 _plot = value;
+                _canvas = null;
                 InvalidateVisual();
             }
         }
 
-        private Drawable.Canvas _canvas;
+        private Drawable.Canvas? _canvas;
     }
 }
