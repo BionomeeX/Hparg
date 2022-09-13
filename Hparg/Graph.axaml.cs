@@ -5,6 +5,8 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Hparg.Drawable;
 using Hparg.Plot;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
 
 namespace Hparg
 {
@@ -86,6 +88,20 @@ namespace Hparg
                 _canvas = null;
                 InvalidateVisual();
             }
+        }
+
+        public void GeneratePDF(string path)
+        {
+            Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+
+                    var ms = _canvas.ToStream();
+                    page.Content().Image(ms);
+                });
+            }).GeneratePdf(path);
         }
 
         private Drawable.Canvas? _canvas;
