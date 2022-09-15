@@ -3,8 +3,9 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Hparg.Drawable;
 using Hparg.Plot;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
 
 namespace Hparg
 {
@@ -86,6 +87,17 @@ namespace Hparg
                 _canvas = null;
                 InvalidateVisual();
             }
+        }
+
+        private byte[] GenerateImage(QuestPDF.Infrastructure.Size size)
+        {
+            var cvs = Plot.GetRenderData((int)size.Width, (int)size.Height);
+            return cvs.ToStream().ToArray();
+        }
+
+        public void GeneratePDF(IContainer page)
+        {
+            page.Image(GenerateImage);
         }
 
         private Drawable.Canvas? _canvas;
