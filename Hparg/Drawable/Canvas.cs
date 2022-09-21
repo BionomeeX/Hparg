@@ -149,17 +149,21 @@ namespace Hparg.Drawable
 
         internal void DrawText(Zone zone, float x, float y, string text, int size,
             HorizontalAlignment horAlignment = HorizontalAlignment.Center,
-            VerticalAlignment verAlignment = VerticalAlignment.Center)
+            VerticalAlignment verAlignment = VerticalAlignment.Center,
+            float rotation = 0f)
         {
             if (!SystemFonts.TryGet("Arial", out FontFamily font))
             {
                 font = SystemFonts.Families.First();
             }
-            _img.Mutate(i => i.DrawText(new TextOptions(font.CreateFont(size, FontStyle.Regular))
+            var pos = Tr(zone, x, y);
+            _img.Mutate(i => i
+            .SetDrawingTransform(Matrix3x2Extensions.CreateRotationDegrees(rotation, pos))
+            .DrawText(new TextOptions(font.CreateFont(size, FontStyle.Regular))
             {
                 HorizontalAlignment = horAlignment,
                 VerticalAlignment = verAlignment,
-                Origin = Tr(zone, x, y)
+                Origin = pos
             }, text, Color.Black));
         }
 
