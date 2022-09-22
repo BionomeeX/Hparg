@@ -7,11 +7,12 @@ namespace Hparg
 {
     public class PlotGroup : IPlot
     {
-        public PlotGroup(IPlot[] plots, string? title = null, string? yAxis = null)
+        public PlotGroup(IPlot[] plots, string? title = null, string? yAxis = null, string? titleTitleAxis = null)
         {
             _plots = plots;
             _title = title;
             _yAxis = yAxis;
+            _titleTitleAxis = titleTitleAxis;
         }
 
         private IPlot[] _plots;
@@ -44,6 +45,11 @@ namespace Hparg
             if (_title != null)
             {
                 cvs.DrawText(Zone.UpperMarginFull, .5f, .5f, _title, 20);
+            }
+
+            if (_titleTitleAxis != null)
+            {
+                cvs.DrawText(Zone.LowerMargin, 0f, .6f, _titleTitleAxis, 15);
             }
 
             if (_yAxis != null)
@@ -94,5 +100,6 @@ namespace Hparg
 
         private string? _title;
         private string? _yAxis;
+        private string? _titleTitleAxis;
     }
 }
