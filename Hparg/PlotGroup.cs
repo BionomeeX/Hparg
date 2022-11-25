@@ -1,15 +1,18 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Hparg
 {
     public class PlotGroup : IPlot
     {
-        public PlotGroup(IPlot[] plots, string? title = null)
+        public PlotGroup(IPlot[] plots, string? title = null, string? yAxis = null, string? titleTitleAxis = null)
         {
             _plots = plots;
             _title = title;
+            _yAxis = yAxis;
+            _titleTitleAxis = titleTitleAxis;
         }
 
         private IPlot[] _plots;
@@ -42,6 +45,16 @@ namespace Hparg
             if (_title != null)
             {
                 cvs.DrawText(Zone.UpperMarginFull, .5f, .5f, _title, 20);
+            }
+
+            if (_titleTitleAxis != null)
+            {
+                cvs.DrawText(Zone.LowerMargin, 0f, .6f, _titleTitleAxis, 15);
+            }
+
+            if (_yAxis != null)
+            {
+                cvs.DrawText(Zone.LeftMargin, .2f, .5f, _yAxis, 20, rotation: 270f);
             }
 
             return cvs;
@@ -86,5 +99,7 @@ namespace Hparg
         public float DisplayMax { get => _plots.Select(x => x.DisplayMax).Max(); set => throw new NotImplementedException(); }
 
         private string? _title;
+        private string? _yAxis;
+        private string? _titleTitleAxis;
     }
 }
