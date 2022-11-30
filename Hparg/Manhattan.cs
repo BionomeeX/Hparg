@@ -6,7 +6,6 @@ namespace Hparg
 {
     public class Manhattan : APlot<long>
     {
-
         private List<Point<float, float>> _points;
         private long[] _chpos;
 

@@ -20,15 +20,8 @@ namespace Hparg.Drawable
             _maxHeight = cvs._maxHeight;
             _zones = new(cvs._zones);
             _img = cvs._img.Clone((_) => { });
+            InitFont();
         }
-
-        private float GetOffset(int o, int max)
-            => (float)o / max;
-
-        internal float GetWidth(Zone zone)
-            => _zones[zone].Width;
-        internal float GetHeight(Zone zone)
-            => _zones[zone].Height;
 
         internal Canvas(int width, int height, int leftOffset, int rightOffset, int upOffset, int downOffset, int mainSurfaceCount = 1)
         {
@@ -109,7 +102,24 @@ namespace Hparg.Drawable
             }
 
             _img = new Image<Rgba32>(width, height);
+            InitFont();
         }
+
+        private void InitFont()
+        {
+            if (!SystemFonts.TryGet("Arial", out _targetFont))
+            {
+                _targetFont = SystemFonts.Families.First();
+            }
+        }
+
+        private float GetOffset(int o, int max)
+            => (float)o / max;
+
+        internal float GetWidth(Zone zone)
+            => _zones[zone].Width;
+        internal float GetHeight(Zone zone)
+            => _zones[zone].Height;
 
         private PointF Tr(Zone zone, float x, float y)
         {
@@ -152,14 +162,10 @@ namespace Hparg.Drawable
             VerticalAlignment verAlignment = VerticalAlignment.Center,
             float rotation = 0f)
         {
-            if (!SystemFonts.TryGet("Arial", out FontFamily font))
-            {
-                font = SystemFonts.Families.First();
-            }
             var pos = Tr(zone, x, y);
             _img.Mutate(i => i
             .SetDrawingTransform(Matrix3x2Extensions.CreateRotationDegrees(rotation, pos))
-            .DrawText(new TextOptions(font.CreateFont(size, FontStyle.Regular))
+            .DrawText(new TextOptions(_targetFont.CreateFont(size, FontStyle.Regular))
             {
                 HorizontalAlignment = horAlignment,
                 VerticalAlignment = verAlignment,
@@ -217,6 +223,7 @@ namespace Hparg.Drawable
         public int _maxWidth, _maxHeight;
         private Dictionary<Zone, DrawingZone> _zones;
         private readonly Image _img;
+        private FontFamily _targetFont;
 
         internal enum Direction
         {
