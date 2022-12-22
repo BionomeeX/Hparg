@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Width="600" Height="800"
-        x:Class="Hparg.DemoWindow"
+        x:Class="Hparg.Demo.DemoWindow"
         xmlns:graph="using:Hparg"
         Title="Hparg"
 		CanResize="False">

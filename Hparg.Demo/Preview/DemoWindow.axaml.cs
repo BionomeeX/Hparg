@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 
-namespace Hparg
+namespace Hparg.Demo
 {
     public partial class DemoWindow : Window
     {
