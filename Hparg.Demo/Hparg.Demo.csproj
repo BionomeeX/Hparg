@@ -15,10 +15,10 @@
     <ProjectReference Include="..\Hparg\Hparg.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Preview\App.axaml.cs">
+    <Compile Update="App.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="Preview\DemoWindow.axaml.cs">
+    <Compile Update="DemoWindow.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
   </ItemGroup>
