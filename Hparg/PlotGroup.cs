@@ -1,7 +1,6 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace Hparg
 {

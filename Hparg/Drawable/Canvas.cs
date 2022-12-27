@@ -133,6 +133,11 @@ namespace Hparg.Drawable
             return new PointF(z.Width * globalWidth, z.Height * globalHeight);
         }
 
+        static internal float GetTextSize(string text, Font font)
+        {
+            return TextMeasurer.Measure(text, new TextOptions(font)).Width;
+        }
+
         internal void DrawPoint(Zone zone, float x, float y, int size, Shape shape, Color color)
         {
             RegularPolygon point = shape switch
