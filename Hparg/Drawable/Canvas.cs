@@ -20,7 +20,6 @@ namespace Hparg.Drawable
             _maxHeight = cvs._maxHeight;
             _zones = new(cvs._zones);
             _img = cvs._img.Clone((_) => { });
-            InitFont();
         }
 
         internal Canvas(int width, int height, int leftOffset, int rightOffset, int upOffset, int downOffset, int mainSurfaceCount = 1)
@@ -102,15 +101,6 @@ namespace Hparg.Drawable
             }
 
             _img = new Image<Rgba32>(width, height);
-            InitFont();
-        }
-
-        private void InitFont()
-        {
-            if (!SystemFonts.TryGet("Arial", out _targetFont))
-            {
-                _targetFont = SystemFonts.Families.First();
-            }
         }
 
         private float GetOffset(int o, int max)
@@ -131,11 +121,6 @@ namespace Hparg.Drawable
         {
             var z = _zones[zone];
             return new PointF(z.Width * globalWidth, z.Height * globalHeight);
-        }
-
-        static internal float GetTextSize(string text, Font font)
-        {
-            return TextMeasurer.Measure(text, new TextOptions(font)).Width;
         }
 
         internal void DrawPoint(Zone zone, float x, float y, int size, Shape shape, Color color)
@@ -170,7 +155,7 @@ namespace Hparg.Drawable
             var pos = Tr(zone, x, y);
             _img.Mutate(i => i
             .SetDrawingTransform(Matrix3x2Extensions.CreateRotationDegrees(rotation, pos))
-            .DrawText(new TextOptions(_targetFont.CreateFont(size, FontStyle.Regular))
+            .DrawText(new TextOptions(FontManager.Instance.GetFont(size))
             {
                 HorizontalAlignment = horAlignment,
                 VerticalAlignment = verAlignment,
@@ -228,7 +213,6 @@ namespace Hparg.Drawable
         public int _maxWidth, _maxHeight;
         private Dictionary<Zone, DrawingZone> _zones;
         private readonly Image _img;
-        private FontFamily _targetFont;
 
         internal enum Direction
         {
