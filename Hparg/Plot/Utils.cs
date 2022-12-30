@@ -1,5 +1,4 @@
 ﻿using Hparg.Drawable;
-using System.Globalization;
 
 namespace Hparg.Plot
 {
@@ -8,7 +7,7 @@ namespace Hparg.Plot
 
         internal static string FormatNumber(float nb)
         {
-            if (nb > 1000 || nb < -1000)
+            if (nb > 1000f || nb < -1000 || (nb > -0.01f && nb < 0.01f && nb != 0f))
             {
                 return $"{nb:0.00E0}";
             }
