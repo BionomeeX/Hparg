@@ -1,6 +1,7 @@
 ﻿using Hparg.Drawable;
 using Hparg.Plot;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Globalization;
 
 namespace Hparg
 {
@@ -14,13 +15,6 @@ namespace Hparg
             _titleTitleAxis = titleTitleAxis;
         }
 
-        internal static int GetTextSize(float min, float max)
-        {
-            var minText = $"{min:0.00}";
-            var maxText = $"{max:0.00}";
-            return (int)FontManager.Instance.GetTextSize(minText.Length > maxText.Length ? minText : maxText, 15);
-        }
-
         private IPlot[] _plots;
         public Canvas GetRenderData(int width, int height)
         {
@@ -29,7 +23,7 @@ namespace Hparg
             var diff = (max - min);
             min -= diff * .1f;
             max += diff * .1f;
-            var cvs = new Canvas(width, height, GetTextSize(DisplayMin, DisplayMax) + 10, 20, 20, 50, _plots.Length);
+            var cvs = new Canvas(width, height, Utils.GetTextSize(DisplayMin, DisplayMax) + 20, 20, 20, 50, _plots.Length);
             for (int i = 0; i < _plots.Length; i++)
             {
                 _plots[i].DisplayMin = min;

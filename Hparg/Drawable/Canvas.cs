@@ -1,10 +1,12 @@
-﻿using SixLabors.Fonts;
+﻿using Hparg.Plot;
+using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System.Globalization;
 
 namespace Hparg.Drawable
 {
@@ -185,7 +187,9 @@ namespace Hparg.Drawable
             for (int i = 0; i <= 10; i++)
             {
                 var value = (relativeMax / 10f) * i + min;
-                DrawText(Zone.LeftMargin, .9f, 1f - i / 10f, $"{value:0.00}", 15, HorizontalAlignment.Right);
+                var y = 1f - i / 10f;
+                DrawText(Zone.LeftMargin, .9f, y, Utils.FormatNumber(value), 15, HorizontalAlignment.Right);
+                //DrawLine(Zone.Main, 0f, y, 1f, y, 1, Color.Gray);
             }
         }
 
