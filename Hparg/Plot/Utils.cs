@@ -9,7 +9,7 @@ namespace Hparg.Plot
         {
             if (nb > 1000f || nb < -1000 || (nb > -0.01f && nb < 0.01f && nb != 0f))
             {
-                return $"{nb:0.00E0}";
+                return $"{nb:0.00E+0}";
             }
             return $"{nb:0.00}";
         }

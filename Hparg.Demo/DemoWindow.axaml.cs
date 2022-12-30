@@ -14,7 +14,7 @@ namespace Hparg.Demo
 #if DEBUG
             this.AttachDevTools();
 #endif
-            _data = Enumerable.Range(0, 20).Select(_ => (float)_rand.NextDouble() * 100000f).ToList();
+            _data = Enumerable.Range(0, 20).Select(_ => (float)_rand.NextDouble() * 0.001f).ToList();
             RenderGraph();
 
             Task.Run(async () =>
@@ -22,7 +22,7 @@ namespace Hparg.Demo
                 while (true)
                 {
                     await Task.Delay(3000);
-                    _data.Add((float)_rand.NextDouble() * 2f);
+                    _data.Add((float)_rand.NextDouble());
                     Dispatcher.UIThread.Post(() =>
                     {
                         RenderGraph();
