@@ -1,4 +1,5 @@
 ﻿using SixLabors.Fonts;
+using System.Numerics;
 
 namespace Hparg.Drawable
 {
@@ -26,8 +27,11 @@ namespace Hparg.Drawable
         public Font GetFont(int size)
             => _targetFont.CreateFont(size, FontStyle.Regular);
 
-        internal float GetTextSize(string text, int fontSize)
-            => TextMeasurer.Measure(text, new TextOptions(GetFont(fontSize))).Width;
+        internal Vector2 GetTextSize(string text, int fontSize)
+        {
+            var measure = TextMeasurer.Measure(text, new TextOptions(GetFont(fontSize)));
+            return new(measure.Width, measure.Height);
+        }
 
         private FontFamily _targetFont;
     }

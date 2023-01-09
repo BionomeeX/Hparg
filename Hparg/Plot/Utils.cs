@@ -22,7 +22,7 @@ namespace Hparg.Plot
         {
             var minText = FormatNumber(min);
             var maxText = FormatNumber(max);
-            return (int)FontManager.Instance.GetTextSize(minText.Length > maxText.Length ? minText : maxText, 15);
+            return (int)FontManager.Instance.GetTextSize(minText.Length > maxText.Length ? minText : maxText, 15).X;
         }
     }
 }
