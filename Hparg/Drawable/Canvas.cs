@@ -1,10 +1,12 @@
-﻿using SixLabors.Fonts;
+﻿using Hparg.Plot;
+using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System.Xml.Linq;
 
 namespace Hparg.Drawable
 {
@@ -20,7 +22,6 @@ namespace Hparg.Drawable
             _maxHeight = cvs._maxHeight;
             _zones = new(cvs._zones);
             _img = cvs._img.Clone((_) => { });
-            InitFont();
         }
 
         internal Canvas(int width, int height, int leftOffset, int rightOffset, int upOffset, int downOffset, int mainSurfaceCount = 1)
@@ -102,15 +103,6 @@ namespace Hparg.Drawable
             }
 
             _img = new Image<Rgba32>(width, height);
-            InitFont();
-        }
-
-        private void InitFont()
-        {
-            if (!SystemFonts.TryGet("Arial", out _targetFont))
-            {
-                _targetFont = SystemFonts.Families.First();
-            }
         }
 
         private float GetOffset(int o, int max)
@@ -162,10 +154,18 @@ namespace Hparg.Drawable
             VerticalAlignment verAlignment = VerticalAlignment.Center,
             float rotation = 0f)
         {
+            if (rotation == 0f)
+            {
+                // We scale down the size until it fits properly
+                while (FontManager.Instance.GetTextSize(text, size).X >= _zones[zone].Width * _maxWidth)
+                {
+                    size--;
+                }
+            }
             var pos = Tr(zone, x, y);
             _img.Mutate(i => i
             .SetDrawingTransform(Matrix3x2Extensions.CreateRotationDegrees(rotation, pos))
-            .DrawText(new TextOptions(_targetFont.CreateFont(size, FontStyle.Regular))
+            .DrawText(new TextOptions(FontManager.Instance.GetFont(size))
             {
                 HorizontalAlignment = horAlignment,
                 VerticalAlignment = verAlignment,
@@ -195,7 +195,9 @@ namespace Hparg.Drawable
             for (int i = 0; i <= 10; i++)
             {
                 var value = (relativeMax / 10f) * i + min;
-                DrawText(Zone.LeftMargin, .9f, 1f - i / 10f, $"{value:0.00}", 15, HorizontalAlignment.Right);
+                var y = 1f - i / 10f;
+                DrawText(Zone.LeftMargin, .9f, y, Utils.FormatNumber(value), 15, HorizontalAlignment.Right);
+                //DrawLine(Zone.Main, 0f, y, 1f, y, 1, Color.Gray);
             }
         }
 
@@ -223,7 +225,6 @@ namespace Hparg.Drawable
         public int _maxWidth, _maxHeight;
         private Dictionary<Zone, DrawingZone> _zones;
         private readonly Image _img;
-        private FontFamily _targetFont;
 
         internal enum Direction
         {

@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 
-namespace Hparg
+namespace Hparg.Demo
 {
     public partial class DemoWindow : Window
     {
@@ -14,7 +14,7 @@ namespace Hparg
 #if DEBUG
             this.AttachDevTools();
 #endif
-            _data = Enumerable.Range(0, 20).Select(_ => (float)_rand.NextDouble() * 10f).ToList();
+            _data = Enumerable.Range(0, 20).Select(_ => (float)_rand.NextDouble()).ToList();
             RenderGraph();
 
             Task.Run(async () =>
@@ -22,7 +22,7 @@ namespace Hparg
                 while (true)
                 {
                     await Task.Delay(3000);
-                    _data.Add((float)_rand.NextDouble() * 2f);
+                    _data.Add((float)_rand.NextDouble());
                     Dispatcher.UIThread.Post(() =>
                     {
                         RenderGraph();

@@ -1,6 +1,6 @@
 using Avalonia;
 
-namespace Hparg
+namespace Hparg.Demo
 {
     class Program
     {

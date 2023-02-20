@@ -97,8 +97,10 @@ namespace Hparg
 
         public void GeneratePDF(IContainer page)
         {
-            page.Image(GenerateImage);
+            page.Scale(AspectRatio).Image(GenerateImage);
         }
+
+        public float AspectRatio => _canvas._maxWidth / (float)_canvas._maxHeight;
 
         private Drawable.Canvas? _canvas;
     }

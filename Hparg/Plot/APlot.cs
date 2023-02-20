@@ -120,7 +120,7 @@ namespace Hparg.Plot
         /// <returns>Bitmap containing the points to render</returns>
         public Canvas GetRenderData(int width, int height)
         {
-            var cvs = new Canvas(width, height, 75, 20, 20, 20);
+            var cvs = new Canvas(width, height, Utils.GetTextSize(DisplayMin, DisplayMax) + 20, 20, 20, 20);
             cvs.DrawAxis(DisplayMin, DisplayMax);
             return GetRenderData(cvs, (int)Zone.Main);
         }
