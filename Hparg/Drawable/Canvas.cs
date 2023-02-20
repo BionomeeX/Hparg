@@ -6,7 +6,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using System.Globalization;
+using System.Xml.Linq;
 
 namespace Hparg.Drawable
 {
@@ -154,6 +154,14 @@ namespace Hparg.Drawable
             VerticalAlignment verAlignment = VerticalAlignment.Center,
             float rotation = 0f)
         {
+            if (rotation == 0f)
+            {
+                // We scale down the size until it fits properly
+                while (FontManager.Instance.GetTextSize(text, size).X >= _zones[zone].Width * _maxWidth)
+                {
+                    size--;
+                }
+            }
             var pos = Tr(zone, x, y);
             _img.Mutate(i => i
             .SetDrawingTransform(Matrix3x2Extensions.CreateRotationDegrees(rotation, pos))
