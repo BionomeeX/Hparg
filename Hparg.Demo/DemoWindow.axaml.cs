@@ -53,8 +53,8 @@ namespace Hparg.Demo
             var pg = new PlotGroup(
                 new[]
                 {
-                    new BoxPlot(evens, metadata: new Metadata() { Title = "Evens" }),
-                    new BoxPlot(odds, metadata: new Metadata() { Title = "Odds" })
+                    new BoxPlot(0f, evens, metadata: new Metadata() { Title = "Evens" }),
+                    new BoxPlot(0f, odds, metadata: new Metadata() { Title = "Odds" })
                 },
                 title: "Values"
             );
